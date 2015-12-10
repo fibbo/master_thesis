@@ -6,6 +6,7 @@
 
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage{amssymb}
 \usepackage[bibencoding=utf8, backend=biber, style=numeric, minbibnames=1, maxnames=5]{biblatex}
 \addbibresource{bibliography.bib}
@@ -42,6 +43,7 @@
 
 \fontfamily{ppl}\selectfont
 
+\newcommand*{\bfrac}[2]{\genfrac{\big (}{\big )}{0pt}{}{#1}{#2}}
 
 \begin{document}
 
@@ -185,11 +187,13 @@ This approach is slightly different from the usual Hough Transforms. In this app
 \section{Conventional Hough-Transforms} % (fold)
 \label{sec:conventional_hough_transforms}
 
+In the following subsections we discuss the conventional Hough-Transforms for the case of a one, two and three dimensional parameter space.
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known Center - Find Radius} % (fold)
 \label{sub:1d_known_center_find_radius}
 
+For this case we assume that we know the center of each circle and just need to find the radius. Our parameter space has thus only dimension 1. Since we know the center points we of course also know the number of circles that we need to find
 
 
 % subsection 1d_known_center_find_radius (end)
@@ -223,7 +227,7 @@ going to go. A third point gives us all the information we need. The general ide
 There are 2 problems with this method.
 
 \begin{itemize}
-\item The combinatorics blow up with a high number of data points \( \binom{N}{3} \)
+\item The combinatorics blow up with a high number of data points $\binom {N}{3}$
 \item Also assuming we have a infinite amount of data points then we would also find an infinite number of circles
 \end{itemize}
 
