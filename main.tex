@@ -220,12 +220,27 @@ going to go. A third point gives us all the information we need. The general ide
 \subsection{Drawback}
 	
 
-There are 2 problems with this method.
+There is also a drawback with this method:
 
 \begin{itemize}
 \item The combinatorics blow up with a high number of data points \( \binom{N}{3} \)
-\item Also assuming we have a infinite amount of data points then we would also find an infinite number of circles
 \end{itemize}
+
+So for example with 200 data points (circle data and background) the number of triplets is
+
+\[ \binom{200}{3} = 1313400 \]
+
+and for 300:
+
+\[ \binom{300}{3} = 4455100 \]
+
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pics/binomial_growth}
+  \caption{Binomial Growth with $\binom{N}{3}$}
+  \label{fig:figure1}
+\end{figure}
 
 \chapter{Results}
 
