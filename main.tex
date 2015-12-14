@@ -215,9 +215,9 @@ going to go. A third point gives us all the information we need. The general ide
 \begin{enumerate}
 \item Build all possible triples of points given the data points
 \item For all the point triples calculate the center and the radius of the potential circle
-\item Due to constraints in the radius we can drop many of the circles with a radius bigger than a certain threshold
+\item Due to constraints in the radius many of the circles with a radius bigger than a certain threshold will be dropped.
 \item Create a histogram with the radius distribution. Peaks in the radius distribution hint to a circle.
-\item We scan the radius histogram for peaks and look at the center point histogram for the given radius of a peak. If we have also a peak in the center point histogram
+\item Scan the radius histogram for peaks and look at the center point histogram for the given radius of a peak. If there is also a peak in the center point histogram
       the set of the points of the triples lie on a circle with a radius and center given by the histogram peaks.
 \end{enumerate}
 
