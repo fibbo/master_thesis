@@ -221,6 +221,40 @@ going to go. A third point gives us all the information we need. The general ide
       the set of the points of the triples lie on a circle with a radius and center given by the histogram peaks.
 \end{enumerate}
 
+\subsection{The Theory behind it}
+
+Let $(A,B,C)$ be a triple of 3 points in a 2D plane and $a,b,c$ the length of the sides opposite to the respective corner.
+
+The semiperimeter is defined as
+
+\begin{equation}
+  s = \frac{a+b+c}{2}
+\end{equation}
+
+\begin{figure}[tb]
+\centering
+\begin{tikzpicture}
+\coordinate (A) at (0,0);
+\coordinate (B) at (2.5,0);
+\coordinate (C) at (2,3);
+\coordinate (Ci) at (1.25,1.33333);
+\def\r{1.827}
+\draw (A) -- (B) -- (C) -- cycle;
+\node[left] at (A) {$A$};
+\node[right] at (B) {$B$};
+\node[above] at (C) {$C$};
+\draw[fill=black] (A) circle (2pt);
+\draw[fill=black] (B) circle (2pt);
+\draw[fill=black] (C) circle (2pt);
+\draw[fill=red] (Ci) circle (2pt) node [below] (Ci) {$C$};
+
+\draw (1.25,1.33333) -- +(150:1.827);
+\draw[red] (1.25,1.33333) circle (1.827);
+\end{tikzpicture}
+\caption{The circumradius and the circumcenter of a circle defined by the points}
+\label{fig:circum_fig}
+\end{figure}
+
 \subsection{Drawback}
 	
 
