@@ -221,16 +221,43 @@ going to go. A third point gives us all the information we need. The general ide
       the set of the points of the triples lie on a circle with a radius and center given by the histogram peaks.
 \end{enumerate}
 
-\subsection{The Theory behind it}
+\subsection{Calculating the Circle given 3 points}
 
-Let $(A,B,C)$ be a triple of 3 points in a 2D plane and $a,b,c$ the length of the sides opposite to the respective corner.
-
+Let $(A,B,C)$ be a triple of points in a 2D plane and $a,b,c$ the length of the sides opposite to the respective corner.
+%
 The semiperimeter is defined as
-
+%
 \begin{equation}
   s = \frac{a+b+c}{2}
 \end{equation}
-
+%
+using this we can calculate the radius $R$ of the circumcircle of triangle $\overline{ABC}$:
+\begin{equation}
+  R = \frac{abc}{4\sqrt{s(a+b-s)(a+c-s)(b+c-s)}}
+\end{equation}
+We have $\lambda_1, \lambda_2, \lambda_3$ as the barycenteric coordinates of the circumcenter:
+\begin{align}
+  \lambda_1 &= a^2\cdot(b^2+c^2-a^2)\\
+  \lambda_2 &= b^2\cdot(a^2+c^2-b^2)\\
+  \lambda_3 &= c^2\cdot(a^2+b^2-c^2)
+\end{align}
+Multiplying a matrix consisting of the column vectors of $A,B,C$ with a column vector of $\lambda_1, \lambda_2, \lambda_3$ and dividing the resulting vector by the sum of the barycentric coordinates (for noramlization) leads to the circumcenter of the triangle $\overline{ABC}$ 
+%
+\begin{equation}
+  \begin{pmatrix}
+    A_x & B_x & C_x \\
+    A_y & B_y & C_y
+  \end{pmatrix} \cdot \begin{pmatrix}
+    \lambda_1\\
+    \lambda_2\\
+    \lambda_3
+  \end{pmatrix} = \boldsymbol{P'}
+\end{equation}
+%
+\begin{equation}
+  \frac{\boldsymbol{P'}}{\lambda_1+\lambda_2+\lambda_3} = \boldsymbol{P}
+\end{equation}
+%
 \begin{figure}[tb]
 \centering
 \begin{tikzpicture}
@@ -239,16 +266,16 @@ The semiperimeter is defined as
 \coordinate (C) at (2,3);
 \coordinate (Ci) at (1.25,1.33333);
 \def\r{1.827}
-\draw (A) -- (B) -- (C) -- cycle;
+\draw[thin] (A) -- (B) -- (C) -- cycle;
 \node[left] at (A) {$A$};
 \node[right] at (B) {$B$};
 \node[above] at (C) {$C$};
-\draw[fill=black] (A) circle (2pt);
-\draw[fill=black] (B) circle (2pt);
-\draw[fill=black] (C) circle (2pt);
+\draw[fill=black] (A) circle (1pt);
+\draw[fill=black] (B) circle (1pt);
+\draw[fill=black] (C) circle (1pt);
 \draw[fill=red] (Ci) circle (2pt) node [below] (Ci) {$C$};
 
-\draw (1.25,1.33333) -- +(150:1.827);
+\draw[->] (1.25,1.33333) -- +(150:1.827);
 \draw[red] (1.25,1.33333) circle (1.827);
 \end{tikzpicture}
 \caption{The circumradius and the circumcenter of a circle defined by the points}
