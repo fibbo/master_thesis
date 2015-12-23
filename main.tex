@@ -55,6 +55,12 @@ Abstract stuff
 \chapter{Introduction}
 \section{LHC - Large Hadron Collider} % (fold)
 \label{sec:lhc_large_hadron_collider}
+\begin{figure}[b]
+  \centering
+  \includegraphics[width=0.6\textwidth]{pics/lhc}
+  \caption{The LHC ring with its 4 experiments: ATLAS, CMS, Alice and LHCb}
+  \label{fig:lhc}
+\end{figure}
 
 The Large Hadron Collider (LHC) is a proton-proton collider. It is the largest and highest-energy particle accelerator in the world. It was built by the European Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle physics, and in particular for the search of the Higgs boson (which has been confirmed this year) and signs for new physics beyong the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and 100\,m below the surface of the French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. The accelerator has been running with a center of mass energy of 13 TeV since <COMMENT: ADD DATE>.
 
@@ -68,19 +74,42 @@ The core physics programm for the period 2014-2015 includes:
 
 The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHCb} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
 
-This thesis presents a possible algorithm for reconstruction of cherenkov circles in the RICH detectors.
 
-\chapter{Motivation}
-
-An important part in particle experiments is the identification of particles.
 % section lhc_large_hadron_collider (end)
 
+\chapter{LHCb}
+
+An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
+
+Hadron identification is very important for decays where the final states of interest are purey hadronic. The LHCb RICH system provides. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=\textwidth]{pics/lhcb_detector}
+  \caption{LHCb Detector: RICH1 before the magnet and RICH2 after the magnet with silicon strip detector in between and muon and calorimeter at the end.}
+  \label{fig:lhcb}
+\end{figure}
 \chapter{Theory}
 
 \section{RICH Detector} % (fold)
 \label{sec:rich_detector}
 
 Particle identification is a fundamental requirement at the LHCb experiment. Meaningful CP-violation measurements are only possible if hadron identification is available hence the ability to distinguish between kaons and pions is  essential.
+The LHCb experiment is unique in the sense that its hadronic particle identification is handled only by the RICH sub-detectors. This means -- as mentioned before -- that the RICH has to cover a wide range of momentum (1-100 $\text{GeV}/c$).
+
+The RICH-1 in front of the magnet covers a lower momentum range from 1-60 $\text{GeV}/c$. It is composed of 5\,cm thick aerogel tiles arranged around the beam pipe. The aerogel with $n=1.03$ is suited for the lowest momentum tracks. Directly behind the aerogel is circa 1\,m of $\text{C}_4\text{F}_{10}$ which covers the intermediate region of momentum.
+For the highest momentum tracks, gaseous $\text{C}\text{F}_4$ is used in the RICH-2.
+
+There is a strong corelation between the polar angle and momentum of the tracks. Tracks with a wider angle often have lower momentum. That is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered before they swept out of the acceptenace by the magnet.
+
+Both sub-detectors are located in low magnetic field regions to keep the tracks straight while they pass through the radiators.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pics/rich1_schematic}
+  \caption{Caption here}
+  \label{fig:rich1}
+\end{figure}
 % section rich_detector (end)
 
 \section{Cherenkov-Radiation} % (fold)
