@@ -17,6 +17,7 @@
 \usepackage{caption}
 \usepackage{float}
 \usepackage{url}
+\usepackage{listings}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -36,6 +37,31 @@
 \definecolor{darkgrey}{rgb}{0.2,0.2,0.2}
 \definecolor{ockerrot}{rgb}{0.859,0.375,0.152}
 
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self, for},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={MyClass,__init__, np},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}
+
 
 \captionsetup{margin=0pt,font=small,labelfont=sc,labelformat=simple,format=plain,indention=3mm,
  labelsep=endash,textfont=sf,font=sf,singlelinecheck=on,figurename=Fig.,tablename=Tab.}
@@ -49,7 +75,13 @@
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-Abstract stuff
+This thesis studies an algorithms for the detection of circles which are produced by particles travelling through the RICH detectors generating Cherenkov radiation.
+At the beginning there is an introduction to the linear hough transform and then to the hough transform to detect circles. The first case considered
+is when there is only one unknown (radius) and the center is known. The second case is with two unknowns where the radius is known but the center unknown ($(x,y)$
+coordinates of the center are the two unknown parameters).
+Lastly there is the case where all the parameters are unkown. For this case there is on the one hand the traditional approach studied with the conventional accumulator
+space and on the other hand a new approach is developped and studied. This approach works on the basis that each circle is defined by 3 points. Once there are three
+points the radius and the center can be caculated.
 	
 
 \chapter{Introduction}
@@ -109,7 +141,7 @@ Both sub-detectors are located in low magnetic field regions to keep the tracks 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.5\textwidth]{pics/rich1_schematic}
-  \caption{RICH-1 detector}
+  \caption{RICH-1 detector \cite{LHCb:2000}.}
   \label{fig:rich1}
 \end{figure}
 % section rich_detector (end)
@@ -233,18 +265,65 @@ This approach is slightly different from the usual Hough Transforms. In this app
 \section{Conventional Hough-Transforms} % (fold)
 \label{sec:conventional_hough_transforms}
 
-In the following subsections we discuss the conventional Hough-Transforms for the case of a one, two and three dimensional parameter space.
+In the following subsections we discuss the conventional Hough-Transforms for the case of a one, two and three dimensional parameter space. These
+methods were mainly considered to get an idea what was possible with the conventional hough transform. For closer study the method of choice was
+the combinatorial approach briefly mentioned in subsection \ref{sub:combinatorial_approach} and discussed in depth in section \ref{sec:combinatorial_approach}
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known Center - Find Radius} % (fold)
 \label{sub:1d_known_center_find_radius}
 
-For this case we assume that we know the center of each circle and just need to find the radius. Our parameter space has thus only dimension 1. Since we know the center points we of course also know the number of circles that we need to find
+In this case the center(s) of the circle(s) is/are known so only the radius is missing. For the radius there is an array with a minimum value
+and increasing by a defined stepsize to the maximum possible radius value. For the example in this thesis the minimum is $0$, the maximum radius
+is $1$ and stepsize equal to $0.001$. Introducing following scoring function $\eta(r)$ allows to find the right radius.
+
+\begin{equation}
+  \eta(r) = (c_x - x)^2 + (c_y - y) - r ^ 2
+\end{equation}
+
+and using this in a gauss distribution
+
+\begin{equation}
+  w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right)
+\end{equation}
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pics/gauss}
+  \caption{Using the probability density function of the normal distribution to calculate the score of a point in order to have a well defined maximum if a point
+  lies directly on the circle and $\eta(r) = 0$. }
+  \label{fig:gauss}
+\end{figure}
+This is of course just the circle equation with $c_x, c_y$ being the center of the circle, $x, y$ are the data points and $r$ the radius.
+So if a lot of the data points have the same distance $r$ from the circle center there will be a high score for this particular radius. The index
+for the highest score can then be used to find the corresponding radius.
+
+\begin{figure}
+  \begin{lstlisting}
+  r = linspace(0,1,1001)
+  for c in centers:
+    scores = zeros(1001)
+    for x,y in allPoints:
+      s = 2*BIN_WIDTH
+      eta = (c_x-x)**2 + (c_y-y)**2 - r**2
+      scores += 1. / ( sqrt( 2 * Pi ) * s ) 
+                 * exp( -( eta ** 2 ) 
+                  / ( 2 * s ** 2 ) )
+  
+    index = max(scores)
+    circle = {}
+    circle['center'] = c
+    circle['radius'] = r[index]
+\end{lstlisting}
+\caption{Pseudo code for the 1D Hough Transform. r is an array of length 1001 so $\eta$ will also be an array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added to the scores array and at the end the index with the highest score is the index we need to get the radius.}
+\end{figure}
+
 
 
 % subsection 1d_known_center_find_radius (end)
 \subsection{2D: Known Radius - Find Center} % (fold)
 \label{sub:2d_known_radius_find_center}
+
+
 
 % section 2d_known_radius_find_center (end)
 
@@ -254,9 +333,9 @@ For this case we assume that we know the center of each circle and just need to 
 % subsection 3d_nothing_is_known_find_everything (end)
 
 \section{Combinatorial approach}
-
-The combinatorial approach relies on the fact that a circle is uniquely defined by 3 points. With 2 arbotrary points we couldn't tell which side the circle is
-going to go. A third point gives us all the information we need. The general idea then is the following:
+\label{sec:combinatorial_approach}
+% The combinatorial approach relies on the fact that a circle is uniquely defined by 3 points. With 2 arbotrary points we couldn't tell which side the circle is
+% going to go. A third point gives us all the information we need. The general idea then is the following:
 
 \begin{enumerate}
 \item Build all possible triples of points given the data points
@@ -267,7 +346,7 @@ going to go. A third point gives us all the information we need. The general ide
       the set of the points of the triples lie on a circle with a radius and center given by the histogram peaks.
 \end{enumerate}
 
-\subsection{Calculating the Circle given 3 points}
+\section{Calculating the Circle given 3 points}
 
 Let $(A,B,C)$ be a triple of points in a 2D plane and $a,b,c$ the length of the sides opposite to the respective corner.
 %
