@@ -112,7 +112,7 @@ The fact that at the LHC b-hadrons are predominantly produced in the forward reg
 
 % section lhc_large_hadron_collider (end)
 
-\chapter{LHCb}
+\section{LHCb}
 
 An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
 
@@ -125,6 +125,41 @@ Hadron identification is very important for decays where the final states of int
   \label{fig:lhcb}
 \end{figure}
 \chapter{Theory}
+
+\section{Cherenkov-Radiation} % (fold)
+\label{sec:cherenkov_radiation}
+
+The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, \( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a medium, however, can be significantly less can \( c \).
+
+Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greather than the speed of light through said medium. Moreover, the velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) and not the group velocity \( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \).
+
+\[ v_{\text{P}} = \frac{\lambda}{T} \quad \text{or} \quad \frac{\omega}{k}\]
+
+As a charged particle travels through the medium, it disrupts the local electromagnetic field. If the particle travels slowly then the disturbance elastically relaxes to the mechinal equilibrium as the particle passes. However, if the particle travels fast enough, the limited response speed of the medium means that a disturbance is left in the wake of the particle, and the energy in this disturbance radiates as coherent shockwave.
+
+\begin{figure}[htbp]
+  \centering
+    \begin{tikzpicture}
+      \draw (-1,0) -- (4,0);
+      \draw (0,0) -- (0.5,1) -- (3,0);
+      \draw (0,0) -- (0.5,-1) -- (3,0);
+      \draw[->, red, thick] (-1,0) -- (-0.5,0);
+      \foreach \x in {0,1,...,9} {
+        \draw[->,blue, thick] (0.55 + \x*0.25, 1.1 - \x*0.103)  --+ (65:0.3);
+        \draw[->,blue, thick] (0.55 + \x*0.25, -1.1 + \x*0.103) --+ (-65:0.3);
+      }
+    \end{tikzpicture}
+  \caption{Cherenkov radiation}
+  \label{fig:label}
+\end{figure}
+
+\begin{align}
+    x_p &= v_{p}\cdot t = \beta c t \nonumber \\
+    x_{\text{em}} &= v_{\text{em}}\cdot t=\frac{c}{n}t \nonumber \\
+    \cos\theta &= \frac{x_{\text{p}}}{x_{\text{em}}} = \frac{\frac{c}{n}t}{\beta c t} = \frac{1}{n\beta} \nonumber
+\end{align}
+
+which is independent from the angle \( \theta \).
 
 \section{RICH Detector} % (fold)
 \label{sec:rich_detector}
@@ -147,40 +182,7 @@ Both sub-detectors are located in low magnetic field regions to keep the tracks 
 \end{figure}
 % section rich_detector (end)
 
-\section{Cherenkov-Radiation} % (fold)
-\label{sec:cherenkov_radiation}
 
-The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, \( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a medium, however, can be significantly less can \( c \).
-
-Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greather than the speed of light through said medium. Moreover, the velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) and not the group velocity \( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \).
-
-\[ v_{\text{P}} = \frac{\lambda}{T} \quad \text{or} \quad \frac{\omega}{k}\]
-
-As a charged particle travels through the medium, it disrupts the local electromagnetic field. If the particle travels slowly then the disturbance elastically relaxes to the mechinal equilibrium as the particle passes. However, if the particle travels fast enough, the limited response speed of the medium means that a disturbance is left in the wake of the particle, and the energy in this disturbance radiates as coherent shockwave.
-
-\begin{figure}[htbp]
-	\centering
-		\begin{tikzpicture}
-			\draw (-1,0) -- (4,0);
-			\draw (0,0) -- (0.5,1) -- (3,0);
-			\draw (0,0) -- (0.5,-1) -- (3,0);
-			\draw[->, red, thick] (-1,0) -- (-0.5,0);
-      \foreach \x in {0,1,...,9} {
-        \draw[->,blue, thick] (0.55 + \x*0.25, 1.1 - \x*0.103)  --+ (65:0.3);
-        \draw[->,blue, thick] (0.55 + \x*0.25, -1.1 + \x*0.103) --+ (-65:0.3);
-      }
-		\end{tikzpicture}
-	\caption{Cherenkov radiation}
-	\label{fig:label}
-\end{figure}
-
-\begin{align}
-    x_p &= v_{p}\cdot t = \beta c t \nonumber \\
-    x_{\text{em}} &= v_{\text{em}}\cdot t=\frac{c}{n}t \nonumber \\
-    \cos\theta &= \frac{x_{\text{p}}}{x_{\text{em}}} = \frac{\frac{c}{n}t}{\beta c t} = \frac{1}{n\beta} \nonumber
-\end{align}
-
-which is independent from the angle \( \theta \).
 % section cherenkov_radiation (end)
 
 \section{Hough Transform} % (fold)
@@ -283,12 +285,14 @@ and increasing by a defined stepsize to the maximum possible radius value. For t
 is $1$ and stepsize equal to $0.001$. Introducing following scoring function $\eta(r)$ allows to find the right radius.
 
 \begin{equation}
+\label{eq:score_function}
   \eta(r) = (c_x - x)^2 + (c_y - y) - r ^ 2
 \end{equation}
 
 and using this in a gauss distribution
 
 \begin{equation}
+\label{eq:weight_function}
   w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right)
 \end{equation}
 \begin{figure}[tb]
@@ -298,15 +302,16 @@ and using this in a gauss distribution
   lies directly on the circle and $\eta(r) = 0$. }
   \label{fig:gauss}
 \end{figure}
-This is of course just the circle equation with $c_x, c_y$ being the center of the circle, $x, y$ are the data points and $r$ the radius.
-So if a lot of the data points have the same distance $r$ from the circle center there will be a high score for this particular radius. The index
-for the highest score can then be used to find the corresponding radius.
+Thi is of course just the circle equation with $c_x, c_y$ being the center of the circle, $x, y$ are the data points and $r$ the radius.
+So f a lot of the data points have the same distance $r$ from the circle center there will be a high score for this particular radius. The index
+forthe highest score can then be used to find the corresponding radius.
 
 \begin{figure}
   \begin{lstlisting}
-  r = linspace(0,1,1001)
+  DMENSION = 1001
+  r= linspace(0,1,DIMENSION)
   for c in centers:
-    scores = zeros(1001)
+    scores = zeros(DIMENSION)
     for x,y in allPoints:
       s = 2*BIN_WIDTH
       eta = (c_x-x)**2 + (c_y-y)**2 - r**2
@@ -327,9 +332,90 @@ for the highest score can then be used to find the corresponding radius.
 % subsection 1d_known_center_find_radius (end)
 \subsection{2D: Known Radius - Find Center} % (fold)
 \label{sub:2d_known_radius_find_center}
+Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)$ are unknown. Now instead of a one dimension the accumulator is 2 dimensional. The range of that space is simply the dimension of the plane which for this thesis is generally $[-0.5,0.5]$. Size of the bins is 0.001. So if the plane was 1 m wide the accuracy of the accumulator is up to 1 mm. As in the one dimensional case we use the scoring function \ref{eq:score_function} in combination with the weight function \ref{eq:weight_function}.
 
+\begin{figure}[b]
+\begin{lstlisting}
+  DIMENSION = 1001
+  xbins = linspace(-0.5,0.5,DIMENSION)
+  ybins = linspace(-0.5,0.5,DIMENSION)
+  x, y = broadcast_arrays( xbins[..., newaxis], 
+                           ybins[newaxis,...] )
 
+  for r in Radiuses:
+    weights = zeros( (DIMENSION,DIMENSION) )
+    for xd,yd in allPoints:
+      s = 2*BIN_WIDTH
+      eta = (xd-x)**2 + (yd-y)**2 - r**2      
+      weights += 1. / ( sqrt( 2 * pi ) * s ) 
+                 * exp( -( eta ** 2 ) 
+                 / ( 2 * s ** 2 ) )
+    i, j = argmax(weights)
+    circle['Center'] = (xbins[i], ybins[j])
+    circle['Radius'] = r
+\end{lstlisting}
+  \caption{Pseudo code for the 2D Hough Transform. xbins and ybins are arrays of length 1001. Here we use array broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first row down to all the other rows and for y it broadcasts the first column to all the other columns. Weights variable is a 1001 by 1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found stores in a final variable called circle.}
+\end{figure}
 
+\paragraph{Array broadcasting}
+Consider following one dimensional arrays where $x$ is a 1D histogram binning entries from 1 to 4 and same for $y$. 
+\begin{align*}
+  x &= [1, 2, 3, 4]\\
+  y &= [1, 2, 3, 4]  
+\end{align*}
+Now all combinations between an element of $x$ and $y$ represent a 2D grid $\left((1,1), (1,2), ...\right)$. So to iterate through all those grid points one would have to create 2 for-loops iterating through $x$ and $y$
+
+\begin{lstlisting}
+def funcB():
+  for xx in x:
+    for yy in y:
+      print (1-xx)^2 + (2-yy)^2 - 9
+\end{lstlisting}
+This is not only slow but also doesn't look too nice if there are even more loops.
+Broadcasting now turns this one dimensional array of length $n$ into an $n\text{ by }n$ matrix
+\[
+  x = \begin{bmatrix}
+  1 & 1 & 1 & 1 \\
+  2 & 2 & 2 & 2 \\
+  3 & 3 & 3 & 3\\
+  4 & 4 & 4 & 4
+  \end{bmatrix}
+\]
+and
+\[
+  y = \begin{bmatrix}
+  1 & 2 & 3 & 4 \\
+  1 & 2 & 3 & 4 \\
+  1 & 2 & 3 & 4 \\
+  1 & 2 & 3 & 4 
+\end{bmatrix}
+\]
+
+And with this the loops can be omitted:
+\begin{lstlisting}
+def funcA():
+  print (1-x)^2 + (2-y)^2 - 9
+\end{lstlisting}
+In this case this prints a $4$ by $4$ array with the function evualted for each combination of entries of $x$ and $y$
+
+\[
+  \begin{bmatrix}
+    -8& -9& -8& -5\\
+    -7& -8& -7& -4\\
+    -4& -5& -4& -1\\
+     1&  0&  1&  4
+       \end{bmatrix}
+\]
+A runtime comparison shows 
+
+\begin{lstlisting}
+In [3]: %timeit funcA()
+10000 loops, best of 3: 76.8 us per loop
+
+In [4]: %timeit funcB()
+100 loops, best of 3: 7.99 ms per loop
+\end{lstlisting}
+So the version with broadcasting is 100 times than the double loop. And in addition it also uses less memory.
 % section 2d_known_radius_find_center (end)
 
 \subsection{3D: Nothing is Known - Find Everything} % (fold)
