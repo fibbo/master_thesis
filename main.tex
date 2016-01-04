@@ -97,9 +97,6 @@ points the radius and the center can be caculated.
 
 The Large Hadron Collider (LHC) is a proton-proton collider. It is the largest and highest-energy particle accelerator in the world. It was built by the European Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle physics, and in particular for the search of the Higgs boson (which has been confirmed this year) and signs for new physics beyong the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and 100\,m below the surface of the French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. The accelerator has been running with a center of mass energy $\sqrt{s} = 13$ TeV since 20 May 2015.
 
-The LHC hosts four large experiments of which the \emph{LHCb} experiment (Large Hadron Collider beauty) is one. The main goal of the \emph{LHCb} experiment is to study \emph{B}-physics and charm physics such as CP violation and rare decays.
-
-
 
 The core physics programm for the period 2014-2015 includes:
 
@@ -107,16 +104,11 @@ The core physics programm for the period 2014-2015 includes:
   \item <COMMENT: PROGRAM>
 \end{itemize}
 
-The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHCb} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
 
 
 % section lhc_large_hadron_collider (end)
 
 \section{LHCb}
-
-An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
-
-Hadron identification is very important for decays where the final states of interest are purey hadronic. The LHCb RICH system provides. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
 
 \begin{figure}[tb]
   \centering
@@ -124,6 +116,38 @@ Hadron identification is very important for decays where the final states of int
   \caption{LHCb Detector: RICH1 before the magnet and RICH2 after the magnet with silicon strip detector in between and muon and calorimeter at the end.}
   \label{fig:lhcb}
 \end{figure}
+
+The LHCb is one of the four big experiments conducted at the LHC (ATLAS, CMS and ALICE being the other 3). The aim of this experiment is the study of decays of particles containing $b$ and $\bar{b}$ particles (B-Mesons). During collisions these particles don't fly in all direction but rather stay close to the beam pipe. This is reflected in the design of the LHCb detector which is a foward arm spectrometer 20 meters long with subdetectors along the beam pipe as seen in figure \ref{fig:lhcb}.
+
+A quick overview of the detector parts \parencite{lhcbweb}.
+
+\paragraph{VELO} The VErtex LOcator is where the beams collide and $b$/$\bar{b}$ are produced. The VELO measures the distance between the photon collision point and the point where B particles decay. Thus the B particles are not measured directly but inferred from the separation of these two points.
+
+\paragraph{RICH} The RICH detectors are bult for particle identification. One detector on each side of the magnet are used to cover different momentum ranges. RICH detectors work by measuring emissions of Cherenkov radiation which is emmited if a particle travels faster than the speed of light through a certain medium (often compared to breaking the sound barrier).
+
+\paragraph{Magnet} A particle normally moves in a straight line but entering a magnetic field causes the path of charged particles to curve according to the Lorentz force \[
+  \mathbf{F} = q\left( \mathbf{E} + \left( v\times\mathbf{B}\right)\right)
+\]
+
+\paragraph{Tracking System} The tracking system is based on 4 large tracking stations, each covering about $40$\,m$^2$. It is used to determine the position where the particle passed the detector. In the silicon detector a charge gets deposited on a strip which defines the position and in the gas-filled tubes of the outer tracker a passing particle ionizes the gas molecules producing electrons.
+
+\paragraph{Calorimeters} They are designed to stop particles and measing the amount of energy lost while coming to a halt. The design of the stations is sandwich like. One metal plate and one plastic plate. A particle hitting the metal plate causes a secondary shower which induces a UV light in the plastic plate. The energy lost is proportional to the amount of light emmitted. It is the main way of identifying particles with no charge (e.g. photons, neutrons).
+
+\paragraph{Muon system}
+Muons are present in the final stage of B decays and thus important for the LHCb experiment. There are 5 rectangular stations increasing in size at the end of the detector. The total area covered by these stations is about $435$\,m$^2$. Each station is filled with a combination of 3 gases. Passing muons react with this mixture and wire electrodes detect the result.
+% The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHCb} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
+
+
+\subsection{Particle Identification} % (fold)
+\label{sub:particle_identification}
+An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
+
+Hadron identification is very important for decays where the final states of interest are purey hadronic. The LHCb RICH system provides. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
+
+
+
+% subsection particle_identification (end)
+
 \chapter{Theory}
 
 \section{Cherenkov-Radiation} % (fold)
@@ -158,7 +182,6 @@ As a charged particle travels through the medium, it disrupts the local electrom
     x_{\text{em}} &= v_{\text{em}}\cdot t=\frac{c}{n}t \nonumber \\
     \cos\theta &= \frac{x_{\text{p}}}{x_{\text{em}}} = \frac{\frac{c}{n}t}{\beta c t} = \frac{1}{n\beta} \nonumber
 \end{align}
-
 which is independent from the angle \( \theta \).
 
 \section{RICH Detector} % (fold)
@@ -211,14 +234,21 @@ where $r$ is the distance from the origin to the closest point in the line and $
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.3\textwidth]{pics/R_theta_line.png}
+  \begin{tikzpicture}[scale=3]
+    \draw[<->] (0,1.5) -- (0,0) -- (1.5,0);
+    \draw[red,semithick] (0,1) -- (1,0);
+    \draw[blue, -> ,semithick] (0,0) -- (0.5, 0.5);
+    \draw[semithick,blue] (0.2,0) arc (0:45:0.2cm);
+    \node[below] at (0.1,0.121) {\footnotesize$\rho$};
+    \node[above] at (0.2,0.2) {$r$};
+  \end{tikzpicture}
   \caption{$\rho\text{-}\theta$ parametrisation}
   \label{fig:rhotheta}
 \end{figure}
 % subsection linear_hough_transform (end)
 
 This means given a single point in the plane, the set of all lines going through this point form a sinusoidal curve in $\rho\text{-}\theta$ space. Another point 
-that lies on the same straight line in the plane will produce a sinusoidal curve that intersects with the other at ($\rho\text{-}\theta$).
+that lies on the same straight line in the plane will produce a sinusoidal curve that intersects with the other at ($\rho\text{-}\theta$) and so do all the points lying on the same straight line. 
 
 \subsubsection{Example of a Linear HT} % (fold)
 \label{ssub:example_of_a_linear_ht}
@@ -229,6 +259,8 @@ that lies on the same straight line in the plane will produce a sinusoidal curve
   \foreach \x in {0,0.5,1} {
     \draw[fill] (2-\x, 2-\x) circle (1pt);
   }
+
+  \draw[red] (-0.1,-0.1) -- (2.2,2.2);
 \end{tikzpicture}
 \begin{table}
 \centering
@@ -256,14 +288,9 @@ For this thesis we are interested in circle detection so we need to adapt our li
 
 Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible parameters for the parameters space are now $c_x, c_y$ and $r$. This means if we know the center of the circle the parameter space is one-dimensional and if we know the radius of the circle our parameter space is two-dimensional and of course if we know nothing the parameter space is three-dimensional.
 
+
+
 % subsection circle_hough_transform (end)
-
-\subsection{Combinatorial Approach} % (fold)
-\label{sub:combinatorial_approach}
-
-This approach is slightly different from the usual Hough Transforms. In this approach we use the fact that a circle is uniquely defined by 3 points.
-
-% subsection combinatorial_approach (end)
 % section hough_transform (end)
 
 
@@ -274,7 +301,7 @@ This approach is slightly different from the usual Hough Transforms. In this app
 
 In the following subsections we discuss the conventional Hough-Transforms for the case of a one, two and three dimensional parameter space. These
 methods were mainly considered to get an idea what was possible with the conventional hough transform. For closer study the method of choice was
-the combinatorial approach briefly mentioned in subsection \ref{sub:combinatorial_approach} and discussed in depth in section \ref{sec:combinatorial_approach}
+the combinatorial approach discussed in depth in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known Center - Find Radius} % (fold)
@@ -357,6 +384,13 @@ Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)
   \caption{Pseudo code for the 2D Hough Transform. xbins and ybins are arrays of length 1001. Here we use array broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first row down to all the other rows and for y it broadcasts the first column to all the other columns. Weights variable is a 1001 by 1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found stores in a final variable called circle.}
 \end{figure}
 
+\subsubsection{Runtime} % (fold)
+\label{ssub:runtime}
+The runtime of this algorithm is $\mathcal{O}(n^2)$ where $n$ is the dimension of the histogram. The calculation of the weight has to be done for each data point of the 2D histogram. So in a $1000\times 1000$ histogram with 400 data points we calculate 400'000'000 times the weight of a grid point. Reducing the dimensions of the histogram weakens the accuracy of the whole algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each space dimension is $1$\,mm. The RICH Technical Design Report states the resolution of the HPD is $2.5$\,mm $\times$ $2.5$\,mm.
+
+The need (not entirely true) to calculate the weight for each grid point and data point means that there is a loop over data points and two loops for the $x$ and $y$ coordinate of the grid. To improve upon that there is the possibility of array broadcasting.
+% subsubsection runtime (end)
+
 \paragraph{Array broadcasting}
 Consider following one dimensional arrays where $x$ is a 1D histogram binning entries from 1 to 4 and same for $y$. 
 \begin{align*}
@@ -416,10 +450,18 @@ In [4]: %timeit funcB()
 100 loops, best of 3: 7.99 ms per loop
 \end{lstlisting}
 So the version with broadcasting is 100 times than the double loop. And in addition it also uses less memory.
+
+\subsubsection{Optimizations} % (fold)
+\label{ssub:optimizations}
+It was mentioned before that for each data point the weight for the whole grid has to be calculated, that is not true. In the 2D case each grid point is a potential center for a circle so if a grid point is further away
+
+% subsubsection optimizations (end)
+
 % section 2d_known_radius_find_center (end)
 
 \subsection{3D: Nothing is Known - Find Everything} % (fold)
 \label{sub:3d_nothing_is_known_find_everything}
+
 
 % subsection 3d_nothing_is_known_find_everything (end)
 
@@ -427,6 +469,8 @@ So the version with broadcasting is 100 times than the double loop. And in addit
 \label{sec:combinatorial_approach}
 % The combinatorial approach relies on the fact that a circle is uniquely defined by 3 points. With 2 arbotrary points we couldn't tell which side the circle is
 % going to go. A third point gives us all the information we need. The general idea then is the following:
+A circle is uniquely defined by 3 points and radius and center can be calculated. If there are 15 points lying on the same circle there are 455 possible combinations of triplets. Calculating the center and radius for these 455 triplets should result in the same center and same radius for all the triplets (floating point inaccuracy not considered). Having one background hit in addition to the 15 circle hits increases the triplet number to 560. The triplets with points solely consisting of points on the circle still have the same center and radius but the new combinations that now include a background hit will vary and it is unlikely that any two triplets including the background point will have the same center and radius. 
+Here is an overview of the algorithm used for this thesis.
 
 \begin{enumerate}
 \item Build all possible triples of points given the data points
@@ -437,7 +481,13 @@ So the version with broadcasting is 100 times than the double loop. And in addit
       the set of the points of the triples lie on a circle with a radius and center given by the histogram peaks.
 \end{enumerate}
 
-\section{Calculating the Circle given 3 points}
+\subsection{Generating the triples} % (fold)
+\label{sub:generating_the_triples}
+For generating the triples the built-in function \texttt{itertools.combinations()} of python is used. It takes a list as input
+
+% subsection generating_the_triples (end)
+
+\subsection{Calculating the Circle given 3 points}
 
 Let $(A,B,C)$ be a triple of points in a 2D plane and $a,b,c$ the length of the sides opposite to the respective corner.
 %
@@ -498,6 +548,8 @@ Multiplying a matrix consisting of the column vectors of $A,B,C$ with a column v
 \label{fig:circum_fig}
 \end{figure}
 
+
+
 \subsection{Drawback}
 	
 
@@ -523,6 +575,13 @@ and for 300:
   \label{fig:figure1}
 \end{figure}
 
+\subsubsection{Improvement of speed} % (fold)
+\label{ssub:improvement_of_speed}
+
+As seen before this approach scales with $\binom{N}{3}$. This means that with 500 data points we have to create around 20 million triplets which are used for calculating radiuses and centers of circles and with more points it gets worse.
+To qualify as a circle the algorithm needs a threshold to decide if a candidate is a circle or not. Imagine a 2D histogram with all the possible centers for a certain radius.
+
+% subsubsection improvement_of_speed (end)
 
 \subsection{Average Radius of Random Circles In a Unit Square} % (fold)
 \label{ssub:average_radius_of_random_circles_in_a_unit_square}
