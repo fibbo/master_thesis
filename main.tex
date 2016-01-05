@@ -16,6 +16,7 @@
 
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{subcaption}
 \usepackage{float}
 \usepackage{url}
 \usepackage{listings}
@@ -128,6 +129,7 @@ A quick overview of the detector parts \parencite{lhcbweb}.
 \paragraph{Magnet} A particle normally moves in a straight line but entering a magnetic field causes the path of charged particles to curve according to the Lorentz force \[
   \mathbf{F} = q\left( \mathbf{E} + \left( v\times\mathbf{B}\right)\right)
 \]
+thus allowing to determine the charge of the particle. Also the track curvature can be used to infer the momentum of the particle.
 
 \paragraph{Tracking System} The tracking system is based on 4 large tracking stations, each covering about $40$\,m$^2$. It is used to determine the position where the particle passed the detector. In the silicon detector a charge gets deposited on a strip which defines the position and in the gas-filled tubes of the outer tracker a passing particle ionizes the gas molecules producing electrons.
 
@@ -354,7 +356,11 @@ forthe highest score can then be used to find the corresponding radius.
 \caption{Pseudo code for the 1D Hough Transform. r is an array of length 1001 so $\eta$ will also be an array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added to the scores array and at the end the index with the highest score is the index we need to get the radius.}
 \end{figure}
 
+\subsubsection{Runtime} % (fold)
+The runtime of this algorithm is of $\mathcal{O}(n)$ where $n$ is the dimension of the radius array.
+\label{ssub:runtime_1d}
 
+% subsubsection runtime (end)
 
 % subsection 1d_known_center_find_radius (end)
 \subsection{2D: Known Radius - Find Center} % (fold)
@@ -378,20 +384,22 @@ Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)
                  * exp( -( eta ** 2 ) 
                  / ( 2 * s ** 2 ) )
     i, j = argmax(weights)
+    removeUsedPoints()
     circle['Center'] = (xbins[i], ybins[j])
     circle['Radius'] = r
 \end{lstlisting}
   \caption{Pseudo code for the 2D Hough Transform. xbins and ybins are arrays of length 1001. Here we use array broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first row down to all the other rows and for y it broadcasts the first column to all the other columns. Weights variable is a 1001 by 1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found stores in a final variable called circle.}
 \end{figure}
 
+
 \subsubsection{Runtime} % (fold)
-\label{ssub:runtime}
+\label{ssub:runtime_2d}
 The runtime of this algorithm is $\mathcal{O}(n^2)$ where $n$ is the dimension of the histogram. The calculation of the weight has to be done for each data point of the 2D histogram. So in a $1000\times 1000$ histogram with 400 data points we calculate 400'000'000 times the weight of a grid point. Reducing the dimensions of the histogram weakens the accuracy of the whole algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each space dimension is $1$\,mm. The RICH Technical Design Report states the resolution of the HPD is $2.5$\,mm $\times$ $2.5$\,mm.
 
 The need (not entirely true) to calculate the weight for each grid point and data point means that there is a loop over data points and two loops for the $x$ and $y$ coordinate of the grid. To improve upon that there is the possibility of array broadcasting.
 % subsubsection runtime (end)
 
-\paragraph{Array broadcasting}
+\subsubsection{Array broadcasting}
 Consider following one dimensional arrays where $x$ is a 1D histogram binning entries from 1 to 4 and same for $y$. 
 \begin{align*}
   x &= [1, 2, 3, 4]\\
@@ -399,12 +407,17 @@ Consider following one dimensional arrays where $x$ is a 1D histogram binning en
 \end{align*}
 Now all combinations between an element of $x$ and $y$ represent a 2D grid $\left((1,1), (1,2), ...\right)$. So to iterate through all those grid points one would have to create 2 for-loops iterating through $x$ and $y$
 
+\noindent\begin{minipage}{\linewidth}
 \begin{lstlisting}
 def funcB():
-  for xx in x:
-    for yy in y:
-      print (1-xx)^2 + (2-yy)^2 - 9
-\end{lstlisting}
+  a = np.random.randn(100)
+  b = np.random.randn(100) 
+  for x in a:
+    for y in b:
+      print (1-x)^2 + (2-y)^2 - 9
+\end{lstlisting}  
+\end{minipage}
+%
 This is not only slow but also doesn't look too nice if there are even more loops.
 Broadcasting now turns this one dimensional array of length $n$ into an $n\text{ by }n$ matrix
 \[
@@ -424,14 +437,18 @@ and
   1 & 2 & 3 & 4 
 \end{bmatrix}
 \]
-
+\noindent\begin{minipage}{\linewidth}
 And with this the loops can be omitted:
 \begin{lstlisting}
 def funcA():
+  a = np.random.randn(100)
+  b = np.random.randn(100) 
+  x,y = np.broadcast_arrays(a[...,np.newaxis],
+                            b[np.newaxis,...])
   print (1-x)^2 + (2-y)^2 - 9
-\end{lstlisting}
+\end{lstlisting}  
+\end{minipage}
 In this case this prints a $4$ by $4$ array with the function evualted for each combination of entries of $x$ and $y$
-
 \[
   \begin{bmatrix}
     -8& -9& -8& -5\\
@@ -440,8 +457,9 @@ In this case this prints a $4$ by $4$ array with the function evualted for each 
      1&  0&  1&  4
        \end{bmatrix}
 \]
-A runtime comparison shows 
-
+%
+\begin{minipage}{\linewidth}
+A runtime comparison shows   
 \begin{lstlisting}
 In [3]: %timeit funcA()
 10000 loops, best of 3: 76.8 us per loop
@@ -449,16 +467,37 @@ In [3]: %timeit funcA()
 In [4]: %timeit funcB()
 100 loops, best of 3: 7.99 ms per loop
 \end{lstlisting}
-So the version with broadcasting is 100 times than the double loop. And in addition it also uses less memory.
+So the version with broadcasting is 100 times than the double loop. And the memory consumption is moderate since they broadcasted entries aren't new memory locations but just refer to the initial array.
+\end{minipage}
+
 
 \subsubsection{Optimizations} % (fold)
 \label{ssub:optimizations}
-It was mentioned before that for each data point the weight for the whole grid has to be calculated, that is not true. In the 2D case each grid point is a potential center for a circle so if a grid point is further away
+It was mentioned before that for each data point the weight for the whole grid has to be calculated, that is not true. In the 2D case each grid point is a potential center for a circle so if a grid point is further away than a maximum radius that is a constraint given by physics this calculation could be skipped. This could probably be done even smarter with the use of some mesh so only points in the surrounding face of the mesh are considered.
 
 % subsubsection optimizations (end)
 
-% section 2d_known_radius_find_center (end)
+\newpage
+\subsection{Simple Example of 2 Circles Without Noise} % (fold)
+\label{ssub:simple_example_of_2_circles_without_noise}
+\begin{figure}[hp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pics/2d_weights_01}
+  \caption{ 2D weight matrix in the first iteration of the Hough Transform algorithm. The circles have similar radiuses (0.170 and 0.158) which explains one clear maximum in the bottom left and a smeared one a bit to the top right.}
+  \label{fig:2d_weights_01}
+\end{figure}
 
+\begin{figure}[hp]
+  \centering
+  \includegraphics[width=0.8\linewidth]{pics/2d_weights_02}
+  \caption{2D weight matrix in the second iteration. Points that satisfied the condition being less than a certain $\epsilon$ away from the radius found in the first iteration are removed leaving (hopefully) only points available that belong to the second circles.}
+  \label{fig:2d_weights_02}
+\end{figure}
+% subsubsection simple_example_of_2_circles_without_noise (end)
+
+
+% section 2d_known_radius_find_center (end)
+\clearpage
 \subsection{3D: Nothing is Known - Find Everything} % (fold)
 \label{sub:3d_nothing_is_known_find_everything}
 
@@ -583,8 +622,9 @@ To qualify as a circle the algorithm needs a threshold to decide if a candidate 
 
 % subsubsection improvement_of_speed (end)
 
-\subsection{Average Radius of Random Circles In a Unit Square} % (fold)
+\subsection{Possible Optimisation: Average Radius of Random Circles In a Unit Square} % (fold)
 \label{ssub:average_radius_of_random_circles_in_a_unit_square}
+An interesting property of calculating the radius of triplets generated from points that are distributed uniformely is that they always obey a certain shape.
 
 First we calculate the expected area of a triangle.
 
@@ -597,6 +637,14 @@ The side $AC$ of $T$ intersects the horizontal level $y=b_2$ at the point $S=(s,
 \begin{equation}
   s = s(a_1,c_1,t) = (1-t)a_1 + tc_1
 \end{equation}
+The area $X$ of $T$ is then given by
+\[
+  X = \frac{1}{2}\lvert b_1 - s\rvert(c_2 - a_2)
+\]
+We now start integrating with respect to our six variables. The innermost integral is with respect to $b_1$ and gives
+\[
+  X_1 := \int_0^1X\text{d}b_1=\frac{1}{2}(c_2-a_2)\left( \int_0^s(s-b_1)\text{d}b_1 + \int_s^1(b_1-s)\text{d}b)1\right)
+\]
 % subsubsection average_radius_of_random_circles_in_a_unit_square (end)
 \chapter{Results}
 
