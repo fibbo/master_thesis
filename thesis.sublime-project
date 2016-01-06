@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "~/workspace/master_thesis",
+      "file_exclude_patterns": ["*.*~","*.png","*.aux","*.fdb*","*.log","*.nav","*.out","*.pdf","*.snm","*.synctex.gz","*.toc","*.blg","*.bcf","*.bbl","*.run.xml","*.sublime*", "*.git"]
+		}
+	]
+}

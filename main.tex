@@ -12,6 +12,8 @@
 \addbibresource{bibliography.bib}
 \usepackage{a4,color}
 \usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.10}
 \usepackage{calc}
 
 \usepackage{booktabs}
@@ -72,6 +74,9 @@ showstringspaces=false            %
 \fontfamily{ppl}\selectfont
 
 \newcommand*{\bfrac}[2]{\genfrac{\big (}{\big )}{0pt}{}{#1}{#2}}
+
+\setlength{\parskip}{1.5ex plus 0.5ex minus 0.2ex}
+\setlength{\parindent}{0pt}
 
 \begin{document}
 
@@ -575,15 +580,16 @@ Multiplying a matrix consisting of the column vectors of $A,B,C$ with a column v
 \node[left] at (A) {$A$};
 \node[right] at (B) {$B$};
 \node[above] at (C) {$C$};
+\node[below] at (0.34,2.3) {$R$};
 \draw[fill=black] (A) circle (1pt);
 \draw[fill=black] (B) circle (1pt);
 \draw[fill=black] (C) circle (1pt);
-\draw[fill=red] (Ci) circle (2pt) node [below] (Ci) {$C$};
+\draw[fill=red] (Ci) circle (2pt) node [below] (Ci) {$P$};
 
 \draw[->] (1.25,1.33333) -- +(150:1.827);
 \draw[red] (1.25,1.33333) circle (1.827);
 \end{tikzpicture}
-\caption{The circumradius and the circumcenter of a circle defined by the points}
+\caption{The circumradius ($R$) and the circumcenter ($P$) of a circle defined by three points.}
 \label{fig:circum_fig}
 \end{figure}
 
@@ -592,43 +598,82 @@ Multiplying a matrix consisting of the column vectors of $A,B,C$ with a column v
 \subsection{Drawback}
 	
 
-There is also a drawback with this method:
-
-\begin{itemize}
-\item The combinatorics blow up with a high number of data points \( \binom{N}{3} \)
-\end{itemize}
-
-So for example with 200 data points (circle data and background) the number of triplets is
+There is also a drawback with this method: the combinatorics blow up with a high number of data points \( \binom{N}{3} \). So for example with 200 data points (circle data and background) the number of triplets is
 
 \[ \binom{200}{3} = 1313400 \]
-
 and for 300:
-
 \[ \binom{300}{3} = 4455100 \]
 
+So the runtime of the algorithm is roughly in the order of $\mathcal{O}(N^3)$ which can be easily seen when taking the upper bound of $\binom{N}{k} \leq \frac{N^k}{k!}$ and since $k=3$ then means $\frac{N^3}{3!}$ see figure \ref{fig:binom_growth}. 
+\begin{figure}[h]
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[
+    axis lines = left,
+    xlabel = Number of Data Points,
+    ylabel = {Number of Combinations},
+    legend style={at={(0.3,0.2)},anchor=east},
+    ]
+    \addplot [
+    domain=1:500, 
+    color=red,
+    ]
+    { factorial(x)/(factorial(x-3)*factorial(3))};
+    \addplot [
+    domain=1:500, 
+    color=blue,
+    ]
+    { x^3/factorial(3)};
+    \addlegendentry{$\binom{N}{3}$}
+    \addlegendentry{$\frac{N^3}{3!}$}
+    \end{axis}
 
-\begin{figure}[tb]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pics/binomial_growth}
-  \caption{Binomial Growth with $\binom{N}{3}$}
-  \label{fig:figure1}
+  \end{tikzpicture}
+    \caption{Scaling of the algorithm. Binomial Growth with $\binom{N}{3}$ compared with the approximation $\frac{N^3}{3!}$. So the algorithm runs in the order of $\mathcal{O}(n^3)$}
+  \label{fig:binom_growth}
 \end{figure}
 
 \subsubsection{Improvement of speed} % (fold)
 \label{ssub:improvement_of_speed}
 
-As seen before this approach scales with $\binom{N}{3}$. This means that with 500 data points we have to create around 20 million triplets which are used for calculating radiuses and centers of circles and with more points it gets worse.
-To qualify as a circle the algorithm needs a threshold to decide if a candidate is a circle or not. Imagine a 2D histogram with all the possible centers for a certain radius.
+As seen before this approach scales with $\binom{N}{3}$. This means that with 500 data points we have to create around 20 million triplets which are used for calculating radiuses and centers of circles.
+To qualify as a circle the algorithm needs a threshold to decide if a candidate is a circle or not. If a circle has 8 data points then there are 120 different ways to combine 3 different points with each other to get the same circle. With this a threshold can be defined for finding circles. This of course means that circles with less than 8 points will normally never be found unless another point that actually doesn't belong to the circle lies on the circle and contributes to the radius and center histogram pushing the circle above the threshold.
 
+Now one way to improve the speed of the algorithm is splitting the original data set randomly into two lists. For each of these lists all the possible combinations of triplets is generated again and combined in one total list.
+
+\begin{figure}[b]
+\centering
+  \begin{tikzpicture}
+    \begin{axis} [
+      axis lines = left,
+      xlabel = Number of Data Points,
+      ylabel = {Number of Combinations},
+      legend style={at={(0.3,0.2)},anchor=east},
+    ]
+    \addplot [
+    domain=1:500, 
+    color=red,
+    ]
+    { factorial(x)/(factorial(x-3)*factorial(3))};
+    \addplot [
+    domain=1:500, 
+    color=blue,
+    ]
+    { 2*factorial(x/2)/(factorial(x/2-3)*factorial(3)) };
+        \addlegendentry{$\binom{N}{3}$}
+    \addlegendentry{$\binom{N/2}{3}$}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Number of combinations with $\binom{N}{3}$ compared to the number of combinations generated from $\binom{N/2}{3}$}
+  \label{fig:binom_half_growth}
+\end{figure}
 % subsubsection improvement_of_speed (end)
 
 \subsection{Possible Optimisation: Average Radius of Random Circles In a Unit Square} % (fold)
 \label{ssub:average_radius_of_random_circles_in_a_unit_square}
 An interesting property of calculating the radius of triplets generated from points that are distributed uniformely is that they always obey a certain shape.
 
-First we calculate the expected area of a triangle.
-
-Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
+First we calculate the expected area of a triangle formed by three points randomly chosen from the unit square. Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
 > b_2 > c_2 \) which takes $\frac{1}{6}$ of the total ``Volume''. Fix \( a_2, b_2, c_2 \) for the moment and we can write.
 \[
   b_2 = (1-t)a_2 + tc_2, \qquad 0 \leq t \leq 1.
@@ -642,12 +687,28 @@ The area $X$ of $T$ is then given by
   X = \frac{1}{2}\lvert b_1 - s\rvert(c_2 - a_2)
 \]
 We now start integrating with respect to our six variables. The innermost integral is with respect to $b_1$ and gives
-\[
-  X_1 := \int_0^1X\text{d}b_1=\frac{1}{2}(c_2-a_2)\left( \int_0^s(s-b_1)\text{d}b_1 + \int_s^1(b_1-s)\text{d}b)1\right)
-\]
-% subsubsection average_radius_of_random_circles_in_a_unit_square (end)
-\chapter{Results}
 
+\begin{align}
+  X_1 &:= \int_0^1X\text{d}b_1=\frac{1}{2}(c_2-a_2)\left( \int_0^s(s-b_1)db_1 + \int_s^1(b_1-s)db_1\right)\nonumber\\
+      &\phantom{:}= \frac{1}{4}(c_2-a_2)(1+2s+2s^2)\nonumber
+\end{align}
+Next we integrate over $b_2$:
+\begin{align}
+  X_2 &:= \frac{1}{4}\int_0^1\int_{a_2}^1(c_2-a_2)^2\,dc_2\,da_2\,\times\,\int_0^1\int_0^1\int_0^1(1-2s+2s^2)\,dt\,dc_1\,da_1  \nonumber
+\end{align}
+This gives
+\[
+  X_3 = \frac{1}{4}\cdot \frac{1}{12} \cdot \frac{11}{18} = \frac{11}{6\cdot144}
+\]
+But generalizing our assumption at the beginning $a_2 < b_2 < c_2$ we multiply this result by $6$ and obtain then $\frac{11}{144}$.
+
+% subsubsection average_radius_of_random_circles_in_a_unit_square (end)
+% chapter methods (end)
+\chapter{Results}
+\label{cha:results}
+
+
+% chapter results (end)
 
 \chapter{Conclusions} % (fold)
 \label{cha:conclusions}

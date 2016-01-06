@@ -1,0 +1,87 @@
+% This file was created with JabRef 2.11.1.
+% Encoding: UTF8
+
+
+@Misc{Blatter:2015,
+  Title                    = {The expected area of a triangle formed by three points randomly chosen from the unit square},
+  Author                   = {Christian Blatter},
+  HowPublished             = {http://math.stackexchange.com/questions/1236958/the-expected-area-of-a-triangle-formed-by-three-points-randomly-chosen-from-the},
+  Month                    = {April},
+  Year                     = {2015},
+  Owner                    = {phi},
+  Timestamp                = {2015.12.17},
+  Url                      = {http://math.stackexchange.com/questions/1236958/the-expected-area-of-a-triangle-formed-by-three-points-randomly-chosen-from-the}
+}
+
+@Misc{lhcbweb,
+  Title                    = {The LHCb Detector},
+  Author                   = {LHCb Collaboration},
+  HowPublished             = {Online},
+  Owner                    = {phi},
+  Timestamp                = {2016.01.04},
+  Url                      = {http://lhcb-public.web.cern.ch/lhcb-public/en/Detector/Detector-en.html}
+}
+
+@Article{Duda:1972,
+  Title                    = {Use of the Hough Transformation to Detect Lines and Curves in Pictures},
+  Author                   = {Duda, Richard O. and Hart, Peter E.},
+  Journal                  = {Commun. ACM},
+  Year                     = {1972},
+  Month                    = jan,
+  Number                   = {1},
+  Pages                    = {11--15},
+  Volume                   = {15},
+  Acmid                    = {361242},
+  Address                  = {New York, NY, USA},
+  Doi                      = {10.1145/361237.361242},
+  ISSN                     = {0001-0782},
+  Issue_date               = {Jan. 1972},
+  Keywords                 = {Hough transformation, colinear points, curve detection, line detection, pattern recognition, picture processing, point-line transformation},
+  Numpages                 = {5},
+  Publisher                = {ACM},
+  Url                      = {http://doi.acm.org/10.1145/361237.361242}
+}
+
+@Book{Jackson:1962,
+  Title                    = {Classical electrodynamics},
+  Author                   = {Jackson, John David and Jackson, John D},
+  Publisher                = {Wiley New York etc.},
+  Year                     = {1962},
+  Volume                   = {3},
+  Owner                    = {phi},
+  Timestamp                = {2015.12.14}
+}
+
+@Book{Landau:1984,
+  Title                    = {Electrodynamics of Continuous Media},
+  Author                   = {L. D. Landau, E. M. Lifshitz, L. P. Pitaevskii},
+  Publisher                = {Elsevier Science \& Technology},
+  Year                     = {1984},
+  Ean                      = {9780750626347},
+  ISBN                     = {0750626348},
+  Owner                    = {phi},
+  Timestamp                = {2015.12.14},
+  Url                      = {http://www.ebook.de/de/product/4031456/l_d_landau_e_m_lifshitz_l_p_pitaevskii_electrodynamics_of_continuous_media.html}
+}
+
+@Article{LHCb:2000,
+  Title                    = {Technical Design Report},
+  Author                   = {LHCb, RICH},
+  Journal                  = {CERN/LHCC},
+  Year                     = {2000},
+  Pages                    = {2000},
+  Volume                   = {37},
+  __markedentry            = {[phi:6]},
+  Owner                    = {phi},
+  Timestamp                = {2015.12.27}
+}
+
+@TechReport{Powell:2011,
+  Title                    = {Particle identification at LHCb},
+  Author                   = {Powell, A},
+  Year                     = {2011},
+  __markedentry            = {[phi:]},
+  Owner                    = {phi},
+  Timestamp                = {2015.12.23}
+}
+
