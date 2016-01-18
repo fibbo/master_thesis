@@ -18,10 +18,12 @@
 
 \usepackage{booktabs}
 \usepackage{caption}
-\usepackage{subcaption}
+% \usepackage{subcaption}
 \usepackage{float}
 \usepackage{url}
 \usepackage{listings}
+\usepackage{hyperref}
+\usepackage{subfig}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -82,13 +84,11 @@ showstringspaces=false            %
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-This thesis studies an algorithms for the detection of circles which are produced by particles travelling through the RICH detectors generating Cherenkov radiation.
-At the beginning there is an introduction to the linear hough transform and then to the hough transform to detect circles. The first case considered
-is when there is only one unknown (radius) and the center is known. The second case is with two unknowns where the radius is known but the center unknown ($(x,y)$
-coordinates of the center are the two unknown parameters).
-Lastly there is the case where all the parameters are unkown. For this case there is on the one hand the traditional approach studied with the conventional accumulator
-space and on the other hand a new approach is developped and studied. This approach works on the basis that each circle is defined by 3 points. Once there are three
-points the radius and the center can be caculated.
+This thesis studies an algorithms for the detection of circles which are produced by particles travelling through the RICH detectors generating Cheren-kov radiation.
+These circles can be detected with the help of the Hough transform. There is a short introduction to the linear Hough transform (which detects lines) to give a rough idea about what the Hough transform can do. Then there is a brief look at the circle Hough transform (which detects circles). This part is split in 3 sections, the 1D, 2D and 3D Hough transform. The 1D Hough transform is used when the center is given and the radius needs to be found. The 2D Hough transform looks for circle centers ($(x,y)$ coordinate) for a given radius. The
+3D Hough transform is used when neither center nor radius are known. This is also the case for the data from LHCb where there are data points (signal and noise) and the algorithm has to find all the circles.
+
+Apart from the standard Hough transform with a 3D accumulator space this thesis develops a new approach for a Hough transform. This approach works on the basis that each circle is defined by 3 points. Given 3 points one can calculate the circumcenter (so the circle center we are intersted int) and the radius of the circumcircle.
 
 \tableofcontents
 \listoftables
@@ -104,7 +104,7 @@ points the radius and the center can be caculated.
   \label{fig:lhc}
 \end{figure}
 
-The Large Hadron Collider (LHC) is a proton-proton collider. It is the largest and highest-energy particle accelerator in the world. It was built by the European Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle physics, and in particular for the search of the Higgs boson (which has been confirmed this year) and signs for new physics beyong the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and 100\,m below the surface of the French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. The accelerator has been running with a center of mass energy $\sqrt{s} = 13$ TeV since 20 May 2015.
+The Large Hadron Collider (LHC) is a proton-proton collider. It is the largest and highest-energy particle accelerator in the world. It was built by the European Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle physics, and in particular for the search of the Higgs boson (which has been confirmed this year) and signs for new physics beyond the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and 100\,m below the surface of the French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. The accelerator has been running with a center of mass energy $\sqrt{s} = 13$ TeV since 20 May 2015.
 
 
 The core physics programm for the period 2014-2015 includes:
@@ -132,12 +132,12 @@ A quick overview of the detector parts \parencite{lhcbweb}.
 
 \paragraph{VELO} The VErtex LOcator is where the beams collide and $b$/$\bar{b}$ are produced. The VELO measures the distance between the photon collision point and the point where B particles decay. Thus the B particles are not measured directly but inferred from the separation of these two points.
 
-\paragraph{RICH} The RICH detectors are bult for particle identification. One detector on each side of the magnet are used to cover different momentum ranges. RICH detectors work by measuring emissions of Cherenkov radiation which is emmited if a particle travels faster than the speed of light through a certain medium (often compared to breaking the sound barrier).
+\paragraph{RICH} The RICH detectors are built for particle identification. One detector on each side of the magnet is used to cover different momentum ranges. RICH detectors work by measuring emissions of Cherenkov radiation which is emmited if a particle travels faster than the speed of light through a certain medium (often compared to breaking the sound barrier).
 
 \paragraph{Magnet} A particle normally moves in a straight line but entering a magnetic field causes the path of charged particles to curve according to the Lorentz force \[
   \mathbf{F} = q\left( \mathbf{E} + \left( v\times\mathbf{B}\right)\right)
 \]
-thus allowing to determine the charge of the particle. Also the track curvature can be used to infer the momentum of the particle.
+thus allowing to determine the charge sign of the particle. Also the track curvature can be used to infer the momentum of the particle.
 
 \paragraph{Tracking System} The tracking system is based on 4 large tracking stations, each covering about $40$\,m$^2$. It is used to determine the position where the particle passed the detector. In the silicon detector a charge gets deposited on a strip which defines the position and in the gas-filled tubes of the outer tracker a passing particle ionizes the gas molecules producing electrons.
 
@@ -148,11 +148,11 @@ Muons are present in the final stage of B decays and thus important for the LHCb
 % The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHCb} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
 
 
-\subsection{Particle Identification} % (fold)
+\subsection{Particle identification} % (fold)
 \label{sub:particle_identification}
 An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
 
-Hadron identification is very important for decays where the final states of interest are purey hadronic. The LHCb RICH system provides. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
+Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHCb RICH system provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
 
 
 
@@ -160,12 +160,12 @@ Hadron identification is very important for decays where the final states of int
 
 \chapter{Theory}
 
-\section{Cherenkov-Radiation} % (fold)
+\section{Cherenkov radiation} % (fold)
 \label{sec:cherenkov_radiation}
 
 The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, \( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a medium, however, can be significantly less can \( c \).
 
-Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greather than the speed of light through said medium. Moreover, the velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) and not the group velocity \( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \).
+Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greater than the speed of light through said medium. Moreover, the velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) and not the group velocity (\( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \)).
 
 \[ v_{\text{P}} = \frac{\lambda}{T} \quad \text{or} \quad \frac{\omega}{k}\]
 
@@ -194,18 +194,19 @@ As a charged particle travels through the medium, it disrupts the local electrom
 \end{align}
 which is independent from the angle \( \theta \).
 
-\section{RICH Detector} % (fold)
+\section{RICH detector} % (fold)
 \label{sec:rich_detector}
 
 Particle identification is a fundamental requirement at the LHCb experiment. Meaningful CP-violation measurements are only possible if hadron identification is available hence the ability to distinguish between kaons and pions is  essential.
 The LHCb experiment is unique in the sense that its hadronic particle identification is handled only by the RICH sub-detectors. This means -- as mentioned before -- that the RICH has to cover a wide range of momentum (1-100 $\text{GeV}/c$).
 
+Both sub-detectors are located in low magnetic field regions to keep the tracks straight while they pass through the radiators. They both 
+also have a tilted spherical focusing primary mirror and a secondary flat mirror to limit the length of the detector along the beam pipe.
+
 The RICH-1 in front of the magnet covers a lower momentum range from 1-60 $\text{GeV}/c$. It is composed of 5\,cm thick aerogel tiles arranged around the beam pipe. The aerogel with $n=1.03$ is suited for the lowest momentum tracks. Directly behind the aerogel is circa 1\,m of $\text{C}_4\text{F}_{10}$ which covers the intermediate region of momentum.
 For the highest momentum tracks, gaseous $\text{C}\text{F}_4$ is used in the RICH-2.
 
 There is a strong corelation between the polar angle and momentum of the tracks. Tracks with a wider angle often have lower momentum. That is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered before they swept out of the acceptenace by the magnet.
-
-Both sub-detectors are located in low magnetic field regions to keep the tracks straight while they pass through the radiators.
 
 \begin{figure}[tb]
   \centering
@@ -218,16 +219,16 @@ Both sub-detectors are located in low magnetic field regions to keep the tracks 
 
 % section cherenkov_radiation (end)
 
-\section{Hough Transform} % (fold)
+\section{Hough transform} % (fold)
 \label{sec:hough_transform}
 
-The Hough-Transform is a feature extraction technique used in image analysis, computer vision and digital image processing.
+The Hough transform is a feature extraction technique used in image analysis, computer vision and digital image processing.
 
-the purpose is to find imperfect instances of objects within a certain cass of shapes by a voting procedure. This voting procedure is carried out in a parameter space from which object candidates are obtained as local maxima in a so called accumlator space that is explicitly constructed by the algorithm for computing the Hough-Transform.
+the purpose is to find imperfect instances of objects within a certain cass of shapes by a voting procedure. This voting procedure is carried out in a parameter space from which object candidates are obtained as local maxima in a so called accumlator space that is explicitly constructed by the algorithm for computing the Hough transform.
 
-Initially the Hough-Transform was concerned with finding straight lines but has been extended to identifying positions of arbitrary shapes, such as circles and ellipses.
+Initially the Hough transform was concerned with finding straight lines but has been extended to identifying positions of arbitrary shapes, such as circles and ellipses.
 
-\subsection{Linear Hough Transform} % (fold)
+\subsection{Linear Hough transform} % (fold)
 \label{sub:linear_hough_transform}
 
 A linear function is normally defined as the following:
@@ -235,7 +236,7 @@ A linear function is normally defined as the following:
 \[
   f(x) = m\cdot x + b
 \]
-where $m$ is the slope of the line and $b$ the intercept. For the Hough-Transform however, this representation is not ideal. For a vertical line $m$ would go to infinity which gives us an unbound transform space for $m$. For this reason Duda and Hart suggested the $\rho\text{-}\theta$ parametrization \parencite{Duda:1972}.
+where $m$ is the slope of the line and $b$ the intercept. For the Hough transform however, this representation is not ideal. For a vertical line $m$ would go to infinity which gives us an unbound transform space for $m$. For this reason Duda and Hart suggested the $\rho\text{-}\theta$ parametrization \parencite{Duda:1972}.
 
 \[
   r = x\cos\theta + y\sin\theta
@@ -260,7 +261,7 @@ where $r$ is the distance from the origin to the closest point in the line and $
 This means given a single point in the plane, the set of all lines going through this point form a sinusoidal curve in $\rho\text{-}\theta$ space. Another point 
 that lies on the same straight line in the plane will produce a sinusoidal curve that intersects with the other at ($\rho\text{-}\theta$) and so do all the points lying on the same straight line. 
 
-\subsubsection{Example of a Linear HT} % (fold)
+\subsubsection{Example of a linear Hough transform} % (fold)
 \label{ssub:example_of_a_linear_ht}
   
 \begin{tikzpicture}
@@ -287,10 +288,10 @@ that lies on the same straight line in the plane will produce a sinusoidal curve
 % subsubsection example_of_a_linear_ht (end)
 
 
-\subsection{Circle Hough Transform} % (fold)
+\subsection{Circle Hough transform} % (fold)
 \label{sub:circle_hough_transform}
 
-For this thesis we are interested in circle detection so we need to adapt our linear Hough Transform in order to find circles. In a two dimensional space, a circle can be described by:
+For this thesis we are interested in circle detection so we need to adapt our linear Hough transform in order to find circles. In a two dimensional space, a circle can be described by:
 
 \begin{equation}
 		(x-c_x)^2 + (y-c_y)^2 = r^2
@@ -306,15 +307,15 @@ Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible p
 
 \chapter{Methods}
 
-\section{Conventional Hough-Transforms} % (fold)
+\section{Conventional Hough transforms} % (fold)
 \label{sec:conventional_hough_transforms}
 
-In the following subsections we discuss the conventional Hough-Transforms for the case of a one, two and three dimensional parameter space. These
-methods were mainly considered to get an idea what was possible with the conventional hough transform. For closer study the method of choice was
+In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. These
+methods were mainly considered to get an idea what was possible with the conventional Hough transform. For closer study the method of choice was
 the combinatorial approach discussed in depth in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
-\subsection{1D: Known Center - Find Radius} % (fold)
+\subsection{1D: Known center - find radius} % (fold)
 \label{sub:1d_known_center_find_radius}
 
 In this case the center(s) of the circle(s) is/are known so only the radius is missing. For the radius there is an array with a minimum value
@@ -335,7 +336,7 @@ and using this in a gauss distribution
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.5\textwidth]{pics/gauss}
-  \caption{Using the probability density function of the normal distribution to calculate the score of a point in order to have a well defined maximum if a point
+  \caption[Normal PDF]{Using the probability density function of the normal distribution to calculate the score of a point in order to have a well defined maximum if a point
   lies directly on the circle and $\eta(r) = 0$. }
   \label{fig:gauss}
 \end{figure}
@@ -361,7 +362,7 @@ forthe highest score can then be used to find the corresponding radius.
     circle['center'] = c
     circle['radius'] = r[index]
 \end{lstlisting}
-\caption{Pseudo code for the 1D Hough Transform. r is an array of length 1001 so $\eta$ will also be an array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added to the scores array and at the end the index with the highest score is the index we need to get the radius.}
+\caption[Pseudo Code 1D HT]{Pseudo code for the 1D Hough transform. r is an array of length 1001 so $\eta$ will also be an array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added to the scores array and at the end the index with the highest score is the index we need to get the radius.}
 \end{figure}
 
 \subsubsection{Runtime} % (fold)
@@ -371,7 +372,7 @@ The runtime of this algorithm is of $\mathcal{O}(n)$ where $n$ is the dimension 
 % subsubsection runtime (end)
 
 % subsection 1d_known_center_find_radius (end)
-\subsection{2D: Known Radius - Find Center} % (fold)
+\subsection{2D: Known radius - find center} % (fold)
 \label{sub:2d_known_radius_find_center}
 Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)$ are unknown. Now instead of a one dimension the accumulator is 2 dimensional. The range of that space is simply the dimension of the plane which for this thesis is generally $[-0.5,0.5]$. Size of the bins is 0.001. So if the plane was 1 m wide the accuracy of the accumulator is up to 1 mm. As in the one dimensional case we use the scoring function \ref{eq:score_function} in combination with the weight function \ref{eq:weight_function}.
 
@@ -396,7 +397,7 @@ Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)
     circle['Center'] = (xbins[i], ybins[j])
     circle['Radius'] = r
 \end{lstlisting}
-  \caption{Pseudo code for the 2D Hough Transform. xbins and ybins are arrays of length 1001. Here we use array broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first row down to all the other rows and for y it broadcasts the first column to all the other columns. Weights variable is a 1001 by 1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found stores in a final variable called circle.}
+  \caption[Pseudo code 2D HT]{Pseudo code for the 2D Hough transform. xbins and ybins are arrays of length 1001. Here we use array broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first row down to all the other rows and for y it broadcasts the first column to all the other columns. Weights variable is a 1001 by 1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found stores in a final variable called circle.}
 \end{figure}
 
 
@@ -485,25 +486,25 @@ It was mentioned before that for each data point the weight for the whole grid h
 
 % subsubsection optimizations (end)
 
-\subsection{Simple Example of 2 Circles Without Background} % (fold)
+\subsection{Simple example of 2 circles without background} % (fold)
 \label{ssub:simple_example_of_2_circles_without_background}
 \begin{figure}[hp]
   \centering
   \includegraphics[width=0.8\linewidth]{pics/2d_weights_01}
-  \caption{2D weight matrix in the first iteration of the Hough Transform algorithm. The circles have similar radiuses (0.170 and 0.158) which explains one clear maximum in the bottom left and a smeared one a bit to the top right.}
+  \caption[2D weight matrix, first iteration]{2D weight matrix in the first iteration of the Hough transform algorithm. The circles have similar radiuses (0.170 and 0.158) which explains one clear maximum in the bottom left and a smeared one a bit to the top right.}
   \label{fig:2d_weights_01}
 \end{figure}
 
 \begin{figure}[hp]
   \centering
   \includegraphics[width=0.8\linewidth]{pics/2d_weights_02}
-  \caption{2D weight matrix in the second iteration. Points that satisfied the condition being less than a certain $\epsilon$ away from the radius found in the first iteration are removed leaving (hopefully) only points available that belong to the second circles.}
+  \caption[2D weight matrix, second iteration]{2D weight matrix in the second iteration. Points that satisfied the condition being less than a certain $\epsilon$ away from the radius found in the first iteration are removed leaving (hopefully) only points available that belong to the second circles.}
   \label{fig:2d_weights_02}
 \end{figure}
 % subsubsection simple_example_of_2_circles_without_noise (end)
 % section 2d_known_radius_find_center (end)
-\clearpage
-\subsection{3D: Nothing is Known - Find Everything} % (fold)
+
+\subsection{3D: All parameters unknown} % (fold)
 \label{sub:3d_nothing_is_known_find_everything}
 In this section all that is known are the data points and the algorithm has to retrieve both center and radius of the circles. The accumulator space
 is now in three dimensions. Two for the center coordinate and one for the radius. Similar as to the 2D case array broadcasting is used again
@@ -573,8 +574,8 @@ use this point anymore.
 \label{ssub:runtime}
 Assuming that the radius array has the same length as the two space
 dimensions means that the complexity of this algorithm is of order 
-$\mathcal{O}(N^3)$. As the 1D and 2D Hough Transform the accuracy
-directly depends on the binning. Same as for the 2D Hough Transform
+$\mathcal{O}(N^3)$. As the 1D and 2D Hough transform the accuracy
+directly depends on the binning. Same as for the 2D Hough transform
 too match the resolution of the HPD of the RICH detector a binning of 400 makes sense if the detector dimensions are $1$\,m$\times1$\,m.
 % subsubsection runtime (end)
 
@@ -710,9 +711,10 @@ So the runtime of the algorithm is roughly in the order of $\mathcal{O}(N^3)$ wh
     \end{axis}
 
   \end{tikzpicture}
-    \caption{Scaling of the algorithm. Binomial Growth with $\binom{N}{3}$ compared with the approximation $\frac{N^3}{3!}$. So the algorithm runs in the order of $\mathcal{O}(n^3)$}
+    \caption[Complexity of the combinatorial approach]{Scaling of the algorithm. Binomial Growth with $\binom{N}{3}$ compared with the approximation $\frac{N^3}{3!}$. So the algorithm runs in the order of $\mathcal{O}(n^3)$}
   \label{fig:binom_growth}
 \end{figure}
+
 
 \subsubsection{Optimisation} % (fold)
 \label{ssub:improvement_of_speed}
@@ -760,7 +762,7 @@ do not contain to the circles but low enough that real circles with low point
 can still be found.
 \begin{figure}[tb]
    \centering
-   \includegraphics[width=0.8\textwidth]{pics/ppc}
+   \includegraphics[width=0.8\textwidth]{sim_pics/ppc}
    \caption{Distribution of points per circle. }
    \label{fig:ppc}
  \end{figure} 
@@ -805,11 +807,11 @@ than 50\% chance that we lose no information once a circle has 13 points.
 
 % subsubsection optimisation (end)
 
-\subsection{Possible Optimisation: Average Radius of Random Circles In a Unit Square} % (fold)
+\subsection{Possible optimisation: average radius of random circles in a unit square} % (fold)
 \label{ssub:average_radius_of_random_circles_in_a_unit_square}
 An interesting property of calculating the radius of triplets generated from points that are distributed uniformely is that they always obey a certain shape.
 
-First we calculate the expected area of a triangle formed by three points randomly chosen from the unit square\footnote{This prove is taken from \cite{Blatter:2015}}. Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
+First we calculate the expected area of a triangle formed by three points randomly chosen from the unit square\footnote{This proof is taken from \cite{Blatter:2015}}. Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
 > b_2 > c_2 \) which takes $\frac{1}{6}$ of the total ``Volume''. Fix \( a_2, b_2, c_2 \) for the moment and we can write.
 \[
   b_2 = (1-t)a_2 + tc_2, \qquad 0 \leq t \leq 1.
@@ -842,17 +844,17 @@ But generalizing our assumption at the beginning $a_2 < b_2 < c_2$ we multiply t
 % chapter methods (end)
 \chapter{Results}
 \label{cha:results}
-In this section results for the conventional 1D, 2D, 3D Hough Transform and the combinatorial approach are presented. 1D and 2D Hough Transform
+In this section results for the conventional 1D, 2D, 3D Hough transform and the combinatorial approach are presented. 1D and 2D Hough transform
 have no real application for the RICH detector since neither the center nor the radius is known. Nonetheless they are presented here as they offer a nice
 way of understanding how each extra dimension expands the algorithm and also
 shows the flaws with each added dimension.
 
-For the 1D and 2D Hough Transform very simple data data was used. There were 
+For the 1D and 2D Hough transform very simple data data was used. There were 
 no physical constraints when generating the circles and their point/circle
 or also their radius distribution doesn't reflect the real data obtained
 by LHCb.
 
-\section{1D Hough Transform Results} % (fold)
+\section{1D Hough transform results} % (fold)
 \label{sec:1d_hough_transform_results}
 For this section different data sets were tested.
 \begin{itemize}
@@ -888,211 +890,135 @@ again with center and radius taken directly from data to compare the two results
 % subsection overview_of_the_results (end)
 \begin{figure}[htp]
         \centering
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/result_1_circle_600_bg}
-                \caption{1 circle, 600 background hits.}
-                \label{fig:1c600bg}
-        \end{subfigure}%
+        \subfloat[][1 circle, 600 background hits. \label{fig:1c600bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/result_1_circle_600_bg}}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/result_2_circles_0_bg}
-                \caption{2 circles, 0 background hits}
+       \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/result_2_circles_0_bg}}
                 \label{fig:2c0bg}
-        \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}
-                \caption{5 circles, 30 background hits}
+        \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}}
                 \label{fig:5c30bg}
-        \end{subfigure}
-        \caption{Circles found by the 1D Hough Transform. The circle in Figure~\ref{fig:1c600bg} has its center in the origin so the algorithm did find the circle.}\label{fig:1d_ht_results}
+        \caption{Circles found by the 1D Hough transform. The circle in Figure~\ref{fig:1c600bg} has its center in the origin so the algorithm did find the circle.}\label{fig:1d_ht_results}
 
-                \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/real_result_1_circle_600_bg}
-                \caption{1 circle, 600 background hits.}
+        \subfloat[][1 circle, 600 background hits.]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/real_result_1_circle_600_bg}}
                 \label{fig:real_1c600bg}
-        \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/real_result_2_circles_0_bg}
-                \caption{2 circles, 0 background hits}
+        \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/real_result_2_circles_0_bg}}
                 \label{fig:real_2c0bg}
-        \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}
-                \caption{5 circles, 30 background hits}
+        \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}}
                 \label{fig:real_5c30bg}
-        \end{subfigure}
-        \caption{These are the circles as generated by the simulation. All of these examples were correctly solved by the 1D Hough Transform.}\label{fig:real_1d_ht_results}
+        \caption{These are the circles as generated by the simulation. All of these examples were correctly solved by the 1D Hough transform.}\label{fig:real_1d_ht_results}
 \end{figure}
 
-\subsection{1D Hough Transform - 2 circles, 0 background} % (fold)
+\subsection{1D Hough transform - 2 circles, 0 background hits} % (fold)
 \label{sub:1d_hough_transform_2_circles_0_background}
 Two circle objects have to be found in this event with zero background.
 % subsection 1d_hough_transform_2_circles_0_background (end)
 \begin{figure}[htp]
-        \centering
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{pics/1D_HT/radius_scores_2_circles_0_bg_1}
-                \caption{1 circle, 600 background hits.}
+        \subfloat[][1 circle, 600 background hits.]{\includegraphics[width=0.5\textwidth]{pics/1D_HT/radius_scores_2_circles_0_bg_1}}
                 \label{fig:2c0bg_radius1}
-        \end{subfigure}%
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{pics/1D_HT/radius_scores_2_circles_0_bg_2}
-                \caption{2 circles, 0 background hits}
+        \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.5\textwidth]{pics/1D_HT/radius_scores_2_circles_0_bg_2}}
                 \label{fig:2c0b_radius2}
-        \end{subfigure}
-        \caption{Radius score for the 1D Hough Transform for 2 circles with 0 background. The respective radiuses are $0.191$ and $0.108$ }\label{fig:1d_ht_radius}
+        \caption{Radius score for the 1D Hough transform for 2 circles with 0 background. The respective radiuses are $0.191$ and $0.108$ }\label{fig:1d_ht_radius}
 \end{figure}
-Each peaks is clearly visible in their respective radius score plots. The algorithm has no problems finding two distinct circles in the plane. A problem
-would then occur if
-\clearpage
-\subsection{1D Hough Transform - 5 circles, 30 background hits} % (fold)
+Each peaks is clearly visible in their respective radius score plots. The algorithm has no problems finding two distinct circles in the plane.
+If two circles had the same radius and their centers are also the same (unlikely). Then the algorithm in its current state would find only one circle.
+A way around this could be introducing a maximum score that when a certain score is exceeded then the algorithm assumes it's more than just 1 circle.
+But if both circles have a low number of points this still might fail. So all in all it is not fool proof.
+
+\subsection{1D Hough transform - 5 circles, 30 background hits} % (fold)
 \label{sub:1d_hough_transform_5_circles_30_background_hits}
 First we have the different radius scores for each known center. So the algorithm calculates the score for one center with all data points at a
 time and the radius with the highest score gets assigned to that center.
 Once done for all centers the algorithm is done.
-\begin{figure}[htbp]
+\begin{figure}[ht!]
   \centering
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_1}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_2}
-  \end{subfigure}
-      \begin{subfigure}{0.3\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_3}
-  \end{subfigure}
-
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_4}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_5}
-  \end{subfigure}
-  \caption{Radius scores for all the centers for an event with 5 circles.}
-  \label{fig:5_circles_30_bg_radius}
-\end{figure}
-As exptected the circles can be reconstructed
-\begin{figure}[htbp]
-  \centering
-  \begin{subfigure}{0.45\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}
-  \end{subfigure}
-  \begin{subfigure}{0.45\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}
-  \end{subfigure}
-  \caption{The reconstructed result on the left while the circles from the simulated data is on the right.}
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}}
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}}
+  \caption[5 circles, 30 background hits result]{The result for 5 circles with 30 background hits. On the left the result obtained by 
+  the 1D Hough transform algorithm while the circles from the simulated data is on the right.}
   \label{fig:figure1}
 \end{figure}
+
+\begin{figure}[htbp]
+\centering
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_1}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_2}}
+  
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_3}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_4}}
+
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_5}}
+  \caption{1D HT: Radius scores for all the centers for an event with 5 circles. The noise contributes only very little to the radius peaks
+  and identifying the circle candidates is easy.}
+  \label{fig:5_circles_30_bg_radius}
+\end{figure}
+As exptected the circles can be reconstructed.
+
 % subsection 1d_hough_transform_5_circles_30_background_hits (end)
 
 
 % section 1d_hough_transform_results (end)
-
-\clearpage
-\section{2D Hough Transform Results} % (fold)
+\newpage
+\section{2D Hough transform results} % (fold)
 \label{sec:2d_hough_transform_results}
-The 2D Hough Transform searches in the $x,y$ space for suitable
+The 2D Hough transform searches in the $x,y$ space for suitable
 circle centers that have a high score. The same events as for the 1D
-Hough Transform were investigated to make a comparison about reliability.
+Hough transform were investigated to make a comparison about reliability.
 In a first overview the algorithm performs quite well and finds all the
 circles.
 
-Again among others there were some of the events tackled by the algorithm.
+These were some of the events tackled by the algorithm (among others).
 \begin{itemize}
   \item 1 circle and 600 background hits
   \item 2 circles and 0 background hits
   \item 5 circles and 30 background hits
 \end{itemize} 
+and additionally
+\begin{itemize}
+  \item 6 circles and 200 background hits
+\end{itemize}
 
 \subsection{Overview of the results} % (fold)
 \label{sub:2d_overview_of_the_results}
 As in subsection \ref{sub:1d_overview_of_the_results} in a first step an overview of the results. The same events as before but this time tested with the 2D
-Hough Transform. All the circles were found correctly but the example with 6 circles and 200 background hits shows that the algorithm can fail to find a 
-circle.
+Hough transform. All the circles were found correctly but the example with 6 circles and 200 background hits shows that the algorithm can fail to find a 
+circle. The reason is quite simple. Both, the yellow and magenta circle, have similar radiuses. Now the algorithm looks first for the magenta circle (because that happens to be the way the centers are arranged in the list) and since so many points of the yellow circle lie so close together it is easy for the magenta circle (who has a similar radius) to get a high score with these points, a higher score than it would get with its proper points. If the yellow points were more evenly distributed on the circle or if there were more magenta points this probably wouldn't happen but that is something that can't be controlled.
 % subsection overview_of_the_results (end)
 
 \begin{figure}[htp]
         \centering
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_1_circle_600_bg}
-                \caption{1 circle, 600 background hits. The circle is centered at $0.0/0.0$.}
-                \label{fig:2d_1c600bg}
-        \end{subfigure}%
+        \subfloat[][1 circle, 600 background hits. The circle is centered at $0.0/0.0$. \label{fig:2d_1c600bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/result_1_circle_600_bg}}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}
-                \caption{2 circles, 0 background hits}
-                \label{fig:2d_2c0bg}
-        \end{subfigure}%
+        \subfloat[][2 circles, 0 background hits\label{fig:2d_2c0bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_5_circles_30_bg}
-                \caption{5 circles, 30 background hits}
-                \label{fig:2d_5c30bg}
-        \end{subfigure}
-        \caption{Circles found by the 2D Hough Transform. The circle in Figure~\ref{fig:1c600bg} has its center in the origin so the algorithm did find the circle.}\label{fig:2D_HT_results}
+        \subfloat[][5 circles, 30 background hits  \label{fig:2d_5c30bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/result_5_circles_30_bg}}
+              
+        \caption{Circles found by the 2D Hough transform.}\label{fig:2D_HT_results}
 
-                \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_1_circle_600_bg}
-                \caption{1 circle, 600 background hits.}
-                \label{fig:2d_real_1c600bg}
-        \end{subfigure}%
+        \subfloat[][1 circle, 600 background hits.\label{fig:2d_real_1c600bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/real_result_1_circle_600_bg}}
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}
-                \caption{2 circles, 0 background hits}
+        \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}}
                 \label{fig:2d_real_2c0bg}
-        \end{subfigure}%
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
-        \begin{subfigure}[t]{0.3\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_5_circles_30_bg}
-                \caption{5 circles, 30 background hits}
+        \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/real_result_5_circles_30_bg}}
                 \label{fig:2d_real_5c30bg}
-        \end{subfigure}
-        \caption{These are the circles as generated by the simulation. All of these examples were correctly solved by the 2D Hough Transform.}\label{fig:real_2d_ht_results}
+        \caption{The circles as generated by the simulation. All of these examples were correctly solved by the 2D Hough transform.}\label{fig:real_2d_ht_results}
 
-        \begin{subfigure}{0.47\textwidth}
-          \centering
-          \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg}
-        \end{subfigure}
-        \begin{subfigure}{0.47\textwidth}
-          \centering
-          \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}
-        \end{subfigure}
-        \caption{Circles found by the algorithm on the left and the correct results on the right. Here the 2D Hough Transform fails to find the magenta colored circle.}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg}}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}}
+        \caption{Circles found by the algorithm on the left and the correct results on the right. The magenta colored circle in the left image is incorrect. It replaced
+        the yellow circle (taken from the simulated data on the right).}
         \label{fig:2d_6c_200_bg}
 \end{figure}
-As seen in the event with 6 circles and 200 background hits (Figure~\ref{fig:2d_6c_200_bg}), the 2D Hough Transform fails. The reason is quite simple. Both, the yellow and magenta circle, have similar radiuses. Now the algorithm looks first for the magenta circle (because that happens to be the way the centers are arranged in the list) and since so many points of the yellow circle lie so close together it is easy for the magenta circle (who has a similar radius) to get a high score with these points, a higher score than it would get with its proper points. If the yellow points were more evenly distributed on the circle or if there were more magenta points this probably wouldn't happen but that is something that can't be controlled.
 
 Theoretically it is also possible that the yellow circle gets fitted to the
 magenta points but since there are still enough yellow points left after the removal of the points assigned to the magenta circle they still have the highest score with their own points and the magenta circle goes unnoticed.
@@ -1101,37 +1027,24 @@ Also, if the yellow circle would be checked before magenta then the algorithm
 would find the proper circles as well. So it actually can depend on the order
 in which the circles are searched.
 
-\subsection{2D Hough Transform, 2 circles, 0 background hits} % (fold)
+\subsection{2D Hough transform, 2 circles, 0 background hits} % (fold)
 \label{sub:2d_hough_transform_2_circles_0_background}
 Two circle objects have to be found in this event with zero background. This
 poses no problem but as pointed out before if the two circles had a 
 \begin{figure}[htp]
         \centering
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_1}
-        \end{subfigure}%
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_2}
-        \end{subfigure}
-        \caption{Center score for the 2D Hough Transform for 2 circles with 0 background.}\label{fig:2d_ht_center}
-x
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}
-        \end{subfigure}%
-        \begin{subfigure}[t]{0.5\textwidth}
-                \centering
-                \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}
-        \end{subfigure}
-\caption{Although already shown before for completeness the 2 circle 2D Hough Transform result. Left side the result from the algorithm on the right side the correct result from data.}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_1}}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_2}}
+        \caption{Center score for the 2D Hough transform for 2 circles with 0 background.}\label{fig:2d_ht_center}
+
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}}
+\caption[Results of 2D HT, 2 circles, 0 background]{2D HT: Although already shown before for completeness the 2 circle 2D Hough transform result. Left side the result from the algorithm on the right side the correct result from data.}
 \end{figure}
 
 % subsection 2d_hough_transform_2_circles_0_background (end)
 
-\clearpage
-\subsection{2D Hough Transform, 5 circles, 30 background hits} % (fold)
+\subsection{2D Hough transform, 5 circles, 30 background hits} % (fold)
 \label{sub:2d_hough_transform_5_circles_30_background_hits}
 
 This event added more circles but also some background hits. Both were handled
@@ -1139,44 +1052,26 @@ well by the algorithm and all the circles were found.
 
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}{0.32\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_1}
-  \end{subfigure}
-  \begin{subfigure}{0.32\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_2}
-  \end{subfigure}
-  \begin{subfigure}{0.32\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_3}
-  \end{subfigure}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_1}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_2}}
   
-  \begin{subfigure}{0.32\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_4}
-  \end{subfigure}
-  \begin{subfigure}{0.32\textwidth}
-  \centering
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_5}
-  \end{subfigure}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_3}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_4}}
+  
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_5_circles_30_bg_5}}
   \caption{Center scores for all the centers for an event with 5 circles.}
   \label{fig:2d_5_circles_30_bg_radius}
 \end{figure}
-\begin{figure}[htbp]
-  \centering
-  \begin{subfigure}{0.45\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_5_circles_30_bg}
-  \end{subfigure}
-  \begin{subfigure}{0.45\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_5_circles_30_bg}
-  \end{subfigure}
+\begin{figure}
+\centering
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_5_circles_30_bg}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_5_circles_30_bg}}
   \caption{The reconstructed result on the left while the circles from the simulated data is on the right.}
   \label{fig:2d_5c_results}
 \end{figure}
 % subsection 2d_hough_transform_5_circles_30_background_hits (end)
 
-\subsection{2D Hough Transform, 6 circles, 200 background hits} % (fold)
+\subsection{2D Hough transform, 6 circles, 200 background hits} % (fold)
 \label{sub:2d_hough_transform_6_circles_200_background_hits}
 As briefly discussed in the overview the algorithm does make mistakes as seen
 in this next event. 6 circles were generated with 200 background hits. The
@@ -1187,41 +1082,18 @@ of another.
 
 \begin{figure}
 \centering
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_1}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_2}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_3}
-  \end{subfigure}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_1}}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_2}}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_3}}
 
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_4}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5}
-  \end{subfigure}
-  \begin{subfigure}{0.3\textwidth}
-  \centering
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6}
-  \end{subfigure}
-  \caption{Center scores for 6 circles with 200 background hits. There is a lot more going on because of all the background hits that by accident contribute to a high score all over the grid.}
-\end{figure}
-\begin{figure}
-\begin{subfigure}{0.5\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg}
-\end{subfigure}
-\begin{subfigure}{0.5\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}
-\end{subfigure}
-\caption{On the left side the wrong result obtained by the 2D Hough Transform and the correct one on the right side}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_4}}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5}}
+  \subfloat[][]{\includegraphics[width=0.3\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6}}
+  \caption[Center scores for 6 circles with 200 background hits.]{Center scores for 6 circles with 200 background hits. There is a lot more going on because of all the background hits that by accident contribute to a high score all over the grid.}
+
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg}}
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}}
+\caption{On the left side the wrong result obtained by the 2D Hough transform and the correct one on the right side}
 \end{figure}
 
 A possible way to fix this particular problem is to tune the parameters of the weight function namely reducing the standard deviation. 
@@ -1234,54 +1106,267 @@ In the example before $\sigma$ was equal to $0.001$ while the space dimension wa
 
 \begin{figure}
 \centering
-  \begin{subfigure}{.49\textwidth}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6}}
+ 
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5_corr}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6_corr}}
+  \caption[2D HT: Comparison center scores 6 circles, 200 background hits]{Old center score in the top row for circle 5 (magenta) and 6 (yellow). And below the same circles this time with the new $\sigma=0.0005$. It is well visible how big the influence of sigma is for the center score. With a $\sigma$ of $0.001$ just by eye there seem to be many similar maxima whereas with a $\sigma=0.0005$ the maximas get much more distinct and the maximum score is also becomming bigger. Where the high score in the top row is $\approx 5000$ and $3500$ in the bottom it is $\approx 9500$ and $6500$.}
+\end{figure}
 
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5}
-  \end{subfigure}
-  \begin{subfigure}{.49\textwidth}
+%comment:
+% order of the circles:
+% 0.141
+% 0.158
+% 0.144
+% 0.153
+% 0.144
+% 0.157
 
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6}
-  \end{subfigure}
+\begin{figure}
+\centering
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg_corr}}
+  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}}
+\caption[2D HT: Comparison result, 6 circles, 200 background hits]{Again on the left the calculated result and the result taken from data on the right. With the new $\sigma$ the algorithm is able to calculate all the circles correctly.}\label{2d_result_6c_200bg_corr}
+\end{figure}
 
-  \begin{subfigure}{.49\textwidth}
+% section 2d_hough_transform_results (end)
+\clearpage
+\section{3D Hough transform Results} % (fold)
+\label{sec:3d_hough_transform_results}
+The 3D Hough transform has now to deal with 3 unknown parameters: $x,y,r$. For comparison again the same events
+as in the 1D and 2D Hough transform are studied to compare the reliability of the algorithms and how another
+unknown dimension adds to the complexity of finding circles.
 
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_5_corr}
-  \end{subfigure}
-  \begin{subfigure}{.49\textwidth}
+\begin{itemize}
+  \item 1 circle and 600 background hits
+  \item 2 circles and 0 background hits
+  \item 5 circles and 20 background hits
+  \item 6 circles and 200 background hits
+\end{itemize}
 
-    \includegraphics[width=\textwidth]{sim_pics/2D_HT/center_scores_6_circles_200_bg_6_corr}
-  \end{subfigure}
-  \caption{Old center score in the top row for circle 5 (magenta) and 6 (yellow). And below the same circles this time with the new $\sigma=0.0005$. Something that quite clear is how big the influence of sigma is for the center score. With a $\sigma$ of $0.001$ just by eye there seem to be many similar maxima whereas with a $\sigma=0.0005$ the maximas get much more distinct.}
+
+\begin{figure}[htp]
+        \centering
+        \subfloat[][1 circle, 600 background hits. The circle is centered at $0.0/0.0$.\label{fig:3D_1c_600bg}]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/result_1_circle_600_bg}}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/result_2_circles_0_bg}}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/result_5_circles_30_bg}}
+        \caption{Circles found by the 3D Hough transform. Figure~\ref{fig:3D_1c_600bg} shows that with a low enough signla/noise ratio even 
+        this seemingly simple event fails to be caluclated correctly. Even though the algorithm found the real circle it also found 22 others.\label{fig:2D_HT_results}}
+
+        \subfloat[][1 circle, 600 background hits.]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/real_result_1_circle_600_bg}}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \subfloat[][2 circles, 0 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/real_result_2_circles_0_bg}}
+        ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/real_result_5_circles_30_bg}}
+        \caption{These are the circles as generated by the simulation. The 1 circle 600 background event was problematic for the 3D Hough transform. Tuning the score Threshold could improve it for this particular case. The events with little or no background were solved correctly.}\label{fig:real_2d_ht_results}
 \end{figure}
 
 \begin{figure}
 \centering
-\begin{subfigure}{0.49\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/result_6_circles_200_bg_corr}
-\end{subfigure}
-\begin{subfigure}{0.49\textwidth}
-  \includegraphics[width=\textwidth]{sim_pics/2D_HT/real_result_6_circles_200_bg}
-\end{subfigure}
-\caption{Again on the left the calculated result and the result taken from data on the right. With the new $\sigma$ the algorithm is able to calculate all the circles correctly.}\label{2d_result_6c_200bg_corr}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/3D_HT/result_6_circles_200_bg}}
+        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/3D_HT/real_result_6_circles_200_bg}}
+        \caption{Circles found by the algorithm on the left and the correct results on the right. Where the 2D HT failed the 3D Hough transform solves it correctly.}
+        \label{fig:3d_6c_200_bg}
 \end{figure}
 
-% section 2d_hough_transform_results (end)
 
-\section{3D Hough Transform Results} % (fold)
-\label{sec:3d_hough_transform_results}
+\subsubsection{3D: Overview of the results} % (fold)
+\label{ssub:3d_overview_of_the_results}
+
+In general the 3D Hough transform works quite well. Even with the added complexity of an extra dimension it is capable to solve most
+events correctly. One event that failed was the 1 circle and 600 background example where the signal to noise ratio was just too small
+for the algorithm to isolate the correct solution. A way to ammend this particular case would be tuning the score threshold. The more background
+points there are the higher gets the 'background score' meaning score generated by only background hits. On the other hand the 3D Hough-
+Transform managed to solve the 6 circles with 200 background hits despite having less information. This is probably due to the fact that 
+the 3D Hough transform finds the circles sorted by score and doesn't depend on the order in which circles are searched (remember, in the 
+2D case there is the radius given and depending on which radius is given first we can solve it correctly or not).
+
+% subsubsection 3d_overview_of_the_results (end)
+
+\subsubsection{Tuning the score parameter} % (fold)
+\label{ssub:tuning_background_score}
+As mentioned before one way to tune the 3D Hough transform is changing the score threshold. The problem with the example with 600 background
+is that too many background hits increase the overall score of the whole score matrix and fake circles above this threshold make it into 
+the result.
+
+The scores for each of the circles in this example are the following:
+\begin{table}[ht]
+\centering
+\caption{All the scores for the 1 circle 600 background hits circles. Threshold score was 3500}
+\begin{tabular}{c|c|c|c}
+\toprule
+8122 & 6256 & 5672 & 5654 \\
+5373 & 5290 & 5047 & 5000 \\
+4727 & 4647 & 4533 & 4530 \\
+4370 & 4308 & 4234 & 4159 \\
+4136 & 4127 & 4104 & 3829  \\
+3702 & 3637 & 3593 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% subsubsection tuning_background_score (end)
 
 % section 3d_hough_transform_results (end)
 
-\section{Combinatorial Approach Results} % (fold)
+\section{Combinatorial approach results} % (fold)
 \label{sec:combinatorial_approach_results}
 
+This method was tested against a different set of events. 10'000 different events generated in an attempt to simulate LHCb data. First some 
+analysis on the data.
+
+\begin{figure}[h]
+  \centering
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/ppc}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/circlePerEventDistribution}}
+  \caption{Points per circle distribution on the left, circle per event distribution on the left}
+  \label{comb:ppc_cpe}
+\end{figure}
+
+The the main parameters for this algorithm are
+
+\begin{itemize}
+  \item Histogram thresholds (radius and center)
+  \item Distance between duplicate rings
+  \item Difference between duplicate ring radiuses
+  \item Distance between a calculated ring and the real ring
+  \item Difference between calculated radius and real radius
+\end{itemize}
+
+\subsubsection{Getting rid of duplicates} % (fold)
+\label{ssub:getting_rid_of_duplicates}
+
+% subsubsection getting_rid_of_duplicates (end)
+
+Without cleaning up the algorithm finds a lot of duplicates. Imagine the 1D radius histogram where two almost adjacent bins have a high score as 
+seen in Figure~\ref{fig:2bins_highscore}. They wont be directly adjacent because the algorithm searches for a high scoring bin and takes
+the left and right neighbour also into account and sets them to 0.
+It's still very likely that the two bins are from the same circle but they are treated now as independent because it was further than 1 bin 
+away. The data extracted from the radius histogram also contains the center data. Now both scores are handled by the center extraction and
+there both have the maximum at the same $x,y$ coordinate and the algorithm considers both a independent circles and without cleaning for duplicates
+the result can be seen in Figure~\ref{fig:comb_ht_0009}
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth]{sim_pics/radius_histogram_0009}
+  \caption{Two adjacent bins with a high score\label{fig:2bins_highscore}}
+  \label{fig:figure1}
+\end{figure}
+
+Following the code for extracting the radiuses (with their center data). So if bin $i$ in the radius histogram $H$ has a maximum
+we also save the list from \texttt{center[i]} to the corresponding radius. The function then returns a list of radiuses and for each
+radius in the list there is a list of center data which is used to extract the center of the circle.
+\begin{lstlisting}
+edges #x edges of the histogram
+center #center data
+while True:
+  i = max(H)
+  n = NUMBER_OF_R_BINS
+  n_entries = sum(H[i-1 if i>0 else i:i+2 
+                    if i<n-1 else i+1])
+  if n_entries < RADIUS_THRESHOLD:
+    # there are less than THRESHOLD
+    # entries in 3 bins
+    break
+
+  radiuses.append(edges[i])
+  index_list = range(i-1 if i>0 else i,i+2 
+                     if i<n-1 else i+1)
+  for index in index_list:
+    if center[index]:
+      center_list += center[index]
+    H[index] = 0
+  center_data.append(center_list)
+       
+return radiuses, center_data 
+\end{lstlisting}
+
+As before once a maximum has been found and the sum of the maximum plus the adjacent neighbors is bigger than the threshold we have another
+candidate. The bin and the neighbors are then set to 0. This is repeated until the sum of a maximum plus the adjacent neighbors is smaller
+than the threshold, where the algorithm stops.
+
+\begin{lstlisting}
+H #2d histogram with the center data
+
+xedges 
+yedges 
+centers = []
+
+n = NUMBER_OF_S_BINS
+
+while True:
+  i,j  = max(H)
+  score =   sum(H[i-1 if i>0 else i:i+2 
+                if i<n else i+1,j]) + 
+            sum(H[i, j-1 if j>0 else
+                j:j+2 if j+2 <= 3 
+                else j+1]) - H[i,j]
+  if score < CENTER_THRESHOLD:
+    break
+
+  i_index = range(i-1 if i>0 
+              else i,i+2 if i<n else i+1)
+  j_index = range(j-1 if j>0 
+              else j,j+2 if j<n else j+1)
+  for ii in i_index:
+    H[ii][j] = 0  
+  for jj in j_index:
+    H[i][jj] = 0
+  
+  centers.append( {'center' : (xedges[i], yedges[j]), 
+                              'nEntries' : score } )
+
+return centers
+\end{lstlisting}
+
+After this the basic algorithm is done and in Figure~\ref{fig:comb_ht_0009} is the result. To get rid of this duplicates there is one more step.
+The algorithm now compares all the found circles among each other and if two circles are within a certain range center and radius wise
+they are considered to be duplicates and the one with a lower score gets discarded.
+
+For this thesis the removal of the duplicates is done in the analysis part of the code so it was easier to tune the parameters.
+
+\begin{lstlisting}
+res = []
+sorted_results = sorted( results, key=lambda k: 
+                  k['nEntries'], reverse=True)
+while len(sorted_results):
+  circle = sorted_results.pop()
+  unique = True
+
+  for dic in sorted_results:
+    if (np.linalg.norm(np.array(circle['center']) - 
+        np.array(dic['center']))) < 
+                    DUPLICATE_MAX_CENTER_DISTANCE and\
+       (abs(circle['radius'] - dic['radius']) < 
+                    DUPLICATE_MAX_RADIUS_DISTANCE):
+      unique = False
+      break
+  if unique:
+    res.append(circle)
+
+return res
+\end{lstlisting}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth]{sim_pics/Comb_HT/0009.pdf}
+  \caption{The result of the combinatorial approach before cleaning up the duplicates. Blue and purple are basically the same circle.}
+  \label{fig:comb_ht_0009}
+\end{figure}
 % section combinatorial_approach_results (end)
 % chapter results (end)
 
 \chapter{Conclusions} % (fold)
 \label{cha:conclusions}
 
-This thesis was studying different Hough Transforms for circle detection. In a first approach a 1D Hough Transform was used and then extended to two and three
+This thesis was studying different Hough transforms for circle detection. In a first approach a 1D Hough transform was used and then extended to two and three
 dimensions.
 As a fourth and final approach a new method was developped for the circle detection. 
 
