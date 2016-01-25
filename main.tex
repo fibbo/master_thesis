@@ -18,6 +18,7 @@
 
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{longtable}
 % \usepackage{subcaption}
 \usepackage{float}
 \usepackage{url}
@@ -80,6 +81,8 @@ showstringspaces=false            %
 \setlength{\parskip}{1.5ex plus 0.5ex minus 0.2ex}
 \setlength{\parindent}{0pt}
 
+% \linespread{1.5}\selectfont
+
 \begin{document}
 
 \chapter*{Abstract}
@@ -88,7 +91,7 @@ This thesis studies an algorithms for the detection of circles which are produce
 These circles can be detected with the help of the Hough transform. There is a short introduction to the linear Hough transform (which detects lines) to give a rough idea about what the Hough transform can do. Then there is a brief look at the circle Hough transform (which detects circles). This part is split in 3 sections, the 1D, 2D and 3D Hough transform. The 1D Hough transform is used when the center is given and the radius needs to be found. The 2D Hough transform looks for circle centers ($(x,y)$ coordinate) for a given radius. The
 3D Hough transform is used when neither center nor radius are known. This is also the case for the data from LHCb where there are data points (signal and noise) and the algorithm has to find all the circles.
 
-Apart from the standard Hough transform with a 3D accumulator space this thesis develops a new approach for a Hough transform. This approach works on the basis that each circle is defined by 3 points. Given 3 points one can calculate the circumcenter (so the circle center we are intersted int) and the radius of the circumcircle.
+Apart from the standard Hough transform with a 3D accumulator space this thesis develops a new approach for a Hough transform. This approach works on the basis that each circle is defined by 3 points. Given 3 points one can calculate the circumcenter (so the circle center we are intersted in) and the radius of the circumcircle.
 
 \tableofcontents
 \listoftables
@@ -154,6 +157,10 @@ An important requirement at LHCb is the particle identification. This is handled
 
 Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHCb RICH system provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
 
+\subsubsection{Existing algorithm} % (fold)
+\label{ssub:existing_algorithm}
+
+% subsubsection existing_algorithm (end)
 
 
 % subsection particle_identification (end)
@@ -304,6 +311,74 @@ Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible p
 % subsection circle_hough_transform (end)
 % section hough_transform (end)
 
+\section{Dataset} % (fold)
+\label{sec:dataset}
+There are two data sets used for this thesis. One was the training data set of 250 events and then the data which tested the performance of the algorithm consisting of 10'000
+individual events and a total of 49979 circles across the events. The properties of these events (radius, number of points per circle, number of circles per event) are taken from simulation and data.
+
+The number of points per circle is determined by the photoelecton yield N$_\text{pe}$. It is measured for both \emph{normal} events and \emph{ideal}
+events. The normal event is representative of nominal RICH running conditions during LHCb physics detector operations. The ideal event is
+a special event type with very low background hits \cite{RICHPerf2012}.
+
+\begin{table}[tb]
+\centering
+\begin{tabular}{|c| c| c | c |c|}
+\hline\hline
+ & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from data} & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from simulation} \\ \hline
+Radiator &  tagged D$^0 \rightarrow$ K$^- \pi^+$ &pp$ \rightarrow$ pp $\mu^+ \mu^-$ & Calculated $N_{\text{pe}}$ & true $N_{\text{pe}}$ \\ [0.5ex]
+\hline
+Aerogel & $5.0 \pm 3.0$  & $4.3 \pm 0.9$& $8.0 \pm 0.6$ & $6.8 \pm 0.3$ \\ \hline
+C$_4$F$_{10}$  & $20.4 \pm 0.1$ & $24.5 \pm 0.3$& $28.3 \pm 0.6$ & $29.5 \pm 0.5$ \\ \hline
+CF$_4$ & $ 15.8 \pm 0.1$  & $ 17.6 \pm 0.2$& $22.7 \pm 0.6$ & $23.3 \pm 0.5$ \\ 
+\hline
+\end{tabular}
+\caption{Comparison of photoelectron yields (N$_{\rm pe}$) determined from
+D$^* \rightarrow$D$^0\pi^+$ decays in simulation and data, and 
+pp $\rightarrow$ pp $\mu^+ \mu^-$ events in data, using the selections and 
+methods described in the text \cite{RICHPerf2012}. The approximate value for 
+C$_4$F$_{10}$ is between  $20.4 \pm 0.1$ and $29.5 \pm 0.5$ and for CF$_4$ between
+$ 15.8 \pm 0.1$ and $23.3 \pm 0.5$ depending on the decay and whether it's the 
+calculated value or the simulated value.}
+\label{table:results}
+\end{table}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.6\textwidth]{sim_pics/ppc}
+  \caption{Number of points per circle (N$_\text{pe}$) for the 10'000 events}
+  \label{fig:ppc1}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.6\textwidth]{sim_pics/circlePerEventDistribution}
+  \caption{Number of circles per single event distribution.}
+  \label{fig:circlePerEventDist}
+\end{figure}
+
+Also to get an idea what the average size of a Cherenkov ring is can be seen in
+\cite{Forty1999}. Rings in RICH-1 have radiuses generally smaller than $0.30$\,m
+(given they are from the C$_4$F$_{10}$ radiator; rings from the aerogel have
+slightly bigger radiuses -- around $0.40$\,m). All the rings in the test data 
+have a radius that is smaller than $0.15$\,m.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.6\textwidth]{sim_pics/radiusDist}
+  \caption{The radius distribution of the test data events.}
+  \label{fig:radius_dist}
+\end{figure}
+% section dataset (end)
+
+\subsection{Existing algorithm} % (fold)
+\label{sub:existing_algorithm}
+There is already an algorithm in place in LHCb. The disadvantage of the existing algorithm is due to the fact that it
+uses tracks to reconstruct the circles. All charged tracks that are reconstructed by the tracking system are reflected at
+the RICH mirrors in order to give a center for a Cherenkov ring. In order to match tracks with rings each ring is matched
+with the track that has its position closest to the center of the ring. This means that this method uses information from
+outside the RICH detector to construct the circles.
+
+% subsection existing_algorithm (end)
 
 \chapter{Methods}
 
@@ -356,7 +431,6 @@ forthe highest score can then be used to find the corresponding radius.
       scores += 1. / ( sqrt( 2 * Pi ) * s ) 
                  * exp( -( eta ** 2 ) 
                   / ( 2 * s ** 2 ) )
-  
     index = max(scores)
     circle = {}
     circle['center'] = c
@@ -490,14 +564,17 @@ It was mentioned before that for each data point the weight for the whole grid h
 \label{ssub:simple_example_of_2_circles_without_background}
 \begin{figure}[hp]
   \centering
-  \includegraphics[width=0.8\linewidth]{pics/2d_weights_01}
-  \caption[2D weight matrix, first iteration]{2D weight matrix in the first iteration of the Hough transform algorithm. The circles have similar radiuses (0.170 and 0.158) which explains one clear maximum in the bottom left and a smeared one a bit to the top right.}
+  \includegraphics[width=0.8\linewidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_1}
+
+  \includegraphics[width=0.8\linewidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_2}
+
+  \caption[2D weight matrix, first iteration]{(Top) 2D weight matrix in the first iteration of the Hough transform algorithm. (Bottom) Second iteration
+  of the 2D weight matrix of the Hough transform}
   \label{fig:2d_weights_01}
 \end{figure}
 
 \begin{figure}[hp]
   \centering
-  \includegraphics[width=0.8\linewidth]{pics/2d_weights_02}
   \caption[2D weight matrix, second iteration]{2D weight matrix in the second iteration. Points that satisfied the condition being less than a certain $\epsilon$ away from the radius found in the first iteration are removed leaving (hopefully) only points available that belong to the second circles.}
   \label{fig:2d_weights_02}
 \end{figure}
@@ -937,11 +1014,11 @@ time and the radius with the highest score gets assigned to that center.
 Once done for all centers the algorithm is done.
 \begin{figure}[ht!]
   \centering
-  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}}
-  \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/result_5_circles_30_bg}}
+  \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/1D_HT/real_result_5_circles_30_bg}}
   \caption[5 circles, 30 background hits result]{The result for 5 circles with 30 background hits. On the left the result obtained by 
   the 1D Hough transform algorithm while the circles from the simulated data is on the right.}
-  \label{fig:figure1}
+  \label{fig:1d_5c_30bg}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -1033,12 +1110,18 @@ Two circle objects have to be found in this event with zero background. This
 poses no problem but as pointed out before if the two circles had a 
 \begin{figure}[htp]
         \centering
-        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_1}}
-        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_2}}
+        \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_1}}
+        \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/center_scores_2_circles_0_bg_2}}
         \caption{Center score for the 2D Hough transform for 2 circles with 0 background.}\label{fig:2d_ht_center}
 
-        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}}
-        \subfloat[][]{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}}
+        \includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/projection/stacked_projection_9_2}%
+        \includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/projection/stacked_projection_9_1}
+        \caption{Two slices out of the 2D histogram. These 2D histograms are very similar to the radius histogram from the 1D HT
+        but now instead of the weights for the radius which is 1 dimensional the weights for $x,y$ are calculated which are
+        2 dimensional}
+
+        \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/result_2_circles_0_bg}}
+        \subfloat{\includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/real_result_2_circles_0_bg}}
 \caption[Results of 2D HT, 2 circles, 0 background]{2D HT: Although already shown before for completeness the 2 circle 2D Hough transform result. Left side the result from the algorithm on the right side the correct result from data.}
 \end{figure}
 
@@ -1074,7 +1157,7 @@ well by the algorithm and all the circles were found.
 \subsection{2D Hough transform, 6 circles, 200 background hits} % (fold)
 \label{sub:2d_hough_transform_6_circles_200_background_hits}
 As briefly discussed in the overview the algorithm does make mistakes as seen
-in this next event. 6 circles were generated with 200 background hits. The
+in this event. 6 circles were generated with 200 background hits. The
 interesting part is not that amount of circles or the amount of background hits
 posed a problem but the properties of the circles (center coordinate and radius). In this example there is a misidentification of a circle with points
 of another.
@@ -1232,7 +1315,6 @@ analysis on the data.
 \end{figure}
 
 The the main parameters for this algorithm are
-
 \begin{itemize}
   \item Histogram thresholds (radius and center)
   \item Distance between duplicate rings
@@ -1240,6 +1322,9 @@ The the main parameters for this algorithm are
   \item Distance between a calculated ring and the real ring
   \item Difference between calculated radius and real radius
 \end{itemize}
+The last two parameters are only parameters for the analysis to decide whether or not the algorithm has found a circle comparing radius
+and center coordinates with the test data and if a circle is within these bounds the circle will be considered as found. In a real application
+however, these parameters are useless because a priori there is no knowledge about the circles.
 
 \subsubsection{Getting rid of duplicates} % (fold)
 \label{ssub:getting_rid_of_duplicates}
@@ -1256,10 +1341,12 @@ the result can be seen in Figure~\ref{fig:comb_ht_0009}
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\textwidth]{sim_pics/radius_histogram_0009}
-  \caption{Two adjacent bins with a high score\label{fig:2bins_highscore}}
-  \label{fig:figure1}
+  \caption{Two almost adjacent bins with a high score\label{fig:2bins_highscore}. Apart from the very clear peak of two bins next to each
+  other at $\approx 0.125$ with a score of 7000 and 6000 respectively, there are 3 smaller peaks separated by background bins. After picking
+  up the highest peak at the score of 8000 and the neighbours left and right the next highest score is the one at roughly 3000. The algorithm
+  also picks up the adjacent bins on the left and right but there are still peaks left that are above threshold.}
+  \label{fig:bin_peak}
 \end{figure}
-
 Following the code for extracting the radiuses (with their center data). So if bin $i$ in the radius histogram $H$ has a maximum
 we also save the list from \texttt{center[i]} to the corresponding radius. The function then returns a list of radiuses and for each
 radius in the list there is a list of center data which is used to extract the center of the circle.
@@ -1275,7 +1362,6 @@ while True:
     # there are less than THRESHOLD
     # entries in 3 bins
     break
-
   radiuses.append(edges[i])
   index_list = range(i-1 if i>0 else i,i+2 
                      if i<n-1 else i+1)
@@ -1283,24 +1369,18 @@ while True:
     if center[index]:
       center_list += center[index]
     H[index] = 0
-  center_data.append(center_list)
-       
+  center_data.append(center_list)    
 return radiuses, center_data 
 \end{lstlisting}
-
 As before once a maximum has been found and the sum of the maximum plus the adjacent neighbors is bigger than the threshold we have another
 candidate. The bin and the neighbors are then set to 0. This is repeated until the sum of a maximum plus the adjacent neighbors is smaller
 than the threshold, where the algorithm stops.
-
 \begin{lstlisting}
 H #2d histogram with the center data
-
 xedges 
 yedges 
 centers = []
-
 n = NUMBER_OF_S_BINS
-
 while True:
   i,j  = max(H)
   score =   sum(H[i-1 if i>0 else i:i+2 
@@ -1310,7 +1390,6 @@ while True:
                 else j+1]) - H[i,j]
   if score < CENTER_THRESHOLD:
     break
-
   i_index = range(i-1 if i>0 
               else i,i+2 if i<n else i+1)
   j_index = range(j-1 if j>0 
@@ -1319,7 +1398,6 @@ while True:
     H[ii][j] = 0  
   for jj in j_index:
     H[i][jj] = 0
-  
   centers.append( {'center' : (xedges[i], yedges[j]), 
                               'nEntries' : score } )
 
@@ -1331,15 +1409,15 @@ The algorithm now compares all the found circles among each other and if two cir
 they are considered to be duplicates and the one with a lower score gets discarded.
 
 For this thesis the removal of the duplicates is done in the analysis part of the code so it was easier to tune the parameters.
-
-\begin{lstlisting}
+\begin{figure}[h]
+\centering
+  \begin{lstlisting}
 res = []
 sorted_results = sorted( results, key=lambda k: 
                   k['nEntries'], reverse=True)
 while len(sorted_results):
   circle = sorted_results.pop()
   unique = True
-
   for dic in sorted_results:
     if (np.linalg.norm(np.array(circle['center']) - 
         np.array(dic['center']))) < 
@@ -1350,9 +1428,13 @@ while len(sorted_results):
       break
   if unique:
     res.append(circle)
-
 return res
 \end{lstlisting}
+\caption{Pseudo code for removing possible duplicates from the circles found by the algorithm. First results are sorted by their number of entries
+in the histogram so the most relevant comes first. \texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE} and \texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE} are 
+parameters that can be tuned}\label{fig:dup_code}
+\end{figure}
+
 
 \begin{figure}[htb]
   \centering
@@ -1360,7 +1442,169 @@ return res
   \caption{The result of the combinatorial approach before cleaning up the duplicates. Blue and purple are basically the same circle.}
   \label{fig:comb_ht_0009}
 \end{figure}
+
+\subsection{Different thresholds} % (fold)
+\label{sub:different_thresholds}
+The algorithm has a very simple cut whether a candidate is a cirlce or not. It is the number of hits in the radius and center histogram.
+This essentially puts a constraint on the minimum amount of points a circle should have and the threshold then is of course the binomial
+coefficient of that number
+\[
+  \binom{\text{Threshold}}{3}
+\]
+In table the different efficiencies for the algorithm with different thresholds can be seen. Intuitively one expects to have more fake
+detections at a lower threshold since it is more likely for some random hits to form a circle. Starting from a certain threshold the efficiency
+will fall again when legit circles will fall under the threshold but analysing the test data set approximately $98\%$ of the circles have more
+than 12 points per circle.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.6\textwidth]{sim_pics/ratio_ppc}
+  \caption{Reversed cumulative distribution of the points per circle. The plot shows the ratio of circles with more than $x$ points over the
+  total number of circles}
+  \label{fig:ratio_ppc}
+\end{figure}
+
+This gives the algorithm a upper boundary for the efficiency. No matter how accurate the algorithm is, if it doesn't consider circles below the
+threshold it will never find these. Thus the higher the needed number of points per circle is, the lower the efficiency
+will be. 
+
+\begin{table}[tb]
+  \caption{Efficiencies for different thresholds. The ghost efficiency explodes if the threshold is too low, that is when combinations
+  from background/background, background/circle or circleA/circleB points classify as a circle}
+  \label{tab:tablename}
+  \centering
+
+  \begin{tabular}{lrrr}
+  \toprule
+  \textbf{Threshold} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles}\\
+  \midrule
+  20 & 97.22\% & 226\% & 1390 \\
+  35 & 97.20\% & 152\% & 1399 \\
+  56 & 97.17\% & 17\% & 1414 \\
+  84 & 97.11\% & 6.70\% & 1443 \\
+  165 & 96.76\% & 3.17\% & 1617 \\
+  220 & 96.40\% & 2.92\% & 1797 \\
+  \bottomrule
+  \end{tabular}
+\end{table}
+% subsection different_thresholds (end)
+
+\subsection{Different cuts for circle selection} % (fold)
+\label{sub:different_cuts_for_circle_selection}
+Setting the histogram threshold is just the first step to finding the circles. The next step is removing duplicate circles that
+are created with a major fraction of points of a circle and for example a single background hit that is just far enough off
+that the radius and center histogram show it as a distinct circle. Depending on how loose this cut is, there is a chance that an actual
+circle gets discarded as a duplicate if their centers happen to be very close to each other and they have very similar radiuses. For
+both to happen simultaneously seems rather unlikely so the loss of circle due to this cut should be rather low.
+
+\subsubsection{Cut variation for a fixed threshold} % (fold)
+In tables \ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} different cut parameters were tested
+and compared for the efficiency, ghost rate, duplicate and missed circles.
+\label{ssub:cut_variation_for_a_fixed_threshold}
+\begin{table}[htbp]
+  \caption{Reducing ghost rate for a fixed radius cut (0.003) with varying center cut. The tighter the center cut is
+  the more duplicate circle remain after the }
+  \label{tab:cut_variation_1}
+  \centering
+
+  \begin{tabular}{lrrrr}
+  \toprule
+  \textbf{Center cut} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles} & \textbf{Dup. circles}\\
+  \midrule
+    0.001 & 96.68\% & 3.72\% & 1794 & 1859\\
+    0.002 & 96.42\% & 3.21\% & 1794 & 1605\\ 
+    0.003 & 96.41\% & 2.97\% & 1795 & 1483\\
+    0.004 & 96.41\% & 2.94\% & 1796 & 1469\\
+    0.005 & 96.40\% & 2.94\% & 1797 & 1467\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{Reducing ghost rate for a fixed center cut (0.003) with varying center cut. The tighter the center cut is
+  the more duplicate circles fail being detected by the removeDuplicate code shown above}
+  \label{tab:cut_variation_2}
+  \centering
+
+  \begin{tabular}{lrrrr}
+  \toprule
+  \textbf{Radius cut} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles} & \textbf{Dup. circles}\\
+  \midrule
+    0.001 & 101.34\% & 6.23\% & 956 & 3112\\
+    0.002 & 100.65\% & 5.76\% & 1049 & 2879\\ 
+    0.003 & 96.41\% & 2.97\% & 1795 & 1483\\
+    0.004 & 96.41\% & 2.93\% & 1795 & 1465\\
+    0.005 & 96.41\% & 2.92\% & 1796 & 1461\\
+    0.006 & 96.40\% & 2.92\% & 1797 & 1459\\
+  \bottomrule
+  \end{tabular}
+\end{table}
+
+What both tables show that there is only a limited sensitivity to a single parameter change. So in the following
+table there is all the possible combinations for different cuts for both radius and center ranging from 0.001 to
+0.008.
+  \begin{longtable}{llrrrrr}
+  \caption{Results for all the cut combinations for radius and center cuts. It can be very well seen that}\\
+  \toprule
+  \textbf{$R$ cut} & \textbf{$C$ cut} & \textbf{Eff.} & \textbf{Ghost} & \textbf{Missed} & \textbf{Dup.} & \textbf{Fakes} \\
+  \midrule
+0.001 & 0.001 & 101.48\% & 6.47\% & 955 & 3236 & 1561 \\
+0.001 & 0.002 & 101.26\% & 6.42\% & 993 & 3210 & 1485 \\
+0.001 & 0.003 & 101.22\% & 6.35\% & 1010 & 3174 & 1481 \\
+0.001 & 0.004 & 101.22\% & 6.33\% & 1010 & 3165 & 1481 \\
+0.001 & 0.005 & 101.22\% & 6.32\% & 1010 & 3160 & 1480 \\
+0.001 & 0.006 & 101.21\% & 6.32\% & 1012 & 3159 & 1480 \\
+0.001 & 0.007 & 101.21\% & 6.32\% & 1012 & 3158 & 1480 \\
+0.002 & 0.001 & 100.67\% & 6.22\% & 1124 & 3108 & 1311 \\
+0.002 & 0.002 & 100.38\% & 6.16\% & 1187 & 3081 & 1234 \\
+0.002 & 0.003 & 100.32\% & 6.09\% & 1212 & 3045 & 1228 \\
+0.002 & 0.004 & 100.32\% & 6.07\% & 1213 & 3034 & 1228 \\
+0.002 & 0.005 & 100.32\% & 6.06\% & 1213 & 3029 & 1227 \\
+0.002 & 0.006 & 100.32\% & 6.06\% & 1215 & 3028 & 1227 \\
+0.002 & 0.007 & 100.32\% & 6.06\% & 1215 & 3028 & 1227 \\
+0.003 & 0.001 & 95.87\% & 4.53\% & 2201 & 2265 & 99 \\
+0.003 & 0.002 & 95.21\% & 4.44\% & 2397 & 2218 & 4 \\
+0.003 & 0.003 & 95.04\% & 4.35\% & 2480 & 2174 & 0 \\
+0.003 & 0.004 & 95.02\% & 4.33\% & 2490 & 2163 & 0 \\
+0.003 & 0.005 & 95.01\% & 4.31\% & 2492 & 2155 & 0 \\
+0.003 & 0.006 & 95.01\% & 4.31\% & 2493 & 2154 & 0 \\
+0.003 & 0.007 & 95.01\% & 4.31\% & 2493 & 2153 & 0 \\
+0.004 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
+0.004 & 0.002 & 95.21\% & 4.43\% & 2399 & 2214 & 4 \\
+0.004 & 0.003 & 95.02\% & 4.34\% & 2491 & 2169 & 0 \\
+0.004 & 0.004 & 94.98\% & 4.31\% & 2509 & 2156 & 0 \\
+0.004 & 0.005 & 94.97\% & 4.30\% & 2514 & 2148 & 0 \\
+0.004 & 0.006 & 94.96\% & 4.30\% & 2517 & 2147 & 0 \\
+0.004 & 0.007 & 94.96\% & 4.29\% & 2518 & 2145 & 0 \\
+0.005 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
+0.005 & 0.002 & 95.21\% & 4.43\% & 2399 & 2214 & 4 \\
+0.005 & 0.003 & 95.02\% & 4.33\% & 2491 & 2164 & 0 \\
+0.005 & 0.004 & 94.98\% & 4.31\% & 2509 & 2152 & 0 \\
+0.005 & 0.005 & 94.97\% & 4.29\% & 2516 & 2144 & 0 \\
+0.005 & 0.006 & 94.96\% & 4.28\% & 2521 & 2141 & 0 \\
+0.005 & 0.007 & 94.95\% & 4.28\% & 2523 & 2139 & 0 \\
+0.006 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
+0.006 & 0.002 & 95.21\% & 4.43\% & 2399 & 2212 & 4 \\
+0.006 & 0.003 & 95.02\% & 4.33\% & 2491 & 2162 & 0 \\
+0.006 & 0.004 & 94.98\% & 4.30\% & 2509 & 2150 & 0 \\
+0.006 & 0.005 & 94.96\% & 4.29\% & 2517 & 2143 & 0 \\
+0.006 & 0.006 & 94.94\% & 4.28\% & 2528 & 2138 & 0 \\
+0.006 & 0.007 & 94.93\% & 4.27\% & 2532 & 2135 & 0 \\
+0.007 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
+0.007 & 0.002 & 95.21\% & 4.43\% & 2399 & 2212 & 4 \\
+0.007 & 0.003 & 95.02\% & 4.33\% & 2491 & 2162 & 0 \\
+0.007 & 0.004 & 94.98\% & 4.30\% & 2509 & 2150 & 0 \\
+0.007 & 0.005 & 94.96\% & 4.29\% & 2517 & 2142 & 0 \\
+0.007 & 0.006 & 94.94\% & 4.27\% & 2529 & 2136 & 0 \\
+0.007 & 0.007 & 94.93\% & 4.27\% & 2534 & 2132 & 0 \\
+  \bottomrule
+  \end{longtable}
+% subsubsection cut_variation_for_a_fixed_threshold (end)
+% subsection different_cuts_for_circle_selection (end)
 % section combinatorial_approach_results (end)
+
+
+
 % chapter results (end)
 
 \chapter{Conclusions} % (fold)

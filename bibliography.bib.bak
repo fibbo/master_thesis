@@ -1,11 +1,28 @@
-% This file was created with JabRef 2.11.1.
-% Encoding: UTF8
+% Encoding: UTF-8
+
+@Article{RICHPerf2012,
+  author =         {M. Adinolfi and G. Aglieri Rinella and E. Albrecht and T. Bellunato and S. Benson and T. Blake and C. Blanks and S. Brisbane and N. H. Brook and M. Calvi and B. Cameron and R. Cardinale and L. Carson and A. Contu and M. Coombes and C. D'Ambrosio and S. Easo and U. Egede and S. Eisenhardt and E. Fanchini and C. Fitzpatrick and F. Fontanelli and R. Forty and C. Frei and P. Gandini and R. Gao and J. Garra Tico and V. Gibson and C. Gotti and S. Gregson and T. Gys and S. C. Haines and T. Hampson and N. Harnew and D. Hill and P. Hunt and M. John and C. R. Jones and D. Johnson and N. Kanaya and S. Katvars and U. Kerzel and Y. M. Kim and S. Koblitz and M. Kucharczyk and D. Lambert and R. W. Lambert and A. Main and M. Maino and S. Malde and N. Mangiafave and C. Matteuzzi and G. Mini' and A. Mollen and J. Morant and R. Mountain and J. V. Morris and F. Muheim and R. Muresan and J. Nardulli and P. Owen and A. Papanestis and M. Patel and G. N. Patrick and D. L. Perego and G. Pessina and A. Petrolini and D. Piedigrossi and R. Plackett and S. Playfer and A. Powell and J. H. Rademacker and S. Ricciardi and G. J. Rogers and P. Sail and M. Sannino and T. Savidge and I. Sepp and S. Sigurdsson and F. J. P. Soler and A. Solomin and F. Soomro and A. Sparkes and P. Spradlin and B. Storaci and C. Thomas and S. Topp-Joergensen and N. Torr and O. Ullaland and K. Vervink and D. Voong and D. Websdale and G. Wilkinson and S. A. Wotton and K. Wyllie and F. Xing and R. Young},
+  title =          {Performance of the LHCb RICH detector at the LHC},
+  journal =        {Eur. Phys. J. C},
+  year =           {2012},
+  volume =         {73},
+  pages =          {2431},
+  month =          nov,
+  __markedentry =  {[phi:6]},
+  abstract =       {The LHCb experiment has been taking data at the Large Hadron Collider (LHC) at CERN since the end of 2009. One of its key detector components is the Ring-Imaging Cherenkov (RICH) system. This provides charged particle identification over a wide momentum range, from 2-100 GeV/c. The operation and control software, and online monitoring of the RICH system are described. The particle identification performance is presented, as measured using data from the LHC. Excellent separation of hadronic particle types (pion, kaon and proton) is achieved.},
+  doi =            {10.1140/epjc/s10052-013-2431-9},
+  eprint =         {1211.6759},
+  oai2identifier = {1211.6759},
+  owner =          {phi},
+  reportno =       {CERN-LHCb-DP-2012-003, LHCb-DP-2012-003},
+  timestamp =      {2016.01.22}
+}
 
 
 @Misc{Blatter:2015,
   Title                    = {The expected area of a triangle formed by three points randomly chosen from the unit square},
   Author                   = {Christian Blatter},
-  HowPublished             = {http://math.stackexchange.com/questions/1236958/the-expected-area-of-a-triangle-formed-by-three-points-randomly-chosen-from-the},
+  HowPublished             = {Online},
   Month                    = {April},
   Year                     = {2015},
   Owner                    = {phi},
@@ -65,23 +82,22 @@
 }
 
 @Article{LHCb:2000,
-  Title                    = {Technical Design Report},
-  Author                   = {LHCb, RICH},
-  Journal                  = {CERN/LHCC},
-  Year                     = {2000},
-  Pages                    = {2000},
-  Volume                   = {37},
-  __markedentry            = {[phi:6]},
-  Owner                    = {phi},
-  Timestamp                = {2015.12.27}
+  author =        {LHCb, RICH},
+  title =         {Technical Design Report},
+  journal =       {CERN/LHCC},
+  year =          {2000},
+  volume =        {37},
+  pages =         {2000},
+  __markedentry = {[phi:]},
+  owner =         {phi},
+  timestamp =     {2015.12.27}
 }
 
 @TechReport{Powell:2011,
-  Title                    = {Particle identification at LHCb},
-  Author                   = {Powell, A},
-  Year                     = {2011},
-  __markedentry            = {[phi:]},
-  Owner                    = {phi},
-  Timestamp                = {2015.12.23}
+  author =    {Powell, A},
+  title =     {Particle identification at LHCb},
+  year =      {2011},
+  owner =     {phi},
+  timestamp = {2015.12.23}
 }
 
