@@ -159,7 +159,10 @@ Hadron identification is very important for decays where the final states of int
 
 \subsubsection{Existing algorithm} % (fold)
 \label{ssub:existing_algorithm}
-
+There is already an algorithm in place at LHCb. The current algorithm depends on tracking information to detect Cherenkov rings which means 
+the position where the track went through the RICH detector serves as possible center for the algorithm. For each track then the distances
+for the surrounding points are histogrammed and if there is a peak the points that contributed to that peak and the respective center
+are identified as a Cherenkov ring.
 % subsubsection existing_algorithm (end)
 
 
@@ -332,7 +335,7 @@ C$_4$F$_{10}$  & $20.4 \pm 0.1$ & $24.5 \pm 0.3$& $28.3 \pm 0.6$ & $29.5 \pm 0.5
 CF$_4$ & $ 15.8 \pm 0.1$  & $ 17.6 \pm 0.2$& $22.7 \pm 0.6$ & $23.3 \pm 0.5$ \\ 
 \hline
 \end{tabular}
-\caption{Comparison of photoelectron yields (N$_{\rm pe}$) determined from
+\caption[Comparison of photoelectron yields (N$_{\rm pe}$)]{Comparison of photoelectron yields (N$_{\rm pe}$) determined from
 D$^* \rightarrow$D$^0\pi^+$ decays in simulation and data, and 
 pp $\rightarrow$ pp $\mu^+ \mu^-$ events in data, using the selections and 
 methods described in the text \cite{RICHPerf2012}. The approximate value for 
@@ -387,7 +390,7 @@ outside the RICH detector to construct the circles.
 
 In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. These
 methods were mainly considered to get an idea what was possible with the conventional Hough transform. For closer study the method of choice was
-the combinatorial approach discussed in depth in section \ref{sec:combinatorial_approach}.
+the combinatorial triplet Hough transform discussed in depth in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known center - find radius} % (fold)
@@ -439,11 +442,11 @@ forthe highest score can then be used to find the corresponding radius.
 \caption[Pseudo Code 1D HT]{Pseudo code for the 1D Hough transform. r is an array of length 1001 so $\eta$ will also be an array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added to the scores array and at the end the index with the highest score is the index we need to get the radius.}
 \end{figure}
 
-\subsubsection{Runtime} % (fold)
-The runtime of this algorithm is of $\mathcal{O}(n)$ where $n$ is the dimension of the radius array.
-\label{ssub:runtime_1d}
+\subsubsection{Complexity} % (fold)
+The complexity of this algorithm is of $\mathcal{O}(n)$ where $n$ is the dimension of the radius array.
+\label{ssub:complexity_1d}
 
-% subsubsection runtime (end)
+% subsubsection complexity (end)
 
 % subsection 1d_known_center_find_radius (end)
 \subsection{2D: Known radius - find center} % (fold)
@@ -475,12 +478,12 @@ Now the radius is known and the $x$ and $y$ coordinate of the center $(c_x, c_y)
 \end{figure}
 
 
-\subsubsection{Runtime} % (fold)
-\label{ssub:runtime_2d}
-The runtime of this algorithm is $\mathcal{O}(n^2)$ where $n$ is the dimension of the histogram. The calculation of the weight has to be done for each data point of the 2D histogram. So in a $1000\times 1000$ histogram with 400 data points we calculate 400'000'000 times the weight of a grid point. Reducing the dimensions of the histogram weakens the accuracy of the whole algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each space dimension is $1$\,mm. The RICH Technical Design Report states the resolution of the HPD is $2.5$\,mm $\times$ $2.5$\,mm.
+\subsubsection{Complexity} % (fold)
+\label{ssub:complexity_2d}
+The complexity of this algorithm is $\mathcal{O}(n^2)$ where $n$ is the dimension of the histogram. The calculation of the weight has to be done for each data point of the 2D histogram. So in a $1000\times 1000$ histogram with 400 data points we calculate 400'000'000 times the weight of a grid point. Reducing the dimensions of the histogram weakens the accuracy of the whole algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each space dimension is $1$\,mm. The RICH Technical Design Report states the resolution of the HPD is $2.5$\,mm $\times$ $2.5$\,mm.
 
 The need (not entirely true) to calculate the weight for each grid point and data point means that there is a loop over data points and two loops for the $x$ and $y$ coordinate of the grid. To improve upon that there is the possibility of array broadcasting.
-% subsubsection runtime (end)
+% subsubsection complexity (end)
 
 \subsubsection{Array broadcasting}
 Consider following one dimensional arrays where $x$ is a 1D histogram binning entries from 1 to 4 and same for $y$. 
@@ -647,14 +650,14 @@ is being done to see whether a data point fulfills the requirement
 of being a circle point. If that's the case that point will be put
 into another list of already used points and the algorithm will not 
 use this point anymore.
-\subsubsection{Runtime} % (fold)
-\label{ssub:runtime}
+\subsubsection{Complexity} % (fold)
+\label{ssub:complexity}
 Assuming that the radius array has the same length as the two space
 dimensions means that the complexity of this algorithm is of order 
 $\mathcal{O}(N^3)$. As the 1D and 2D Hough transform the accuracy
 directly depends on the binning. Same as for the 2D Hough transform
 too match the resolution of the HPD of the RICH detector a binning of 400 makes sense if the detector dimensions are $1$\,m$\times1$\,m.
-% subsubsection runtime (end)
+% subsubsection complexity (end)
 
 \subsubsection{Optimisations} % (fold)
 \label{ssub:optimisations}
@@ -664,7 +667,7 @@ for calculating the score.
 % subsubsection optimisations (end)
 % subsection 3d_nothing_is_known_find_everything (end)
 
-\section{Combinatorial approach}
+\section{combinatorial triplet Hough transform}
 \label{sec:combinatorial_approach}
 A circle is uniquely defined by 3 points and radius and center can be calculated. If there are 15 points lying on the same circle there are 455 possible combinations of triplets According to the binomial distribution.
 \[
@@ -763,7 +766,7 @@ There is also a drawback with this method: the combinatorics blow up with a high
 and for 300:
 \[ \binom{300}{3} = 4455100 \]
 
-So the runtime of the algorithm is roughly in the order of $\mathcal{O}(N^3)$ which can be easily seen when taking the upper bound of $\binom{N}{k} \leq \frac{N^k}{k!}$ and since $k=3$ then means $\frac{N^3}{3!}$ see figure \ref{fig:binom_growth}. 
+So the complexity of the algorithm is roughly in the order of $\mathcal{O}(N^3)$ which can be easily seen when taking the upper bound of $\binom{N}{k} \leq \frac{N^k}{k!}$ and since $k=3$ then means $\frac{N^3}{3!}$ see figure \ref{fig:binom_growth}. 
 \begin{figure}[ht]
 \centering
   \begin{tikzpicture}
@@ -788,7 +791,7 @@ So the runtime of the algorithm is roughly in the order of $\mathcal{O}(N^3)$ wh
     \end{axis}
 
   \end{tikzpicture}
-    \caption[Complexity of the combinatorial approach]{Scaling of the algorithm. Binomial Growth with $\binom{N}{3}$ compared with the approximation $\frac{N^3}{3!}$. So the algorithm runs in the order of $\mathcal{O}(n^3)$}
+    \caption[Complexity of the combinatorial triplet Hough transform]{Scaling of the algorithm. Binomial Growth with $\binom{N}{3}$ compared with the approximation $\frac{N^3}{3!}$. So the algorithm runs in the order of $\mathcal{O}(n^3)$}
   \label{fig:binom_growth}
 \end{figure}
 
@@ -921,7 +924,7 @@ But generalizing our assumption at the beginning $a_2 < b_2 < c_2$ we multiply t
 % chapter methods (end)
 \chapter{Results}
 \label{cha:results}
-In this section results for the conventional 1D, 2D, 3D Hough transform and the combinatorial approach are presented. 1D and 2D Hough transform
+In this section results for the conventional 1D, 2D, 3D Hough transform and the combinatorial triplet Hough transform are presented. 1D and 2D Hough transform
 have no real application for the RICH detector since neither the center nor the radius is known. Nonetheless they are presented here as they offer a nice
 way of understanding how each extra dimension expands the algorithm and also
 shows the flaws with each added dimension.
@@ -1116,7 +1119,7 @@ poses no problem but as pointed out before if the two circles had a
 
         \includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/projection/stacked_projection_9_2}%
         \includegraphics[width=0.5\textwidth]{sim_pics/2D_HT/projection/stacked_projection_9_1}
-        \caption{Two slices out of the 2D histogram. These 2D histograms are very similar to the radius histogram from the 1D HT
+        \caption[Two slices out of the 2D histogram]{Two slices out of the 2D histogram. These 2D histograms are very similar to the radius histogram from the 1D HT
         but now instead of the weights for the radius which is 1 dimensional the weights for $x,y$ are calculated which are
         2 dimensional}
 
@@ -1238,7 +1241,7 @@ unknown dimension adds to the complexity of finding circles.
         ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
         \subfloat[][5 circles, 30 background hits]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/result_5_circles_30_bg}}
-        \caption{Circles found by the 3D Hough transform. Figure~\ref{fig:3D_1c_600bg} shows that with a low enough signla/noise ratio even 
+        \caption[Circles found by the 3D Hough transform]{Circles found by the 3D Hough transform. Figure~\ref{fig:3D_1c_600bg} shows that with a low enough signla/noise ratio even 
         this seemingly simple event fails to be caluclated correctly. Even though the algorithm found the real circle it also found 22 others.\label{fig:2D_HT_results}}
 
         \subfloat[][1 circle, 600 background hits.]{\includegraphics[width=0.3\textwidth]{sim_pics/3D_HT/real_result_1_circle_600_bg}}
@@ -1260,20 +1263,20 @@ unknown dimension adds to the complexity of finding circles.
 \end{figure}
 
 
-\subsubsection{3D: Overview of the results} % (fold)
+\subsection{3D: Overview of the results} % (fold)
 \label{ssub:3d_overview_of_the_results}
 
 In general the 3D Hough transform works quite well. Even with the added complexity of an extra dimension it is capable to solve most
 events correctly. One event that failed was the 1 circle and 600 background example where the signal to noise ratio was just too small
 for the algorithm to isolate the correct solution. A way to ammend this particular case would be tuning the score threshold. The more background
-points there are the higher gets the 'background score' meaning score generated by only background hits. On the other hand the 3D Hough-
+points there are the higher gets the \emph{background score} meaning score generated by only background hits. On the other hand the 3D Hough-
 Transform managed to solve the 6 circles with 200 background hits despite having less information. This is probably due to the fact that 
 the 3D Hough transform finds the circles sorted by score and doesn't depend on the order in which circles are searched (remember, in the 
 2D case there is the radius given and depending on which radius is given first we can solve it correctly or not).
 
 % subsubsection 3d_overview_of_the_results (end)
 
-\subsubsection{Tuning the score parameter} % (fold)
+\subsection{Tuning the score parameter} % (fold)
 \label{ssub:tuning_background_score}
 As mentioned before one way to tune the 3D Hough transform is changing the score threshold. The problem with the example with 600 background
 is that too many background hits increase the overall score of the whole score matrix and fake circles above this threshold make it into 
@@ -1300,11 +1303,18 @@ The scores for each of the circles in this example are the following:
 
 % section 3d_hough_transform_results (end)
 
-\section{Combinatorial approach results} % (fold)
+\section{combinatorial triplet Hough transform results} % (fold)
 \label{sec:combinatorial_approach_results}
 
+\subsection{Overview of the results} % (fold)
+\label{sub:overview_of_the_results}
+
 This method was tested against a different set of events. 10'000 different events generated in an attempt to simulate LHCb data. First some 
-analysis on the data.
+analysis on the data. The whole set was tested several times, each time with a different threshold for the radius and center histograms. Each
+of this runs used the speed up method of splitting the data point list into two lists and build all the triplets from the sublists. The
+results show that this choice didn't hugely affect the efficiency as it is still very high ($98\%$ and higher).
+Once simulated the performance was evaluated with an analysis script to measure efficiency, ghost rate (along with missed circles and 
+fake circles).
 
 \begin{figure}[h]
   \centering
@@ -1325,8 +1335,9 @@ The the main parameters for this algorithm are
 The last two parameters are only parameters for the analysis to decide whether or not the algorithm has found a circle comparing radius
 and center coordinates with the test data and if a circle is within these bounds the circle will be considered as found. In a real application
 however, these parameters are useless because a priori there is no knowledge about the circles.
+% subsection overview_of_the_results (end)
 
-\subsubsection{Getting rid of duplicates} % (fold)
+\subsection{Getting rid of duplicates} % (fold)
 \label{ssub:getting_rid_of_duplicates}
 
 % subsubsection getting_rid_of_duplicates (end)
@@ -1341,7 +1352,7 @@ the result can be seen in Figure~\ref{fig:comb_ht_0009}
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\textwidth]{sim_pics/radius_histogram_0009}
-  \caption{Two almost adjacent bins with a high score\label{fig:2bins_highscore}. Apart from the very clear peak of two bins next to each
+  \caption[Histogram of duplicates]{Two almost adjacent bins with a high score\label{fig:2bins_highscore}. Apart from the very clear peak of two bins next to each
   other at $\approx 0.125$ with a score of 7000 and 6000 respectively, there are 3 smaller peaks separated by background bins. After picking
   up the highest peak at the score of 8000 and the neighbours left and right the next highest score is the one at roughly 3000. The algorithm
   also picks up the adjacent bins on the left and right but there are still peaks left that are above threshold.}
@@ -1430,8 +1441,9 @@ while len(sorted_results):
     res.append(circle)
 return res
 \end{lstlisting}
-\caption{Pseudo code for removing possible duplicates from the circles found by the algorithm. First results are sorted by their number of entries
-in the histogram so the most relevant comes first. \texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE} and \texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE} are 
+\caption[Pseudo code for removing possible duplicates]{Pseudo code for removing possible duplicates from the circles found by the algorithm. First results are sorted by their number of entries
+in the histogram so the least relevant comes first. If for a given circle another circle exists with the same center and radius (within the cuts)
+then the circle is considered a duplicate and will be removed. \texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE} and \texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE} are 
 parameters that can be tuned}\label{fig:dup_code}
 \end{figure}
 
@@ -1439,7 +1451,7 @@ parameters that can be tuned}\label{fig:dup_code}
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\textwidth]{sim_pics/Comb_HT/0009.pdf}
-  \caption{The result of the combinatorial approach before cleaning up the duplicates. Blue and purple are basically the same circle.}
+  \caption{The result of the combinatorial triplet Hough transform before cleaning up the duplicates. Blue and purple are basically the same circle.}
   \label{fig:comb_ht_0009}
 \end{figure}
 
@@ -1464,29 +1476,45 @@ than 12 points per circle.
   \label{fig:ratio_ppc}
 \end{figure}
 
-This gives the algorithm a upper boundary for the efficiency. No matter how accurate the algorithm is, if it doesn't consider circles below the
-threshold it will never find these. Thus the higher the needed number of points per circle is, the lower the efficiency
-will be. 
+This gives the algorithm a upper boundary for the efficiency (lower boundary of how many circles won't be found). No matter 
+how accurate the algorithm is, if it doesn't consider circles below the threshold it will never find these. Thus the higher 
+the needed number of points per circle is, the lower the efficiency will be. But the threshold is not necessarily the only
+factor for the lower boundry. Depending on how the radius and center cut is chosen - more circles can get lost because
+they get identified as duplicate when they are in fact just another distinct circle in the vicinity of another circle.
+
+The efficiency $\epsilon$ is defined as 
+\begin{equation}
+\eta = 1 - \frac{m}{T}    
+\end{equation}
+where $m$ is the number of circles that weren't matched by the algorithm and $T$ the combined number of circles from
+all events. The ghost rate $\gamma$ is defined as 
+\begin{equation}
+  \gamma = \frac{f}{T} 
+\end{equation}
+where $f$ is the number of fake circles that were found by the algorithm but have no match in the test data and $T$ again the
+total number of circles.
 
 \begin{table}[tb]
-  \caption{Efficiencies for different thresholds. The ghost efficiency explodes if the threshold is too low, that is when combinations
+  \caption[Efficiencies for different thresholds]{Efficiencies for different thresholds (radius and center cuts are fixed at $0.006$). The ghost efficiency explodes if the threshold is too low, that is when combinations
   from background/background, background/circle or circleA/circleB points classify as a circle}
   \label{tab:tablename}
   \centering
 
-  \begin{tabular}{lrrr}
+  \begin{tabular}{lcrcr}
   \toprule
-  \textbf{Threshold} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles}\\
+  \textbf{Threshold} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
   \midrule
-  20 & 97.22\% & 226\% & 1390 \\
-  35 & 97.20\% & 152\% & 1399 \\
-  56 & 97.17\% & 17\% & 1414 \\
-  84 & 97.11\% & 6.70\% & 1443 \\
-  165 & 96.76\% & 3.17\% & 1617 \\
-  220 & 96.40\% & 2.92\% & 1797 \\
+  20  & 99.99\% & 7 & 183.22\% & 91573 \\
+  35  & 99.98\% & 9 & 131.50\% & 65723 \\
+  56  & 99.97\% & 16 & 9.07\% & 4533 \\
+  84  & 99.92\% & 41 & 2.13\% & 1067 \\
+  165 & 99.57\% & 214 & 0.13\% & 66 \\
+  220 & 99.18\% & 410 & 0.05\% & 27 \\
+  286 & 98.43\% & 784 & 0.01\% & 4 \\
   \bottomrule
   \end{tabular}
 \end{table}
+
 % subsection different_thresholds (end)
 
 \subsection{Different cuts for circle selection} % (fold)
@@ -1500,6 +1528,7 @@ both to happen simultaneously seems rather unlikely so the loss of circle due to
 \subsubsection{Cut variation for a fixed threshold} % (fold)
 In tables \ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} different cut parameters were tested
 and compared for the efficiency, ghost rate, duplicate and missed circles.
+
 \label{ssub:cut_variation_for_a_fixed_threshold}
 \begin{table}[htbp]
   \caption{Reducing ghost rate for a fixed radius cut (0.003) with varying center cut. The tighter the center cut is
@@ -1507,15 +1536,14 @@ and compared for the efficiency, ghost rate, duplicate and missed circles.
   \label{tab:cut_variation_1}
   \centering
 
-  \begin{tabular}{lrrrr}
+  \begin{tabular}{lcrcr}
   \toprule
-  \textbf{Center cut} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles} & \textbf{Dup. circles}\\
+  \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
   \midrule
-    0.001 & 96.68\% & 3.72\% & 1794 & 1859\\
-    0.002 & 96.42\% & 3.21\% & 1794 & 1605\\ 
-    0.003 & 96.41\% & 2.97\% & 1795 & 1483\\
-    0.004 & 96.41\% & 2.94\% & 1796 & 1469\\
-    0.005 & 96.40\% & 2.94\% & 1797 & 1467\\
+  0.003 & 99.19\% & 405 & 0.17\% & 86 \\
+  0.006 & 99.19\% & 407 & 0.12\% & 62 \\
+  0.009 & 99.18\% & 409 & 0.12\% & 60 \\
+  0.012 & 99.17\% & 415 & 0.12\% & 60 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -1526,79 +1554,174 @@ and compared for the efficiency, ghost rate, duplicate and missed circles.
   \label{tab:cut_variation_2}
   \centering
 
-  \begin{tabular}{lrrrr}
+  \begin{tabular}{lcrcr}
   \toprule
-  \textbf{Radius cut} & \textbf{Efficiency} & \textbf{Ghost rate} & \textbf{Missed circles} & \textbf{Dup. circles}\\
+  \textbf{$R$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
   \midrule
-    0.001 & 101.34\% & 6.23\% & 956 & 3112\\
-    0.002 & 100.65\% & 5.76\% & 1049 & 2879\\ 
-    0.003 & 96.41\% & 2.97\% & 1795 & 1483\\
-    0.004 & 96.41\% & 2.93\% & 1795 & 1465\\
-    0.005 & 96.41\% & 2.92\% & 1796 & 1461\\
-    0.006 & 96.40\% & 2.92\% & 1797 & 1459\\
+  0.003 & 99.19\% & 405 & 0.17\% & 86 \\
+  0.006 & 99.19\% & 405 & 0.15\% & 77 \\
+  0.009 & 99.19\% & 405 & 0.15\% & 77 \\
+  0.012 & 99.19\% & 405 & 0.15\% & 76 \\
   \bottomrule
   \end{tabular}
 \end{table}
 
 What both tables show that there is only a limited sensitivity to a single parameter change. So in the following
-table there is all the possible combinations for different cuts for both radius and center ranging from 0.001 to
-0.008.
-  \begin{longtable}{llrrrrr}
-  \caption{Results for all the cut combinations for radius and center cuts. It can be very well seen that}\\
-  \toprule
-  \textbf{$R$ cut} & \textbf{$C$ cut} & \textbf{Eff.} & \textbf{Ghost} & \textbf{Missed} & \textbf{Dup.} & \textbf{Fakes} \\
-  \midrule
-0.001 & 0.001 & 101.48\% & 6.47\% & 955 & 3236 & 1561 \\
-0.001 & 0.002 & 101.26\% & 6.42\% & 993 & 3210 & 1485 \\
-0.001 & 0.003 & 101.22\% & 6.35\% & 1010 & 3174 & 1481 \\
-0.001 & 0.004 & 101.22\% & 6.33\% & 1010 & 3165 & 1481 \\
-0.001 & 0.005 & 101.22\% & 6.32\% & 1010 & 3160 & 1480 \\
-0.001 & 0.006 & 101.21\% & 6.32\% & 1012 & 3159 & 1480 \\
-0.001 & 0.007 & 101.21\% & 6.32\% & 1012 & 3158 & 1480 \\
-0.002 & 0.001 & 100.67\% & 6.22\% & 1124 & 3108 & 1311 \\
-0.002 & 0.002 & 100.38\% & 6.16\% & 1187 & 3081 & 1234 \\
-0.002 & 0.003 & 100.32\% & 6.09\% & 1212 & 3045 & 1228 \\
-0.002 & 0.004 & 100.32\% & 6.07\% & 1213 & 3034 & 1228 \\
-0.002 & 0.005 & 100.32\% & 6.06\% & 1213 & 3029 & 1227 \\
-0.002 & 0.006 & 100.32\% & 6.06\% & 1215 & 3028 & 1227 \\
-0.002 & 0.007 & 100.32\% & 6.06\% & 1215 & 3028 & 1227 \\
-0.003 & 0.001 & 95.87\% & 4.53\% & 2201 & 2265 & 99 \\
-0.003 & 0.002 & 95.21\% & 4.44\% & 2397 & 2218 & 4 \\
-0.003 & 0.003 & 95.04\% & 4.35\% & 2480 & 2174 & 0 \\
-0.003 & 0.004 & 95.02\% & 4.33\% & 2490 & 2163 & 0 \\
-0.003 & 0.005 & 95.01\% & 4.31\% & 2492 & 2155 & 0 \\
-0.003 & 0.006 & 95.01\% & 4.31\% & 2493 & 2154 & 0 \\
-0.003 & 0.007 & 95.01\% & 4.31\% & 2493 & 2153 & 0 \\
-0.004 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
-0.004 & 0.002 & 95.21\% & 4.43\% & 2399 & 2214 & 4 \\
-0.004 & 0.003 & 95.02\% & 4.34\% & 2491 & 2169 & 0 \\
-0.004 & 0.004 & 94.98\% & 4.31\% & 2509 & 2156 & 0 \\
-0.004 & 0.005 & 94.97\% & 4.30\% & 2514 & 2148 & 0 \\
-0.004 & 0.006 & 94.96\% & 4.30\% & 2517 & 2147 & 0 \\
-0.004 & 0.007 & 94.96\% & 4.29\% & 2518 & 2145 & 0 \\
-0.005 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
-0.005 & 0.002 & 95.21\% & 4.43\% & 2399 & 2214 & 4 \\
-0.005 & 0.003 & 95.02\% & 4.33\% & 2491 & 2164 & 0 \\
-0.005 & 0.004 & 94.98\% & 4.31\% & 2509 & 2152 & 0 \\
-0.005 & 0.005 & 94.97\% & 4.29\% & 2516 & 2144 & 0 \\
-0.005 & 0.006 & 94.96\% & 4.28\% & 2521 & 2141 & 0 \\
-0.005 & 0.007 & 94.95\% & 4.28\% & 2523 & 2139 & 0 \\
-0.006 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
-0.006 & 0.002 & 95.21\% & 4.43\% & 2399 & 2212 & 4 \\
-0.006 & 0.003 & 95.02\% & 4.33\% & 2491 & 2162 & 0 \\
-0.006 & 0.004 & 94.98\% & 4.30\% & 2509 & 2150 & 0 \\
-0.006 & 0.005 & 94.96\% & 4.29\% & 2517 & 2143 & 0 \\
-0.006 & 0.006 & 94.94\% & 4.28\% & 2528 & 2138 & 0 \\
-0.006 & 0.007 & 94.93\% & 4.27\% & 2532 & 2135 & 0 \\
-0.007 & 0.001 & 95.87\% & 4.53\% & 2201 & 2264 & 99 \\
-0.007 & 0.002 & 95.21\% & 4.43\% & 2399 & 2212 & 4 \\
-0.007 & 0.003 & 95.02\% & 4.33\% & 2491 & 2162 & 0 \\
-0.007 & 0.004 & 94.98\% & 4.30\% & 2509 & 2150 & 0 \\
-0.007 & 0.005 & 94.96\% & 4.29\% & 2517 & 2142 & 0 \\
-0.007 & 0.006 & 94.94\% & 4.27\% & 2529 & 2136 & 0 \\
-0.007 & 0.007 & 94.93\% & 4.27\% & 2534 & 2132 & 0 \\
-  \bottomrule
-  \end{longtable}
+tables there is all the possible combinations for different cuts for both radius and center ranging from 0.003 to
+0.0012 in steps of $0.003$ for different thresholds. 
+
+\newpage
+\begin{longtable}{llcrcr}
+\caption{Results for all the cut combinations for radius and center cuts}\\
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 35} (7 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run03
+0.003 & 0.003 & 99.99\% & 4 & 178.96\% & 89444 \\
+0.003 & 0.006 & 99.99\% & 6 & 151.62\% & 75777 \\
+0.003 & 0.009 & 99.98\% & 8 & 144.59\% & 72264 \\
+0.003 & 0.012 & 99.97\% & 13 & 140.88\% & 70408 \\
+0.006 & 0.003 & 99.99\% & 4 & 174.01\% & 86968 \\
+0.006 & 0.006 & 99.98\% & 9 & 131.50\% & 65723 \\
+0.006 & 0.009 & 99.96\% & 19 & 118.91\% & 59432 \\
+0.006 & 0.012 & 99.94\% & 28 & 113.54\% & 56745 \\
+0.009 & 0.003 & 99.99\% & 4 & 173.53\% & 86729 \\
+0.009 & 0.006 & 99.98\% & 12 & 130.54\% & 65244 \\
+0.009 & 0.009 & 99.95\% & 25 & 112.21\% & 56079 \\
+0.009 & 0.012 & 99.93\% & 36 & 103.50\% & 51727 \\
+0.012 & 0.003 & 99.99\% & 4 & 173.30\% & 86612 \\
+0.012 & 0.006 & 99.97\% & 15 & 130.26\% & 65103 \\
+0.012 & 0.009 & 99.94\% & 32 & 111.64\% & 55795 \\
+0.012 & 0.012 & 99.91\% & 47 & 99.85\% & 49902 \\
+\bottomrule
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 56} (8 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run02
+0.003 & 0.003 & 99.98\% & 11 & 20.54\% & 10264 \\
+0.003 & 0.006 & 99.97\% & 13 & 14.52\% & 7255 \\
+0.003 & 0.009 & 99.97\% & 15 & 13.59\% & 6792 \\
+0.003 & 0.012 & 99.96\% & 21 & 13.24\% & 6616 \\
+0.006 & 0.003 & 99.98\% & 11 & 19.23\% & 9611 \\
+0.006 & 0.006 & 99.97\% & 16 & 9.07\% & 4533 \\
+0.006 & 0.009 & 99.95\% & 26 & 7.29\% & 3641 \\
+0.006 & 0.012 & 99.93\% & 35 & 6.82\% & 3409 \\
+0.009 & 0.003 & 99.98\% & 11 & 19.14\% & 9568 \\
+0.009 & 0.006 & 99.96\% & 19 & 8.91\% & 4454 \\
+0.009 & 0.009 & 99.94\% & 32 & 5.90\% & 2950 \\
+0.009 & 0.012 & 99.91\% & 43 & 4.94\% & 2467 \\
+0.012 & 0.003 & 99.98\% & 11 & 19.10\% & 9544 \\
+0.012 & 0.006 & 99.96\% & 22 & 8.87\% & 4432 \\
+0.012 & 0.009 & 99.92\% & 39 & 5.81\% & 2906 \\
+0.012 & 0.012 & 99.89\% & 54 & 4.29\% & 2143 \\
+\bottomrule
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 84} (9 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run01
+0.003 & 0.003 & 99.93\% & 36 & 5.82\% & 2911 \\
+0.003 & 0.006 & 99.92\% & 38 & 4.00\% & 1999 \\
+0.003 & 0.009 & 99.92\% & 40 & 3.80\% & 1900 \\
+0.003 & 0.012 & 99.91\% & 46 & 3.72\% & 1861 \\
+0.006 & 0.003 & 99.93\% & 36 & 5.37\% & 2682 \\
+0.006 & 0.006 & 99.92\% & 41 & 2.13\% & 1067 \\
+0.006 & 0.009 & 99.90\% & 51 & 1.66\% & 830 \\
+0.006 & 0.012 & 99.88\% & 60 & 1.57\% & 787 \\
+0.009 & 0.003 & 99.93\% & 36 & 5.34\% & 2671 \\
+0.009 & 0.006 & 99.91\% & 44 & 2.09\% & 1044 \\
+0.009 & 0.009 & 99.89\% & 57 & 1.27\% & 636 \\
+0.009 & 0.012 & 99.86\% & 68 & 1.07\% & 534 \\
+0.012 & 0.003 & 99.93\% & 36 & 5.33\% & 2665 \\
+0.012 & 0.006 & 99.91\% & 47 & 2.08\% & 1040 \\
+0.012 & 0.009 & 99.87\% & 64 & 1.25\% & 626 \\
+0.012 & 0.012 & 99.84\% & 79 & 0.88\% & 439 \\
+\bottomrule
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 165} (11 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run05
+0.003 & 0.003 & 99.58\% & 209 & 0.48\% & 238 \\
+0.003 & 0.006 & 99.58\% & 211 & 0.32\% & 162 \\
+0.003 & 0.009 & 99.57\% & 213 & 0.31\% & 156 \\
+0.003 & 0.012 & 99.56\% & 219 & 0.31\% & 155 \\
+0.006 & 0.003 & 99.58\% & 209 & 0.42\% & 209 \\
+0.006 & 0.006 & 99.57\% & 214 & 0.13\% & 66 \\
+0.006 & 0.009 & 99.55\% & 224 & 0.10\% & 50 \\
+0.006 & 0.012 & 99.53\% & 233 & 0.10\% & 49 \\
+0.009 & 0.003 & 99.58\% & 209 & 0.42\% & 209 \\
+0.009 & 0.006 & 99.57\% & 217 & 0.13\% & 64 \\
+0.009 & 0.009 & 99.54\% & 230 & 0.07\% & 34 \\
+0.009 & 0.012 & 99.52\% & 241 & 0.05\% & 26 \\
+0.012 & 0.003 & 99.58\% & 209 & 0.42\% & 208 \\
+0.012 & 0.006 & 99.56\% & 220 & 0.13\% & 64 \\
+0.012 & 0.009 & 99.53\% & 237 & 0.07\% & 34 \\
+0.012 & 0.012 & 99.50\% & 252 & 0.04\% & 18 \\
+\bottomrule
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 220} (12 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run06
+0.003 & 0.003 & 99.19\% & 405 & 0.17\% & 86 \\
+0.003 & 0.006 & 99.19\% & 407 & 0.12\% & 62 \\
+0.003 & 0.009 & 99.18\% & 409 & 0.12\% & 60 \\
+0.003 & 0.012 & 99.17\% & 415 & 0.12\% & 60 \\
+0.006 & 0.003 & 99.19\% & 405 & 0.15\% & 77 \\
+0.006 & 0.006 & 99.18\% & 410 & 0.05\% & 27 \\
+0.006 & 0.009 & 99.16\% & 420 & 0.04\% & 21 \\
+0.006 & 0.012 & 99.14\% & 429 & 0.04\% & 21 \\
+0.009 & 0.003 & 99.19\% & 405 & 0.15\% & 77 \\
+0.009 & 0.006 & 99.17\% & 413 & 0.05\% & 25 \\
+0.009 & 0.009 & 99.15\% & 426 & 0.02\% & 11 \\
+0.009 & 0.012 & 99.13\% & 437 & 0.02\% & 9 \\
+0.012 & 0.003 & 99.19\% & 405 & 0.15\% & 76 \\
+0.012 & 0.006 & 99.17\% & 416 & 0.05\% & 25 \\
+0.012 & 0.009 & 99.13\% & 433 & 0.02\% & 11 \\
+0.012 & 0.012 & 99.10\% & 448 & 0.01\% & 6 \\
+\bottomrule
+\toprule
+\multicolumn{6}{c}{\textbf{Threshold = 286} (13 points for a circle)}\\
+\midrule
+\textbf{$R$ cut} & \textbf{$C$ cut} & $\boldsymbol{\epsilon}$ & \textbf{Missed} & $\boldsymbol{\gamma}$ & \textbf{Fakes} \\
+\midrule
+%run07
+0.003 & 0.003 & 98.44\% & 779 & 0.05\% & 25 \\
+0.003 & 0.006 & 98.44\% & 781 & 0.03\% & 17 \\
+0.003 & 0.009 & 98.43\% & 783 & 0.03\% & 16 \\
+0.003 & 0.012 & 98.42\% & 789 & 0.03\% & 16 \\
+0.006 & 0.003 & 98.44\% & 779 & 0.04\% & 21 \\
+0.006 & 0.006 & 98.43\% & 784 & 0.01\% & 4 \\
+0.006 & 0.009 & 98.41\% & 794 & 0.01\% & 3 \\
+0.006 & 0.012 & 98.39\% & 803 & 0.01\% & 3 \\
+0.009 & 0.003 & 98.44\% & 779 & 0.04\% & 21 \\
+0.009 & 0.006 & 98.43\% & 787 & 0.01\% & 4 \\
+0.009 & 0.009 & 98.40\% & 800 & 0.00\% & 2 \\
+0.009 & 0.012 & 98.38\% & 811 & 0.00\% & 2 \\
+0.012 & 0.003 & 98.44\% & 779 & 0.04\% & 21 \\
+0.012 & 0.006 & 98.42\% & 790 & 0.01\% & 4 \\
+0.012 & 0.009 & 98.39\% & 807 & 0.00\% & 2 \\
+0.012 & 0.012 & 98.36\% & 822 & 0.00\% & 2 \\
+\bottomrule
+\end{longtable}
+
+These results show that the biggest influence for changing the ghost rate is adapting the
+threshold for the combinations. If the threshold is too low, too many contributions come from
+random point combination that happen to lie on some circle.
+
+The main reason for missed circles is again the threshold since it limits the number of circles
+being found as circles only if their number of points is greater or equal than the threshold. And
+since the algorithm uses split lists the number of missed circles is even slightly higher due to the
+fact that sometimes the points of a circle can be split just in a way that the two lists don't
+contain enough points individually to create an accepted circle (see subsection \ref{sub:different_thresholds}).
 % subsubsection cut_variation_for_a_fixed_threshold (end)
 % subsection different_cuts_for_circle_selection (end)
 % section combinatorial_approach_results (end)
@@ -1614,6 +1737,37 @@ This thesis was studying different Hough transforms for circle detection. In a f
 dimensions.
 As a fourth and final approach a new method was developped for the circle detection. 
 
+The 1D Hough transform is a very stable method having no troubles to find different circles in different kinds of set ups. Even a high background
+doesn't impede the accuracy of the method. It is also a very fast since it only has to search one dimension for a circle.
+This method is similar to the one used at LHCb (although a lot simpler presented here in this thesis).
+
+The 2D Hough transform shows a good performance as well but it suffers from lower speed due to the increased complexity namely searching
+2 dimension for the parameters instead of just one. Another problem is also the misidentification of circles based on the order in which
+they are searched for and also the sensitivity of the weight function used the weigh the centers for a given data points and radius.
+As the 1D Hough transform this is a very simplistic implementation and should have a lot of potential to improve, one improvement being to
+limit the range of where a potential center is searched for based on cuts (e.g. a center cannot have a radius $>0.30$ which then would reduce
+the amount of grid points that have to be weighed per data point).
+
+The 3D Hough transform has another dimension added since now is nothing known about the circles and it shows in the results. The main weakness
+of this method is the score threshold which tells the algorithm when to stop looking for a circle (The 1D and 2D transform didn't
+have this problem since due to the information given it was known, how many circles there were. If the threshold is too low, too many 
+background hits can form a circle - if it's too high a valid circle might get lost. The difficulty in defining a score threshold is 
+that it is based on the scoring function \ref{eq:weight_function}. Depending on the $\sigma$ chosen the scoring function can behave
+quite differently. A problem related to that is that the 3D Hough transform strongly depends on the bin size of the parameter space.
+The bins shouldn't be too big or the algorithm becomes inaccurate because the scoring function uses inaccurate values. If the bins are too
+small, the algorithm takes forever due to the $\mathcal{O}(N^3)$ complexity. But the disadvantage can also have advantages because
+now the algorithm doesn't depend anymore on the order of which it looks for circles - it always picks the strongest candidates first
+and every subsequent candidate has a lower score until the score is so low that it's unlikely that it is a circle.
+
+Finally the core component of this thesis the combinatorial triplet Hough transform. It is based on the fact that 3 points define a circle.
+Given 3 points in a 2D space it is possible to calculate the center and radius of the circle on which these 3 points lie on. Given a list
+of points a list of all possible triplets can be used to find possible circles. The algorithm works very well and maintains a high efficiency
+with all tested parameters but suffers as the 3D Hough transform from a high runtime (up to several minutes). However given the high accuracy
+of the algorithm (binning has almost no effect) makes this approach still very fascinating and offers maybe some potential for the future.
+The parameter with the biggest impact is the threshold which defines how many points need to lie on a circle in order to qualify as a 
+circle candidate. Choosing this threshold too low many fake circles appear and the ghost rate skyrockets. Choosing this threshold too high
+means an inherent loss of efficiency from which the algorithm can never recover since circles with a point count lower than the threshold
+will never be considered as a candidate.
 % chapter conclusions (end)
 
 \printbibliography
