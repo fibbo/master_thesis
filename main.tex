@@ -8,7 +8,7 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{amssymb}
-\usepackage[bibencoding=utf8, backend=biber, style=numeric, minbibnames=1, maxnames=5]{biblatex}
+\usepackage[bibencoding=utf8, backend=biber, style=numeric-comp, sorting=none, minbibnames=1, maxnames=5]{biblatex}
 \addbibresource{bibliography.bib}
 \usepackage{a4,color}
 \usepackage{tikz}
@@ -25,6 +25,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{subfig}
+\usepackage[top=3.5cm, bottom=3.7cm, left=3cm, right=3cm]{geometry}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -85,13 +86,52 @@ showstringspaces=false            %
 
 \begin{document}
 
+
+\begin{titlepage}
+  \includegraphics[width=0.4\textwidth]{pics/UZH_Logo_e_EPS/uzh_logo_e_pos.pdf}
+  \vspace{1cm}
+
+  \Huge\centering New Approach to the Circle Hough Transform for the LHC\textit{b} for Detecting
+        Cherenkov Rings in the RICH detector
+
+  \noindent\makebox[\textwidth]{\rule{\textwidth}{0.4pt}}
+
+\vspace{1cm}
+
+{\centering
+  \Large Master thesis\\
+  of\\
+  Philipp Gloor
+  \vspace{1.5cm}
+
+  \Large Mathematisch-naturwissenschaftliche Fakultät\\
+  der\\
+  Universität Zürich
+  \vspace{2cm}
+
+  \Large Prof. Dr. U. Straumann\\
+  Prof. Dr. P. Saha\\
+  Dr. O. Steinkamp\\
+\vspace*{\fill}
+\Large Zürich 2016
+
+
+  }
+\end{titlepage}
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-This thesis studies algorithms for the detection of circles which are produced by particles travelling through the RICH detectors generating Cheren-kov radiation.
-These circles can be detected with the help of the Hough transform. There is a short introduction to the linear Hough transform (which detects straight lines) to give a rough idea about what the Hough transform can do. Then there is a brief look at the circle Hough transform (which detects circles). This part is split in 3 sections, the 1D, 2D and 3D Hough transform. The 1D Hough transform is used when the center is given and the radius needs to be found. The 2D Hough transform looks for circle centers ($(x,y)$ coordinate) for a given radius. The
-3D Hough transform is used when neither center nor radius are known. This is also the case for the data from LHCb where there are data points (signal and noise) and the algorithm has to find all the circles.
+This thesis explores possible algorithms for the detection of circles of Cherenkov photons which are produced by particles 
+travelling through a RICH detectors in the LHC\textit{b} experiment. These circles can be detected with the help of a Hough 
+transform. There is a short introduction to the linear Hough transform (which detects straight lines) to give a rough idea about 
+what the Hough transform can do. Then there is a brief look at the circle Hough transform (which detects circles). This part is 
+split in 3 sections, discussing 1D, 2D and 3D Hough transforms. The 1D Hough transform can be used when the center is given and the radius 
+needs to be found. The 2D Hough transform looks for the position of circle centers ($(x,y)$ coordinate) for a given radius. 
+The 3D Hough transform is used when neither center nor radius are known. This is the case for the data from LHC\textit{b} 
+where there are data points (photons from several circles and noise hits) and the algorithm has to find all the circles.
 
-Apart from the standard Hough transform with a 3D accumulator space this thesis develops a new approach for a Hough transform. This approach works on the basis that each circle is defined by 3 points. Given 3 points one can calculate the circumcenter (so the circle center we are intersted in) and the radius of the circumcircle.
+Apart from the standard Hough transform with a 3D accumulator space this thesis develops a new approach for a Hough transform. 
+This approach works on the basis that each circle is defined by 3 points. Given 3 points one can calculate the circumcenter 
+(so the center of the circle we are intersted in) and the radius of the circumcircle.
 
 \tableofcontents
 \listoftables
@@ -100,36 +140,54 @@ Apart from the standard Hough transform with a 3D accumulator space this thesis 
 \chapter{Introduction}
 \section{LHC - Large Hadron Collider} % (fold)
 \label{sec:lhc_large_hadron_collider}
-\begin{figure}[b]
+\begin{figure}[htb]
   \centering
   \includegraphics[width=0.6\textwidth]{pics/lhc}
-  \caption{The LHC ring with its 4 experiments: ATLAS, CMS, ALICE and LHCb}
+  \caption{The LHC ring with its 4 experiments: ATLAS, CMS, ALICE and LHC\textit{b}}
   \label{fig:lhc}
 \end{figure}
 
-The Large Hadron Collider (LHC) is a proton-proton collider. It is the largest and highest-energy particle accelerator in the world. It was built by the European Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle physics, and in particular for the search of the Higgs boson (which has been confirmed last year) and signs for new physics beyond the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and 100\,m below the surface of the French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. The accelerator has been running with a center of mass energy $\sqrt{s} = 13$ TeV since 20 May 2015.
+The Large Hadron Collider (LHC) is the largest and highest-energy particle accelerator in the world colliding protons on protons
+at beam energies of up to $16.5$\,TeV and lead ions at beam energies up to $5.5$\,GeV/nucleon. It was built by the European 
+Organisation for Nuclear Research from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle 
+physics, in particular for the search of the Higgs boson (which has been confirmed last year) and signs for new physics beyond 
+the Standard Model of particle physics. The LHC lies in a tunnel 27\,km in circumference and up to 100\,m below the surface of the 
+French-Swiss border near Geneva. The LHC was built in collaboration with over 10000 scientists and engineers from over 100 countries. 
+The accelerator has been running with a center of mass energy $\sqrt{s} = 13$ TeV since 20 May 2015.
 
+The LHC consists of 4 large experiments \parencite{Aad2008,Aamodt2008,AlvesJr2008,Collaboration2008}:
 
-The core physics programm for the period 2014-2015 includes:
-
-\begin{itemize}
-  \item <COMMENT: PROGRAM>
-\end{itemize}
+\paragraph{ATLAS/CMS}
+  \begin{itemize}
+    \item The two multi-purpose experiments at the LHC probing $p-p$ and heavy ions for direct searches of new particles.
+  \end{itemize}
+\paragraph{ALICE}
+  \begin{itemize}
+    \item ALICE (A Large Ion Collider Experiment) is a general-purpose, heavy ion detector at the CERN LHC
+    which focuses on QCD, the strong interaction sector of the Standard Model e.g. for evidence for quark-gluon
+    plasma.
+  \end{itemize}
+\paragraph{LHC\textit{b}}
+  \begin{itemize}
+    \item LHC\textit{b} is testing the Standard Model by confronting predictions with its precise measurements in CP
+    violation and rare decays of particles containing $b$ and $c$ quarks.
+  \end{itemize}
 
 
 
 % section lhc_large_hadron_collider (end)
 
-\section{LHCb}
+\section{LHC\textit{b}}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=\textwidth]{pics/lhcb_detector}
-  \caption{LHCb Detector: RICH1 before the magnet and RICH2 after the magnet with silicon strip detector in between and muon and calorimeter at the end.}
+  \caption{LHC\textit{b} Detector: The beams collide inside the Vertex Locator. The RICH1 is positioned before the tracking station (TT) and
+  the magnet. RICH2 is set up after the magnet and the silicon trackers (T1-T3) and before the muon and calorimeter (M1-M5)}
   \label{fig:lhcb}
 \end{figure}
 
-The LHCb is one of the four big experiments conducted at the LHC (ATLAS, CMS and ALICE being the other 3). The aim of this experiment is the study of decays of particles containing $b$ and $\bar{b}$ particles (B-Mesons). During collisions these particles don't fly in all direction but rather stay close to the beam pipe. This is reflected in the design of the LHCb detector which is a foward arm spectrometer 20 meters long with subdetectors along the beam pipe as seen in figure \ref{fig:lhcb}.
+The LHC\textit{b} is one of the four big experiments conducted at the LHC (ATLAS, CMS and ALICE being the other 3). The aim of this experiment is the study of decays of particles containing $b$ and $\bar{b}$ particles (B-Mesons). During collisions these particles don't fly in all direction but rather stay close to the beam pipe. This is reflected in the design of the LHC\textit{b} detector which is a foward arm spectrometer 20 meters long with subdetectors along the beam pipe as seen in figure \ref{fig:lhcb}.
 
 A quick overview of the detector parts \parencite{lhcbweb}.
 
@@ -147,15 +205,15 @@ thus allowing to determine the charge sign of the particle. Also the track curva
 \paragraph{Calorimeters} They are designed to stop particles and measing the amount of energy lost while coming to a halt. The design of the stations is sandwich like. One metal plate and one plastic plate. A particle hitting the metal plate causes a secondary shower which induces a UV light in the plastic plate. The energy lost is proportional to the amount of light emmitted. It is the main way of identifying particles with no charge (e.g. photons, neutrons).
 
 \paragraph{Muon system}
-Muons are present in the final stage of B decays and thus important for the LHCb experiment. There are 5 rectangular stations increasing in size at the end of the detector. The total area covered by these stations is about $435$\,m$^2$. Each station is filled with a combination of 3 gases. Passing muons react with this mixture and wire electrodes detect the result.
-% The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHCb} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
+Muons are present in the final stage of B decays and thus important for the LHC\textit{b} experiment. There are 5 rectangular stations increasing in size at the end of the detector. The total area covered by these stations is about $435$\,m$^2$. Each station is filled with a combination of 3 gases. Passing muons react with this mixture and wire electrodes detect the result.
+% The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHC\textit{b}} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
 
 
 \subsection{Particle identification} % (fold)
 \label{sub:particle_identification}
-An important requirement at LHCb is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
+An important requirement at LHC\textit{b} is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
 
-Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHCb RICH system provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
+Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHC\textit{b} RICH system provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
 
 
 % subsection particle_identification (end)
@@ -203,8 +261,8 @@ which is independent of time.
 \section{RICH detector} % (fold)
 \label{sec:rich_detector}
 
-Particle identification is a fundamental requirement at the LHCb experiment. Meaningful CP-violation measurements are only possible if hadron identification is available hence the ability to distinguish between kaons and pions is  essential.
-The LHCb experiment is unique in the sense that its hadronic particle identification is handled only by the RICH sub-detectors. This means -- as mentioned before -- that the RICH has to cover a wide range of momentum (1-100 $\text{GeV}/c$).
+Particle identification is a fundamental requirement at the LHC\textit{b} experiment. Meaningful CP-violation measurements are only possible if hadron identification is available hence the ability to distinguish between kaons and pions is  essential.
+The LHC\textit{b} experiment is unique in the sense that its hadronic particle identification is handled only by the RICH sub-detectors. This means -- as mentioned before -- that the RICH has to cover a wide range of momentum (1-100 $\text{GeV}/c$).
 
 Both sub-detectors are located in low magnetic field regions to keep the tracks straight while they pass through the radiators. They both 
 also have a tilted spherical focusing primary mirror and a secondary flat mirror to limit the length of the detector along the beam pipe.
@@ -305,7 +363,7 @@ There are two data sets used for this thesis. One was the training data set of 2
 individual events and a total of 49979 circles across all events. The properties of these events (radius, number of points per circle, number of circles per event) are taken from simulation and data.
 
 The number of points per circle is determined by the photoelecton yield N$_\text{pe}$. It is measured for both \emph{normal} events and \emph{ideal}
-events. The normal event is representative of nominal RICH running conditions during LHCb physics detector operations. The ideal event is
+events. The normal event is representative of nominal RICH running conditions during LHC\textit{b} physics detector operations. The ideal event is
 a special event type with very low background hits \cite{RICHPerf2012}.
 
 \begin{table}[tb]
@@ -360,7 +418,7 @@ have a radius that is smaller than $0.15$\,m.
 
 \section{Existing algorithm} % (fold)
 \label{sub:existing_algorithm}
-There is already an algorithm in place in LHCb. The disadvantage of the existing algorithm is due to the fact that it
+There is already an algorithm in place in LHC\textit{b}. The disadvantage of the existing algorithm is due to the fact that it
 uses tracks to reconstruct the circles. All charged tracks that are reconstructed by the tracking system are reflected at
 the RICH mirrors in order to give a center for a Cherenkov ring. In order to match tracks with rings each ring is matched
 with the track that has its position closest to the center of the ring. This means that this method uses information from
@@ -873,9 +931,11 @@ than 50\% chance that we lose no information once a circle has 13 points.
 
 \subsection{Possible optimisation: average radius of random circles in a unit square} % (fold)
 \label{ssub:average_radius_of_random_circles_in_a_unit_square}
-An interesting property of calculating the radius of triplets generated from points that are distributed uniformely is that they always obey a certain shape.
+An interesting property of calculating the radius of triplets generated from points that are distributed uniformely in the unit square is 
+that they always obey a certain shape.
 
-First we calculate the expected area of a triangle formed by three points randomly chosen from the unit square\footnote{This proof is taken from \cite{Blatter:2015}}. Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
+To prove this the expected area of a triangle formed by three points randomly chosen from the unit square\footnote{This proof is taken
+from \cite{Blatter:2015}} has to be calculated. Let \( A = (a_1, a_2),\ B = (b_1, b_2),\ C = (c_1, c_2)\) be the vertices of the random triangle \( T \). We consider the case where \( a_2
 > b_2 > c_2 \) which takes $\frac{1}{6}$ of the total ``Volume''. Fix \( a_2, b_2, c_2 \) for the moment and we can write.
 \[
   b_2 = (1-t)a_2 + tc_2, \qquad 0 \leq t \leq 1.
@@ -904,6 +964,38 @@ This gives
 \]
 But generalizing our assumption at the beginning $a_2 < b_2 < c_2$ we multiply this result by $6$ and obtain then $\frac{11}{144}$.
 
+From \cite{Weisstein2016} follows that the average area of a triangle in a unit circle is $\frac{3}{2\pi}$ so dividing this area by the
+area of the unit circle gives the expected area covered by a triangle in an arbitrary circle
+
+\[
+\frac{\text{Expected area of a triangle in a unit circle}}{\text{Area of the unit circle}} = \underbrace{\frac{\frac{3}{2\pi}}{\pi r^2}}_{r=1} = \frac{3}{2\pi^2}
+\]
+
+So finally the average area of a random circle can be obtained by dividing the average area of a triangle from the unit square by expected
+area covered by a triangle in an arbitrary circle so essentially the average area of a random circle within the unit square:
+
+\[
+  \frac{\frac{11}{144}}{\frac{3}{2\pi^2}} = \frac{11\pi^2}{216}
+\]
+
+This should be equal to $\pi R^2$ where $R$ is the average radius of a random circle in the unit cube
+
+\begin{align}
+  R\pi^2 &= \frac{11\pi^2}{216}\nonumber\\
+  R &= \sqrt{\frac{11\pi}{216}} = 0.399986\nonumber
+\end{align}
+
+Generating a random background and then plotting the radius histogram for this data set shows that there is indeed a peak around
+ $R\approx 0.4$.
+
+ \begin{figure}[tb]
+   \centering
+   \includegraphics[width=0.8\textwidth]{sim_pics/background_radius_for_diff_background}
+   \caption[Radius distribution for background]{Radius distribution for uniformly generated background. The expected value of $R\approx 0.4$
+   is quite well represented for differently sized data sets}
+   \label{fig:rad_dist}
+ \end{figure}
+
 % subsubsection average_radius_of_random_circles_in_a_unit_square (end)
 % chapter methods (end)
 \chapter{Results}
@@ -916,7 +1008,7 @@ shows the flaws with each added dimension.
 For the 1D and 2D Hough transform very simple data data was used. There were 
 no physical constraints when generating the circles and their point/circle
 or also their radius distribution doesn't reflect the real data obtained
-by LHCb.
+by LHC\textit{b}.
 
 \section{1D Hough transform results} % (fold)
 \label{sec:1d_hough_transform_results}
@@ -1272,7 +1364,7 @@ the result.
 The scores for each of the circles in this example are the following:
 \begin{table}[ht]
 \centering
-\caption{All the scores for the 1 circle 600 background hits circles. Threshold score was 3500}
+\caption[Circle scores for 1 circle 600 background hits]{All the scores for the 1 circle 600 background hits circles. Threshold score was 3500}
 \begin{tabular}{c|c|c|c}
 \toprule
 8122 & 6256 & 5672 & 5654 \\
@@ -1296,7 +1388,7 @@ The scores for each of the circles in this example are the following:
 \subsection{Overview of the results} % (fold)
 \label{sub:overview_of_the_results}
 
-This method was tested against a different set of events. 10'000 different events generated in an attempt to simulate LHCb data. 
+This method was tested against a different set of events. 10'000 different events generated in an attempt to simulate LHC\textit{b} data. 
 The whole set was tested several times, each time with a different threshold for the radius and center histograms. 
 Each of this runs used the speed up method of splitting the data point list into two lists and build all the triplets from 
 the sublists. The results show that this choice didn't hugely affect the efficiency as it is still very high ($98\%$ and higher). 
@@ -1728,7 +1820,7 @@ As a fourth and final approach a new method was developped for the circle detect
 
 The 1D Hough transform is a very stable method having no troubles to find different circles in different kinds of set ups. Even a high background
 doesn't impede the accuracy of the method. It is also a very fast since it only has to search one dimension for a circle.
-This approach is similar to the one used at LHCb (although a lot simpler presented here in this thesis).
+This approach is similar to the one used at LHC\textit{b} (although a lot simpler presented here in this thesis).
 
 The 2D Hough transform shows a good performance as well but it suffers from lower speed due to the increased complexity namely searching
 2 dimension for the parameters instead of just one. Another problem is also the misidentification of circles based on the order in which
