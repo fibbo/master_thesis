@@ -533,20 +533,24 @@ in which a point will be considered lying on a circle or not.
     \begin{axis}[
     axis lines = center,
     ymin=0, ymax=45,
-    xlabel = x,
-    ylabel = y,
+    xlabel = $\eta$,
+    scaled x ticks = false,
+    % x tick label style={},
+    x label style={at={(axis description cs:1.05,0.0)},anchor=north},{/pgf/number format/fixed},
+    ylabel = $\omega(\eta)$,
     legend style={at={(0.2,0.7)},anchor=east},
+    legend cell align=left,
     ]
     \addplot [
     domain=-0.05:0.05, 
     color=red,
-    samples=40,
+    samples=200,
     ]
     { 1/(sqrt(2*pi)*0.01)*exp(-x^2/(2*0.01^2))};
     \addplot [
     domain=-0.05:0.05, 
     color=blue,
-    samples=40,
+    samples=200,
     ]
     { 1/(sqrt(2*pi)*2*0.01)*exp(-x^2/(2*(2*0.01)^2))};
     \addlegendentry{$\sigma=a$}
