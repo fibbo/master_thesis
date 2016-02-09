@@ -183,7 +183,7 @@ The LHC consists of 4 large experiments \parencite{Aad2008,Aamodt2008,AlvesJr200
   \centering
   \includegraphics[width=\textwidth]{pics/lhcb_detector}
   \caption{LHC\textit{b} Detector: The beams collide inside the Vertex Locator. The RICH1 is positioned before the tracking station (TT) and
-  the magnet. RICH2 is set up after the magnet and the silicon trackers (T1-T3) and before the muon and calorimeter (M1-M5)}
+  the magnet. RICH2 is set up after the magnet and before the silicon trackers (T1-T3) and the muon and calorimeter (M1-M5)}
   \label{fig:lhcb}
 \end{figure}
 
@@ -223,16 +223,29 @@ a scintillation light in the scintillator plate. The energy lost is proportional
 main way of identifying particles with no charge (e.g. photons, neutrons).
 
 \paragraph{Muon system}
-Muons play an important role in many analyses. There are 5 planar stations increasing in size at the end of the detector. The total area covered by these stations is about $435$\,m$^2$. Each station is filled with a combination of 3 gases. Passing muons react with this mixture and wire electrodes detect the result.
+Muons play an important role in many analyses. There are 5 planar stations at the end of the detector. The total area covered by these 
+stations is about $435$\,m$^2$. The goal of the absorber is to stop all particles except muons who still can pass. The muons get detected 
+in the gas chambers where their trajectory is measured.
 % The fact that at the LHC b-hadrons are predominantly produced in the forward region was used in the construction of the detector. The \emph{LHC\textit{b}} experiment is a single arm forward spectrometer with a 4\,Tm dipole magnet and a polar angular coverage from 10 to 300 mrad in the horizontal plane (the bending plane of the dipole magnet) and 250 mrad in the vertical plane.
 
 
 \subsection{Particle identification} % (fold)
 \label{sub:particle_identification}
-An important requirement at LHC\textit{b} is the particle identification. This is handled by CALO, Muon and RICH sub-detectors. The Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide indentification of said particles. The Muon system identifies muons to a very high level of purity which is esential for many \(J/\Psi\)'s in their final states.
-
-Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHC\textit{b} RICH system provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.
-
+An important requirement at LHC\textit{b} is particle identification. This is handled by CALO, Muon and RICH sub-detectors. The 
+Calorimeters beside measuring energies and positions of electrons, photons and hadrons also provide identification of said particles e.g.
+by measuring the shape of the induced showers. The Muon system identifies muons to a very high level of purity which is essential for 
+many \(J/\Psi\)'s in their final states.
+        
+Hadron identification is very important for decays where the final states of interest are purely hadronic. The LHC\textit{b} RICH system 
+provides this, covering a momentum range of approximately $1$--$100$\,GeV. It is composed of two detectors. One positioned upstream of the 
+dipole magnet and the other one positioned downstream of the dipole magnet. The optics is arranged similarly in both sub-detectors: 
+spherical focusing mirrors project the Cherenkov photons onto a series of flag mirrors which then reflect them onto a series of photon 
+detector arrays, located outisde the detector acceptance~\cite{Powell:2011}.    +Hadron identification, i.e. separation of kaons, pions 
+and protons, is very important for many analyses. The LHC\textit{b} RICH system provides this, covering a momentum range of approximately 
+$1$--$100$\,GeV. It is composed of two detectors. One is positioned upstream of the dipole magnet and the other one positioned downstream 
+of the dipole magnet. The optics is arranged similarly in both sub-detectors: spherical focusing mirrors project the Cherenkov photons 
+onto a series of flat mirrors which then reflect them onto an array of photon detector, located outisde the detector 
+acceptance~\cite{Powell:2011}.
 
 % subsection particle_identification (end)
 
@@ -241,13 +254,22 @@ Hadron identification is very important for decays where the final states of int
 \section{Cherenkov radiation} % (fold)
 \label{sec:cherenkov_radiation}
 
-The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, \( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a medium, however, can be significantly less can \( c \).
+The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, 
+\( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a 
+medium, however, can be significantly less can \( c \).
 
-Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greater than the speed of light through said medium. Moreover, the velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) and not the group velocity (\( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \)).
+Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greater than the speed of light 
+through said medium. The velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) 
+and not the group velocity (\( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \)).
 
 \[ v_{\text{P}} = \frac{\lambda}{T} \quad \text{or} \quad \frac{\omega}{k}\]
+where $\lambda$ is the wavelength of the light and $T$ the period and $\omega$ the angular frequency and 
+the wavenumber $k$.
 
-As a charged particle travels through the medium, it disrupts the local electromagnetic field. If the particle travels slowly then the disturbance elastically relaxes to the mechinal equilibrium as the particle passes. However, if the particle travels fast enough, the limited response speed of the medium means that a disturbance is left in the wake of the particle, and the energy in this disturbance radiates as coherent shockwave.
+As a charged particle travels through the medium, it disrupts the local electromagnetic field. If the particle travels slower than
+the speed of light then the disturbance elastically relaxes to the mechinal equilibrium as the particle passes. However, if the particle 
+travels faster than the speed of light, the limited response speed of the medium means that a disturbance is left in the wake of the 
+particle, and the energy in this disturbance radiates as a coherent shockwave.
 
 \begin{figure}[htbp]
   \centering
@@ -279,16 +301,27 @@ which is independent of time.
 \section{RICH detector} % (fold)
 \label{sec:rich_detector}
 
-Particle identification is a fundamental requirement at the LHC\textit{b} experiment. Meaningful CP-violation measurements are only possible if hadron identification is available hence the ability to distinguish between kaons and pions is  essential.
-The LHC\textit{b} experiment is unique in the sense that its hadronic particle identification is handled only by the RICH sub-detectors. This means -- as mentioned before -- that the RICH has to cover a wide range of momentum (1-100 $\text{GeV}/c$).
+Particle identification is a fundamental requirement for many analyses at the LHC\textit{b} experiment. The LHC\textit{b} experiment is 
+unique at the LHC in the sense that it uses RICH detectors for hadronic particle identification therefore much better than e.g. ATLAS 
+or CMS. Using three different radiators the RICH detectors cover a wide range of momentum (1-100 $\text{GeV}/c$).
 
-Both sub-detectors are located in low magnetic field regions to keep the tracks straight while they pass through the radiators. They both 
-also have a tilted spherical focusing primary mirror and a secondary flat mirror to limit the length of the detector along the beam pipe.
+Both RICH-1 and RICH-2 are located in low magnetic field regions to keep the tracks straight while they pass through the radiators. They both 
+also have a tilted spherical focusing primary mirror  and a secondary flat mirror to limit the length of the detector along the beam pipe.
+The spherical focusing mirrors use the property that photons generated at a fixed angle with respect to the particle trajectory are then 
+focused onto a ring in the photon detector plane (via the secondary flat mirror). The photon detectors are hybrid photon detectors (HPD)
+which have a resolution of 2.5\,mm $\times$ 2.5\,mm. The HPD are used to measure the spatial position of emitted Cherenkov photons. The HPD
+is a vacuum photon detector in which a photoelectron, released from the conversion in a photocathode of an incident photon, is accelerated
+by and applied voltage onto a silicon detector\cite{AlvesJr2008}. The total area of the two detector planes in the RICH-1 detector is $1302$\,mm
+$\times 555$\,mm each and $710$\,mm $\times 1477$\,mm for RICH-2.
 
-The RICH-1 in front of the magnet covers a lower momentum range from 1-60 $\text{GeV}/c$. It is composed of 5\,cm thick aerogel tiles arranged around the beam pipe. The aerogel with $n=1.03$ is suited for the lowest momentum tracks. Directly behind the aerogel is circa 1\,m of $\text{C}_4\text{F}_{10}$ which covers the intermediate region of momentum.
-For the highest momentum tracks, gaseous $\text{C}\text{F}_4$ is used in the RICH-2.
+The RICH-1 in front of the magnet covers a lower momentum range from 1-60 $\text{GeV}/c$. It is composed of 5\,cm thick aerogel tiles 
+arranged around the beam pipe. The aerogel with $n=1.03$ is suited for the lowest momentum tracks. Directly behind the aerogel is 
+circa 1\,m of $\text{C}_4\text{F}_{10}$ ($n=1.0014$) which covers the intermediate region of momentum. For the highest momentum tracks, 
+gaseous $\text{C}\text{F}_4$ ($n=1.0005$) is used in the RICH-2 \cite{LHCb2000}.
 
-There is a strong corelation between the polar angle and momentum of the tracks. Tracks with a wider angle often have lower momentum. That is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered before they swept out of the acceptenace by the magnet.
+There is a strong correlation between the polar angle and momentum of the particles. Particles with a larger polar angle tend to have 
+lower momentum. That is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered 
+before they swept out of the acceptance by the magnet.
 
 \begin{figure}[tb]
   \centering
@@ -304,92 +337,111 @@ There is a strong corelation between the polar angle and momentum of the tracks.
 \section{Hough transform} % (fold)
 \label{sec:hough_transform}
 
-The Hough transform is a feature extraction technique used in image analysis, computer vision and digital image processing.
+The Hough transform \cite{Duda:1972} is a feature extraction technique used in image analysis, computer vision and digital image processing.
 
-The purpose is to find imperfect instances of objects within a certain cass of shapes by a voting procedure. This voting procedure is carried out in a parameter space from which object candidates are obtained as local maxima in a so called accumlator space that is explicitly constructed by the algorithm for computing the Hough transform.
+The purpose is to find imperfect instances of objects within a certain class of shapes by a voting procedure. This voting procedure is 
+carried out in a parameter space from which object candidates are obtained as local maxima in a so called accummlator space that is 
+explicitly constructed by the algorithm for computing the Hough transform.
 
-Initially the Hough transform was concerned with finding straight lines but has been extended to identifying positions of arbitrary shapes, such as circles and ellipses.
+Initially the Hough transform was concerned with finding straight lines \cite{c1962method} but has been extended to identifying positions 
+of more complicated shapes, such as circles and ellipses.
 
 \subsection{Linear Hough transform} % (fold)
 \label{sub:linear_hough_transform}
 
-A linear function is normally defined as the following:
+A linear function is often defined as:
 
 \[
   f(x) = m\cdot x + b
 \]
-where $m$ is the slope of the line and $b$ the intercept. For the Hough transform however, this representation is not ideal. For a vertical line $m$ would go to infinity which gives us an unbound transform space for $m$. For this reason Duda and Hart suggested the $\rho\text{-}\theta$ parametrization \parencite{Duda:1972}.
+where $m$ is the slope of the line and $b$ the intercept. For the Hough transform however, this representation is not ideal. For a 
+vertical line $m$ would go to infinity which gives us an unbound transform space for $m$. For this reason Duda and Hart suggested the 
+$r\text{-}\theta$ parametrization \parencite{Duda:1972}.
 
 \begin{equation}
   r = x\cos\theta + y\sin\theta\label{eq:param_eq}
 \end{equation}
 
-where $r$ is the distance from the origin to the closest point in the line and $\theta$ is the angle between the $x$-axis and the line connecting the origin with that closest point.
+where $r$ is the distance from the origin to the closest point on the line and $\theta$ is the angle between the $x$-axis and the line 
+connecting the origin with that closest point.
 
 \begin{figure}[ht]
   \centering
   \begin{tikzpicture}[scale=3]
     \draw[<->] (0,1.5) -- (0,0) -- (1.5,0);
+    \node [left] at (0,1.5) {$y$};
+    \node [below] at (1.5,0) {$x$};
     \draw[magenta,semithick] (0,1) -- (1,0);
     \draw[-> ,semithick] (0,0) -- (0.5, 0.5);
     \draw[semithick] (0.2,0) arc (0:45:0.2cm);
-    \node[below] at (0.1,0.121) {\footnotesize$\rho$};
+    \node[below] at (0.1,0.121) {\footnotesize$\theta$};
     \node[above] at (0.2,0.2) {$r$};
   \end{tikzpicture}
-  \caption{$\rho\text{-}\theta$ parametrisation}
+  \caption{$r\text{-}\theta$ parametrisation}
   \label{fig:rhotheta}
 \end{figure}
 % subsection linear_hough_transform (end)
 
-This means given a single point in the plane, the set of all lines going through this point form a sinusoidal curve in $\rho\text{-}\theta$ space. Another point 
-that lies on the same straight line in the plane will produce a sinusoidal curve that intersects with the other at ($\rho\text{-}\theta$) and so do all the points lying on the same straight line. 
+This means given a single point in the ($x,y$) plane, the set of all lines going through this point form a sinusoidal curve in 
+$r\text{-}\theta$ space. Another point that lies on the same straight line in the ($x,y$) plane will produce a sinusoidal curve that 
+intersects with the other at ($r\text{-}\theta$) and so do all the points lying on the same straight line. 
 
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/line_ht_paramspace}
-  \caption[Example of a linear HT space]{Example of a linear HT parameter space. Each line is representing a point of the line. For each point several lines are drawn for different angles according to equation~\ref{eq:param_eq} so this plot draws the perpendicular distances from these lines to the origin. When different lines intersect it means that these 3 Points lie on a line with the parameters given by the plot.}
+  \caption[Example of a linear HT space]{Example of a linear HT parameter space. Each line is representing a point of the line. For each 
+  point several lines are drawn for different angles according to equation~\ref{eq:param_eq} so this plot draws the perpendicular 
+  distances from these lines to the origin. When different lines intersect it means that these 3 Points lie on a line with the parameters 
+  given by the plot.}
   \label{fig:line_ht}
 \end{figure}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/line_ht_paramspace_nomatch}
-  \caption[Example of a linear HT where points don't lie on a line]{Example of a linear HT where points don't lie on a line. Since any two points can form a line there are still intersections but never more than 2.}
+  \caption[Example of a linear HT where points don't lie on a line]{Example of a linear HT where points don't lie on a line. Since any 
+  two points can form a line there are still intersections but never more than 2.}
   \label{fig:line_ht_nomatch}
 \end{figure}
 
 \subsection{Circle Hough transform} % (fold)
 \label{sub:circle_hough_transform}
 
-For this thesis we are interested in circle detection so we need to adapt our linear Hough transform in order to find circles. In a two dimensional space, a circle can be described by:
+For this thesis we are interested in circle detection so we need to adapt the linear Hough transform in order to find circles. 
+In a two dimensional space ($x,y$), a circle can be described by:
 
 \begin{equation}
 		(x-c_x)^2 + (y-c_y)^2 = r^2
 \end{equation}
 
-Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible parameters for the parameters space are now $c_x, c_y$ and $r$. This means if we know the center of the circle the parameter space is one-dimensional and if we know the radius of the circle our parameter space is two-dimensional and of course if we know nothing the parameter space is three-dimensional.
+Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible parameters for the parameters space are now $c_x, c_y$ 
+and $r$. This means if we know the center of the circle the parameter space is one-dimensional and if we know the radius of the circle 
+the parameter space is two-dimensional and of course if we know nothing the parameter space is three-dimensional.
 
 
 
 % subsection circle_hough_transform (end)
 % section hough_transform (end)
 
-\section{Dataset} % (fold)
+\section{Datasets} % (fold)
 \label{sec:dataset}
-There are two data sets used for this thesis. One was the training data set of 250 events and then the data which tested the performance of the algorithm consisting of 10'000
-individual events and a total of 49979 circles across all events. The properties of these events (radius, number of points per circle, number of circles per event) are taken from simulation and data.
+Two data sets were used for this thesis. One was a training data set of 250 simulated events and the test data on which the performance 
+of the algorithm was tested, consisting of 10'000 simulated events with a total of 49'979 circles across all events. The properties of 
+these events (radius, number of points per circle, number of circles per event) are taken from both simulation of LHC\textit{b} events and
+real data taken from the experiment.
 
-The number of points per circle is determined by the photoelecton yield N$_\text{pe}$. It is measured for both \emph{normal} events and \emph{ideal}
-events. The normal event is representative of nominal RICH running conditions during LHC\textit{b} physics detector operations. The ideal event is
-a special event type with very low background hits \cite{RICHPerf2012}.
+The number of points per circle is determined by the photoelecton yield N$_\text{pe}$. It is measured for both \emph{normal} events 
+and \emph{ideal} events. The normal event is representative of nominal RICH running conditions during LHC\textit{b} physics detector 
+operations. The ideal event is a special event type with very low background hits \cite{RICHPerf2012}.
 
 \begin{table}[tb]
 \centering
 \begin{tabular}{|c| c| c | c |c|}
 \hline\hline
  & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from data} & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from simulation} \\ \hline
-Radiator &  tagged D$^0 \rightarrow$ K$^- \pi^+$ &pp$ \rightarrow$ pp $\mu^+ \mu^-$ & Calculated $N_{\text{pe}}$ & true $N_{\text{pe}}$ \\ [0.5ex]
+Radiator &  tagged D$^0 \rightarrow$ K$^- \pi^+$ &pp$ \rightarrow$ pp $\mu^+ \mu^-$ & Calculated $N_{\text{pe}}$ & 
+true $N_{\text{pe}}$ \\ [0.5ex]
 \hline
 Aerogel & $5.0 \pm 3.0$  & $4.3 \pm 0.9$& $8.0 \pm 0.6$ & $6.8 \pm 0.3$ \\ \hline
 C$_4$F$_{10}$  & $20.4 \pm 0.1$ & $24.5 \pm 0.3$& $28.3 \pm 0.6$ & $29.5 \pm 0.5$ \\ \hline
@@ -399,31 +451,28 @@ CF$_4$ & $ 15.8 \pm 0.1$  & $ 17.6 \pm 0.2$& $22.7 \pm 0.6$ & $23.3 \pm 0.5$ \\
 \caption[Comparison of photoelectron yields (N$_{\rm pe}$)]{Comparison of photoelectron yields (N$_{\rm pe}$) determined from
 D$^* \rightarrow$D$^0\pi^+$ decays in simulation and data, and 
 pp $\rightarrow$ pp $\mu^+ \mu^-$ events in data, using the selections and 
-methods described in the text \cite{RICHPerf2012}. The approximate value for 
-C$_4$F$_{10}$ is between  $20.4 \pm 0.1$ and $29.5 \pm 0.5$ and for CF$_4$ between
-$ 15.8 \pm 0.1$ and $23.3 \pm 0.5$ depending on the decay and whether it's the 
-calculated value or the simulated value.}
+methods described in the text \cite{RICHPerf2012}}
 \label{table:results}
 \end{table}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.6\textwidth]{sim_pics/ppc}
-  \caption{Number of points per circle (N$_\text{pe}$) for the 10'000 events}
+  \caption{Number of points per circle (N$_\text{pe}$) for the 10'000 simulated events in the test data sample}
   \label{fig:ppc1}
 \end{figure}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.6\textwidth]{sim_pics/circlePerEventDistribution}
-  \caption{Number of circles per single event distribution.}
+  \caption{Number of circles per event in the test data sample}
   \label{fig:circlePerEventDist}
 \end{figure}
 
 Also to get an idea what the average size of a Cherenkov ring is can be seen in
 \cite{Forty1999}. Rings in RICH-1 have radiuses generally smaller than $0.15$\,m
 (given they are from the C$_4$F$_{10}$ radiator; rings from the aerogel have
-slightly bigger radiuses -- around $0.20$\,m). All the rings in the test data 
+slightly bigger radiuses -- around $0.20$\,m). All generated rings in the test data 
 have a radius that is smaller than $0.15$\,m.
 
 \begin{figure}[tb]
@@ -436,11 +485,11 @@ have a radius that is smaller than $0.15$\,m.
 
 \section{Existing algorithm} % (fold)
 \label{sub:existing_algorithm}
-There is already an algorithm in place in LHC\textit{b}. The disadvantage of the existing algorithm is due to the fact that it
-uses tracks to reconstruct the circles. All charged tracks that are reconstructed by the tracking system are reflected at
-the RICH mirrors in order to give a center for a Cherenkov ring. In order to match tracks with rings each ring is matched
-with the track that has its position closest to the center of the ring. This means that this method uses information from
-outside the RICH detector to construct the circles.
+There is already an algorithm in place in LHC\textit{b} \cite{Forty1999}. The disadvantage of the existing algorithm is due to the 
+fact that it uses tracks to reconstruct the circles. All charged tracks that are reconstructed by the tracking system are reflected at
+the RICH mirrors in order to give a center for a Cherenkov ring. In order to match tracks with rings each ring is matched with the track 
+that has its position closest to the center of the ring. This means that this method uses information from outside the RICH detector 
+to construct the circles.
 
 % subsection existing_algorithm (end)
 
@@ -449,39 +498,71 @@ outside the RICH detector to construct the circles.
 \section{Conventional Hough transforms} % (fold)
 \label{sec:conventional_hough_transforms}
 
-In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. These
-methods were mainly considered to get an idea what was possible with the conventional Hough transform. For closer study the method of choice was
-the combinatorial triplet Hough transform discussed in depth in section \ref{sec:combinatorial_approach}.
+In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. 
+These methods were mainly considered to get an of idea what was possible with the conventional Hough transform. For closer study the 
+method of choice was the combinatorial triplet Hough transform discussed in depth in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known center - find radius} % (fold)
 \label{sub:1d_known_center_find_radius}
 
-In this case the center(s) of the circle(s) is/are known so only the radius is missing. For the radius there is an array with a minimum value
-and increasing by a defined stepsize to the maximum possible radius value. For the example in this thesis the minimum is $0$, the maximum radius
-is $1$ and stepsize equal to $0.001$. Introducing following scoring function $\eta(r)$ allows to find the right radius.
+In this case the center(s) of the circle(s) is/are known so only the radius is missing. For the radius an array is defined with a 
+minimum value and increasing stepsize to the maximum possible radius. For the example studied here the minimum was chosen to be $0$, 
+the maximum radius to be $1$ and the stepsize equal to $0.001$. The following scoring function $\eta(r)$ was used to calculate the distance
+of a data point ($x,y$) from the given center ($c_x, c_y$) and radius $r$:
 
 \begin{equation}
 \label{eq:score_function}
   \eta(r) = (c_x - x)^2 + (c_y - y) - r ^ 2
 \end{equation}
 
-and using this in a gauss distribution
+If $\eta(r)=0$ means that the particular point ($x,y$) would lie on the circle of radius $r$ with center ($c_x, c_y$).
+A Gaussian distribution \ref{eq:weight_function} is used to have a well defined value for such point. For a bigger $\sigma$ a point 
+($x,y$) that is not exactly on the circle will still contribute to the total score. The smaller the $\sigma$ the tighter the range is
+in which a point will be considered lying on a circle or not.
 
 \begin{equation}
 \label{eq:weight_function}
   w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right)
 \end{equation}
-\begin{figure}[tb]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pics/gauss}
-  \caption[Normal Distribution: Used as a w`'eight function]{Using the probability density function of the normal distribution to calculate the score of a point in order to have a well defined maximum if a point
-  lies directly on the circle and $\eta(r) = 0$. }
+
+\begin{figure}[ht]
+\centering
+  \begin{tikzpicture}
+    \begin{axis}[
+    axis lines = center,
+    ymin=0, ymax=45,
+    xlabel = x,
+    ylabel = y,
+    legend style={at={(0.2,0.7)},anchor=east},
+    ]
+    \addplot [
+    domain=-0.05:0.05, 
+    color=red,
+    samples=40,
+    ]
+    { 1/(sqrt(2*pi)*0.01)*exp(-x^2/(2*0.01^2))};
+    \addplot [
+    domain=-0.05:0.05, 
+    color=blue,
+    samples=40,
+    ]
+    { 1/(sqrt(2*pi)*2*0.01)*exp(-x^2/(2*(2*0.01)^2))};
+    \addlegendentry{$\sigma=a$}
+    \addlegendentry{$\sigma=2a$}
+    \end{axis}
+
+  \end{tikzpicture}
+    \caption[Normal Distribution: Used as a weight function]{Using the probability density function of the normal distribution to 
+    calculate the score of a point in order to have a well defined maximum if a point lies directly on the circle and $\eta(r) = 0$. 
+    Increasing the $\sigma$ increases the width of the function and by extension increases the score of points who are not lying 
+    directly on the circle}
   \label{fig:gauss}
 \end{figure}
-Equation \ref{eq:weight_function} is of course just the circle equation with $c_x, c_y$ being the center of the circle, $x, y$ are the data points and $r$ the radius.
-So if a lot of the data points have the same distance $r$ from the circle center there will be a high score for this particular radius. The index
-for the highest score can then be used to find the corresponding radius.
+Equation \ref{eq:weight_function} is of course just the known coordinates of the circle equation with $c_x, c_y$ being the center of 
+the circle, $x, y$ are the data points and $r$ is the radius. If a lot of the data points have the same distance $r$ from the circle 
+center there will be a high score for this particular radius. The index for the highest score can then be used to find the 
+corresponding radius.
 
 \begin{figure}
   \begin{lstlisting}
@@ -506,7 +587,7 @@ to the scores array and at the end the index with the highest score is the index
 \end{figure}
 
 \subsubsection{Complexity} % (fold)
-The complexity of this algorithm is of $\mathcal{O}(n)$ where $n$ is the dimension of the radius array.
+The complexity of this algorithm is of $\mathcal{O}(n)$ where $n$ is the number of bins in the radius array.
 \label{ssub:complexity_1d}
 
 % subsubsection complexity (end)
