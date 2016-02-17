@@ -17,6 +17,7 @@
 \usepackage{calc}
 
 \usepackage{booktabs,multirow}
+\usepackage{newfloat}
 \usepackage{caption}
 \usepackage{longtable}
 % \usepackage{subcaption}
@@ -25,7 +26,7 @@
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{subfig}
-\usepackage[top=2cm, bottom=3cm, left=3cm, right=3cm]{geometry}
+\usepackage[top=3.5cm, bottom=3.5cm, left=3cm, right=3cm]{geometry}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -74,6 +75,8 @@ showstringspaces=false            %
 \captionsetup{margin=0pt,font=small,labelfont=sc,labelformat=simple,format=plain,indention=3mm,
  labelsep=endash,textfont=sf,font=sf,singlelinecheck=on,figurename=Fig.,tablename=Tab.}
 
+\DeclareFloatingEnvironment[fileext=cds,placement={!ht},name=Code Snippet]{codesnippet}
+\captionsetup[codesnippet]{labelfont=bf}
 
 \fontfamily{ppl}\selectfont
 
@@ -91,8 +94,8 @@ showstringspaces=false            %
   \includegraphics[width=0.4\textwidth]{pics/UZH_Logo_e_EPS/uzh_logo_e_pos.pdf}
   \vspace{1cm}
 
-  \Huge\centering New Approach to the Circle Hough Transform for the LHC\textit{b} for Detecting
-        Cherenkov Rings in the RICH detector
+  \Huge\centering New Approach to the Circle Hough Transform for Detecting
+        Cherenkov Rings in the LHC\textit{b} RICH detector 
 
   \noindent\makebox[\textwidth]{\rule{\textwidth}{0.4pt}}
 
@@ -109,8 +112,9 @@ showstringspaces=false            %
   Universität Zürich
   \vspace{2cm}
 
-  \Large Prof. Dr. U. Straumann\\
+  \Large 
   Prof. Dr. P. Saha\\
+  Prof. Dr. U. Straumann\\
   Dr. O. Steinkamp\\
 \vspace*{\fill}
 \Large Zürich 2016
@@ -136,6 +140,7 @@ This approach works on the basis that each circle is defined by 3 points. Given 
 \tableofcontents
 \listoftables
 \listoffigures	
+\listofcodesnippets
 
 \chapter{Introduction}
 \section{LHC - Large Hadron Collider} % (fold)
@@ -500,7 +505,10 @@ to construct the circles.
 \label{sec:conventional_hough_transforms}
 
 In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. 
-These methods were mainly considered to get an idea of what was possible with the conventional Hough transform. For closer study the 
+These methods were mainly considered to get an idea of what was possible with the conventional Hough transform.
+The conventional Hough transforms use the accumulator space which is essentially a histogram. As such it depends on the size of the binning. The smaller the binning the higher the accuracy for the parameter (either $r$ or ($x,y$) coordinate) and conversely if the binning is larger the parameters will only roughly match the real ring. The execution time depends directly on the binning; the finer the binning the longer the execution time and vice versa.
+
+For closer study the 
 method of choice was the combinatorial triplet Hough transform discussed in depth in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
@@ -570,10 +578,10 @@ calculate the weight.
 Equation \ref{eq:weight_function} is of course just the known coordinates of the circle equation with $c_x, c_y$ being the center of 
 the circle, $x, y$ are the data points and $r$ is the radius. If a lot of the data points have the same distance $r$ from the circle 
 center there will be a high score for this particular radius. The index for the highest score can then be used to find the 
-corresponding radius. The pseudo code for this Hough transform is shown in figure \ref{pc:1dHT}. An example of a resulting radius
+corresponding radius. The pseudo code for this Hough transform is shown in Code Snippet \ref{pc:1dHT}. An example of a resulting radius
 histogram is shown in figure \ref{fig:1d_ht_radius_score}
 
-\begin{figure}[htb]
+\begin{codesnippet}[htb]
   \begin{lstlisting}
   DMENSION = 1001
   r= linspace(0,1,DIMENSION)
@@ -593,7 +601,7 @@ histogram is shown in figure \ref{fig:1d_ht_radius_score}
 \caption[Pseudo Code 1D HT]{Pseudo code for the 1D Hough transform. r is an array of length 1001 so $\eta$ will also be an 
 array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added 
 to the scores array and at the end the index with the highest score is the index we need to get the radius}\label{pc:1dHT}
-\end{figure}
+\end{codesnippet}
 
 \begin{figure}[tb]
   \centering
@@ -619,7 +627,7 @@ bins is chosen to be 0.001 since the known radius given from the test data was o
 reality 1\,m by 1\,m the binning of the accumulator in each dimension is 1 mm. As in the one dimensional case we use the scoring function 
 \ref{eq:score_function} in combination with the weight function \ref{eq:weight_function}.
 
-\begin{figure}[htb]
+\begin{codesnippet}[htb]
 \begin{lstlisting}
   DIMENSION = 1001
   xbins = linspace(-0.5,0.5,DIMENSION)
@@ -646,7 +654,7 @@ reality 1\,m by 1\,m the binning of the accumulator in each dimension is 1 mm. A
   row down to all the other rows and for y it broadcasts the first column to all the other columns. The variable weights is a 1001 by 
   1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found is stored in a final 
   variable called circle.}
-\end{figure}
+\end{codesnippet}
 
 
 \subsubsection{Complexity} % (fold)
@@ -774,7 +782,7 @@ same score will be found. Once the highest score has been found the center coord
 with these the algorithm calculates for every data point, if this data point lies on that circle given the extracted center and radius.
 If the data point lies within two times the bin width of the circle, it will be removed (see \ref{pc:remove_points}).
 
-\begin{figure}[htbp]
+\begin{codesnippet}[htbp]
   \begin{lstlisting}
 xbins = np.linspace(-0.5,0.5,DIMENSION)
 ybins = np.linspace(-0.5,0.5,DIMENSION)
@@ -788,9 +796,9 @@ x,y,r = np.broadcast_arrays(\
 \caption[3D broadcasting]{Broadcasting of the 3 arrays $x,y,r$. With this 3 for-loops can be avoided improving speed and readability
 of the code.}
 \label{pc:3D_broadcasting}
-\end{figure}
+\end{codesnippet}
 
-\begin{figure}[htbp]
+\begin{codesnippet}[htbp]
   \begin{lstlisting}
 while True:
   weights = np.zeros(\
@@ -812,7 +820,7 @@ while True:
 \caption[Calculation of weights and threshold check for 3D HT]{The while loop works as long as the found score is higher than
 \texttt{THRESHOLD}. If the score is lower than the threshold the loop breaks and the function returns the results that have been found.}
 \label{pc:3D_threshold}
-\end{figure}
+\end{codesnippet}
 
 As before a scoring function is used but this time the scoring function is of the form $\eta(x,y,r)$ and each point in weights then stands
 for the score of the $x,y,r$ entries and their respective value.
@@ -824,7 +832,7 @@ where $d_x$ and $d_y$ are the data points.
   w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right)
 \end{equation}
 
-\begin{figure}[htbp]
+\begin{codesnippet}[htbp]
 \begin{lstlisting}
 circle['center'] = (xbins[ii], ybins[jj])
 circle['radius'] = rbins[rr]
@@ -844,7 +852,7 @@ data['allPoints'][:] =
 belong to a ring. If a data point lies within two times the bin width of a circle the algorithm considers that data point to be 
 part of that circle and removes that data point from the list.}
 \label{pc:remove_points}
-\end{figure}
+\end{codesnippet}
 
 \subsubsection{Complexity} % (fold)
 \label{ssub:complexity}
@@ -860,6 +868,7 @@ for calculating the score.
 % subsubsection optimisations (end)
 % subsection 3d_nothing_is_known_find_everything (end)
 \clearpage
+
 \section{Combinatorial triplet Hough transform}
 \label{sec:combinatorial_approach}
 A circle is uniquely defined by 3 points and its radius and center can be calculated from the coordinates of these points. If there are 
@@ -975,7 +984,6 @@ center threshold then radius and the center coordinates are saved as a circle ca
 % subsection finding_the_radius_and_center_of_a_circle (end)
 
 
-
 \subsection{Combinatorics}
 	
 
@@ -1076,6 +1084,13 @@ than 50\% chance that we lose no information once a circle has 13 points.
   \caption{The probability when splitting randomly a list of $x$ points into two that one list has more than 10 points.}
   \label{fig:ratios}
 \end{figure}
+
+\subsubsection{Bin size dependency} % (fold)
+\label{ssub:bin_size_dependency}
+In the conventional Hough transform the weight function is calculated with the
+bin centers of the accumlator space. The larger the binning of the accumulator is, the less accurate the calculations become. This is a main factor for the execution time of the algorithm. The advantage of this combinatorial approach lies in the fact that the parameters can be caculated
+accurately up to floating point precision and a histogram is only needed group the results. A fine binning only marginally affects the execution time of the algorithm since the only operation done in the histogram is finding the maximas and this is only done a few times (stops when the found maximum is lower than the ring finding threshold).
+% subsubsection bin_size_dependency (end)
 
 % subsubsection optimisation (end)
 
@@ -1495,7 +1510,7 @@ In the example before $\sigma$ was equal to $0.001$ while the space dimension wa
 The 3D Hough transform has now to deal with 3 unknown parameters: $x,y,r$, which also means that the number of total circles is
 unknown. As explained in the code snippet \ref{pc:3D_threshold} in Section~\ref{sub:3d_nothing_is_known_find_everything} a threshold is needed to decide when the algorithm
 should stop finding a circle. This value depends heavily on the $\sigma$ of the weight function. The $\sigma$ was set to $0.001$ and the threshold
-was set to $3500$.
+was set to $3500$. After testing the algorithm for different circles and comparing their scores this threshold found all the circles.
 For comparison again the same events as in the 1D and 2D Hough transform are studied to compare the reliability of the algorithms and how another
 unknown dimension adds to the complexity of finding circles. The plots of the found circle for the 4 events are shown in 
 Figure~\ref{fig:3D_HT_results}.
@@ -1518,16 +1533,14 @@ Figure~\ref{fig:3D_HT_results}.
 In general the 3D Hough transform works quite well. Even with the added complexity of an extra dimension it is capable to solve three of
 the four events correctly. One event that failed was the 1 circle and 600 background example where the signal to noise ratio was just 
 too small for the algorithm to isolate the correct solution. The problem was that the threshold was set too low and thus it was unavoidable
-that the algorithm would fail. In Table~\ref{tab:10_high_scores} the scores for the 10 highest scores are shown. As a reminder, the threshold
+that the algorithm would fail. In Table~\ref{tab:3d_10_high_scores} the scores for the 10 highest scores are shown. As a reminder, the threshold
 was set to $3500$ initially. So the obvious thing seems to set the threshold to $6300$ so the algorithm wouldn't pick up any fake rings.
-However, with a threshold that high legit rings would get lost. For a fixed threshold there will always be a case where rings get
+However, with a threshold that high legit rings from other events would get lost. For a fixed threshold there will always be a case where rings get
 lost or fake rings get picked up. 
 On the other hand the 3D Hough transform managed to solve the 6 circles with 200 background hits despite having less information. 
 This is probably due to the fact that the 3D Hough transform finds the circles sorted by score and doesn't depend on the order in 
 which circles are searched (remember, in the 2D case there is the radius given and depending on which radius is given first we can 
 solve it correctly or not).
-
-% subsubsection 3d_overview_of_the_results (end)
 
 \begin{table}[ht]
 \centering
@@ -1542,11 +1555,49 @@ solve it correctly or not).
 \end{tabular}
 \end{table}
 
+\begin{table}[tbp]
+  \caption[3D Hough transform scores]{The 3D Hough transform works differently than the 1D and 2D since it has no information about how many rings in the data set are. If there is no background then there will be no fake ring because after finding all the rings there are no points left to form rings with (points used for a circle are removed from the data set). This is why the event with 2 circles and 0 background has no additional score since there were no points left to calculate a score.}
+  \label{tab:3d_scores}
+  \centering
 
-% subsubsection tuning_background_score (end)
+  \begin{tabular}{p{5cm}r}
+  \toprule
+   & \textbf{Highest score}  \\
+  \midrule
+  \midrule
+  \multicolumn{2}{c}{\textbf{1 circle 600 background hits}} \\
+  & 8122 \\
+  Fake ring & 6265\\
+  \midrule
+  \multicolumn{2}{c}{\textbf{2 circles 0 background hits}}\\
+   & 7332 \\
+   & 5601 \\
+   \multicolumn{2}{c}{No fakes found}\\
+  \midrule
+  \multicolumn{2}{c}{\textbf{5 circles 30 background hits}}\\
+  & 8170 \\
+  & 6979 \\
+  & 6477 \\
+  & 4416 \\
+  & 3536 \\
+  Fake ring & 2712 \\
+  \midrule
+  \multicolumn{2}{c}{\textbf{6 circles 200 background hits}}\\
+  & 10269 \\
+  & 9050 \\
+  & 8505 \\
+  & 8258 \\
+  & 5836 \\
+  & 3944 \\
+  Fake ring & 3485 \\
+   \bottomrule
+  \end{tabular}
+\end{table}
+
+
 
 % section 3d_hough_transform_results (end)
-
+\newpage
 \section{Combinatorial triplet Hough transform results} % (fold)
 \label{sec:combinatorial_approach_results}
 
@@ -1596,33 +1647,43 @@ however, these parameters are useless because a priori there is no knowledge abo
 
 % subsubsection getting_rid_of_duplicates (end)
 
-Without cleaning up the algorithm finds a lot of duplicates. As an illustration the 1D radius histogram where two almost adjacent bins have a high score as 
-seen in Figure~\ref{fig:2bins_highscore}. They wont be directly adjacent because the algorithm searches for a high scoring bin and takes
-the left and right neighbour also into account and sets them to 0.
-It's still very likely that the two bins are from the same circle but they are treated now as independent because it was further than 1 bin 
-away. The data extracted from the radius histogram also contains the center data. Now both scores are handled by the center extraction and
-there both have the maximum at the same $x,y$ coordinate and the algorithm considers both as independent circles and without cleaning for duplicates
-the result can be seen in Figure~\ref{fig:comb_ht_0009}
+Without cleaning up the algorithm finds a lot of duplicates. The reason for such duplicates can be background hits or a hits from another 
+ring close to the actual ring. The triplets including one of these foreign points can shift the center or the radius of the ring
+they form just a little bit away from the pure ring. As an illustration the 1D radius histogram where two almost adjacent bins 
+have a high score as seen in Figure~\ref{fig:2bins_highscore}. When the algorithm finds a maximum in the histogram it also considers the 
+left and right neighbour. If their sum exceeds the threshold their values are set to 0 and the algorithm looks for more peaks. If the next
+maximum is just adjacent to one of the previous neighbours it means that there could be another ring with a similar radius than the one
+just found and it is possible that in fact they belong to the same ring.
+And even though they could belong to the same ring, they are treated now as independent because they were separated by more than 1 bin.
+The data extracted from the radius histogram also contains the coordinates of the ring center. Both candidates are handled by the center 
+extraction (as shown below in the code snippet). Both centers have the maximum at the same ($x,y$) coordinate but the algorithm considers 
+them as independent rings without cleaning. The result can be seen in Figure~\ref{fig:comb_ht_0009}.
+
+
 
 \begin{figure}[htb]
   \centering
   \includegraphics[width=\textwidth]{sim_pics/radius_histogram_0009}
   \caption[Histogram of duplicates]{Two almost adjacent bins with a high score\label{fig:2bins_highscore}. Apart from the very clear peak of two bins next to each
-  other at $\approx 0.125$ with a score of 7000 and 6000 respectively, there are 3 smaller peaks separated by background bins. After picking
-  up the highest peak at the score of 8000 and the neighbours left and right the next highest score is the one at roughly 3000. The algorithm
-  also picks up the adjacent bins on the left and right but there are still peaks left that are above threshold.}
+  other at $r \approx 0.125$ with a score of 7000 and 6000 respectively, there are 3 smaller peaks separated around $r \approx 0.11--0.12$.
+  The highest score is clearly visible. After the algorithm found this maximum and sets the bins to 0 the algorithm picks then the next
+  maximas and its neighbours. But since there are several peaks separated by one bin means they are treated seperately and this introduces
+  a duplicate.}
   \label{fig:bin_peak}
 \end{figure}
 
-Following the code for extracting the radiuses (with their center data). So if bin $i$ in the radius histogram $H$ has a maximum
-we also save the list from \texttt{center[i]} to the corresponding radius. The function then returns a list of radiuses and for each
-radius in the list there is a list of center data which is used to extract the center of the circle.
-\begin{lstlisting}
+The code for extracting the radiuses with their center data is shown in Code Snippet \ref{pc:radius_extraction}. Assuming bin index $i$ 
+contains the highest score of the histogram. The code then adds the score from bin $i-1$ and $i+1$ to the maximum score and checks if 
+the sum is bigger than the threshold. If that's the case the next step adds the center information stored in \texttt{center} to a separate
+list. The function then returns a list of radiuses and for each radius in the list there is a list of center data which is used to 
+extract the center of the ring.
+\begin{codesnippet}
+  \begin{lstlisting}
 edges #x edges of the histogram
 center #center data
 while True:
   i = max(H)
-  n = NUMBER_OF_R_BINS
+  n = NUMBER_OF_R_BINS 
   n_entries = sum(H[i-1 if i>0 else i:i+2 
                     if i<n-1 else i+1])
   if n_entries < RADIUS_THRESHOLD:
@@ -1639,10 +1700,16 @@ while True:
   center_data.append(center_list)    
 return radiuses, center_data 
 \end{lstlisting}
+\caption[Radius extraction algorithm]{This code shows how the radius maximas are found and their respective center data is extracted.
+\texttt{n\_entries} is the score of the maximum bin and its left and right neighbour. If the score exceeds the threshold the entries of the
+bins are set to 0 and the radius value together with the center data are returned.}\label{pc:radius_extraction}
+\end{codesnippet}
+
 As before once a maximum has been found and the sum of the maximum plus the adjacent neighbors is bigger than the threshold we have another
 candidate. The bin and the neighbors are then set to 0. This is repeated until the sum of a maximum plus the adjacent neighbors is smaller
 than the threshold, where the algorithm stops.
-\begin{lstlisting}
+\begin{codesnippet}
+  \begin{lstlisting}
 H #2d histogram with the center data
 xedges 
 yedges 
@@ -1670,38 +1737,19 @@ while True:
 
 return centers
 \end{lstlisting}
+\caption[Center coordinate extraction]{H is the center histogram. After finding the index for the maximum value the values of the 
+adjacent neighbours are also added to the score. If the score exceeds the center threshold the algorithm stores them as a center for
+a circle candidate and sets the used bins to 0.}
+\end{codesnippet}
 
-After this step the basic algorithm is done and in Figure~\ref{fig:comb_ht_0009} is the result. To get rid of this duplicates there is one more step.
-The algorithm now compares all the found circles among each other and if two circles are within a certain range center and radius wise
-they are considered to be duplicates and the one with a lower score gets discarded.
 
-For this thesis the removal of the duplicates is done in the analysis part of the code so it was easier to tune the parameters.
-\begin{figure}[htb]
-\centering
-  \begin{lstlisting}
-res = []
-sorted_results = sorted( results, key=lambda k: 
-                  k['nEntries'], reverse=True)
-while len(sorted_results):
-  circle = sorted_results.pop()
-  unique = True
-  for dic in sorted_results:
-    if (np.linalg.norm(np.array(circle['center']) - 
-        np.array(dic['center']))) < 
-                    DUPLICATE_MAX_CENTER_DISTANCE and\
-       (abs(circle['radius'] - dic['radius']) < 
-                    DUPLICATE_MAX_RADIUS_DISTANCE):
-      unique = False
-      break
-  if unique:
-    res.append(circle)
-return res
-\end{lstlisting}
-\caption[Pseudo code for removing possible duplicates]{Pseudo code for removing possible duplicates from the circles found by the algorithm. First results are sorted by their number of entries
-in the histogram so the least relevant comes first. If for a given circle another circle exists with the same center and radius (within the cuts)
-then the circle is considered a duplicate and will be removed. \texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE} and \texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE} are 
-parameters that can be tuned}\label{fig:dup_code}
-\end{figure}
+After this step the ring finding algorithm is done. The result is shown in Figure~\ref{fig:comb_ht_0009}. A cleaning step is now performed
+to remove duplicates.
+The algorithm compares all found circles and if the center coordinates and radiuses of two circles are within a certain range they 
+are considered to be duplicates and the one with a lower score is discarded. The range cuts were a parameter that had to be tuned. If the 
+range was too small then some duplicates weren't detected and remained. If the cut was too large, true rings were removed because they
+happend to be close to another ring. In Tables~\ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} the effects of different
+cuts can be seen.
 
 
 \begin{figure}[htb]
@@ -1711,18 +1759,21 @@ parameters that can be tuned}\label{fig:dup_code}
   \label{fig:comb_ht_0009}
 \end{figure}
 
-\subsection{Different thresholds} % (fold)
+\subsection{Ring finding threshold} % (fold)
 \label{sub:different_thresholds}
-The algorithm has a very simple threshold to decide whether a candidate is a cirlce or not. It is the number of hits in the radius and center histogram.
-This essentially puts a constraint on the minimum amount of points a circle should have and the threshold then is of course the binomial
-coefficient of that number
+The algorithm applies a very simple threshold to decide whether a candidate is a ring or not. Assume just one ring with 10 points. With
+these 10 points the algorithm creates 120 triplets $\left(\binom{10}{3}\right)$. For each of these triplets the radius and the ring are calculated.
+Since they all belong to the same ring the radius histogram has one peak at the ring radius and the center histogram has 1 peak at
+the ring center. If the threshold is now smaller than 120 then this ring will be found and otherwise ignored. So essentially we can 
+decide how many points per ring are needed in order to be recognized as ring. This puts a requriement on the minimum number of points
+a ring should have and the threshold is
 \[
-  \binom{\text{Threshold}}{3}
+  \binom{\text{Number of Points}}{3}
 \]
-In table~\ref{tab:threshold_cuts} the different efficiencies for the algorithm with different thresholds can be seen. Intuitively one expects to have more fake
-detections at a lower threshold since it is more likely for some random hits to form a circle. Starting from a certain threshold the efficiency
-will fall again when legit circles will fall under the threshold but analysing the test data set shows that approximately $98\%$ of the circles have more
-than 12 points per circle.
+In Table~\ref{tab:threshold_cuts} the different efficiencies for the algorithm for different values of the threshold can be seen. 
+Intuitively one expects to have a larger number fake detections at low threshold since it is more likely for some random hits to pass 
+the threshold. Starting from a certain threshold the efficiency will start to drop when legit rings will fall under the threshold. But
+analysing the test data set shows that approximately $98\%$ of the rings have more than 12 points (see Figure~\ref{fig:ratio_ppc}).
 
 \begin{figure}[tb]
   \centering
@@ -1732,11 +1783,9 @@ than 12 points per circle.
   \label{fig:ratio_ppc}
 \end{figure}
 
-This gives the algorithm a upper boundary for the efficiency (lower boundary of how many circles won't be found). No matter 
+This gives an upper bound on the efficiency of the algorithm. No matter 
 how accurate the algorithm is, if it doesn't consider circles below the threshold it will never find these. Thus the higher 
-the needed number of points per circle is, the lower the efficiency will be. But the threshold is not necessarily the only
-factor for the lower boundry. Depending on how the radius and center cut is chosen - more circles can get lost because
-they get identified as duplicate when they are in fact just another distinct circle in the vicinity of another circle.
+the needed number of points per circle is, the lower the efficiency will be. 
 
 
 \begin{table}[tb]
@@ -1762,22 +1811,68 @@ they get identified as duplicate when they are in fact just another distinct cir
 
 % subsection different_thresholds (end)
 
-\subsection{Different cuts for circle selection} % (fold)
+\subsection{Cuts for removing duplicates} % (fold)
 \label{sub:different_cuts_for_circle_selection}
-Setting the histogram threshold is just the first step to finding the circles. The next step is removing duplicate circles that
-are created with a major fraction of points of a circle and for example a single background hit that is just far enough off
-that the radius and center histogram show it as a distinct circle. Depending on how loose this cut is, there is a chance that an actual
-circle gets discarded as a duplicate if their centers happen to be very close to each other and they have very similar radiuses. For
-both to happen simultaneously seems rather unlikely so the loss of circle due to this cut should be rather low.
+
+Additional circles can get lost because they get identified as duplicate when they are in fact just another distinct circle in 
+the vicinity of another circle. Duplicate circles that are typically created with a major fraction of points of a circle and for 
+example a single background hit that is just far enough off that the radius and center histogram show it as a distinct circle. 
+In Code Snippet~\ref{pc:dup_code} the duplicate removal is shown. First all ring candidates are sorted ascending by number of 
+entries they had in the center histogram. The first circle is then popped from the list and is compared to all the remaining circles 
+in the list. If the circle is within the threshold distance (see Equations in~\ref{eq:cut1}) the circle is flagged as not unique and 
+the comparison for the rest of the circles stop. 
+
+\begin{equation}
+\begin{aligned}
+\left|\mathbf{c_1}-\mathbf{c_2}\right| &< \text{\texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE}}\\
+\left|r_1 - r_2\right| &< \text{\texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE}}
+\end{aligned}
+\label{eq:cut1}
+\end{equation}
+
+where $c_1$ and $c_2$ are the center coordinates and $r_1$ and $r_2$ the radiuses of the circles.
+
+However if there is no other circle within the threshold distances the circle is unique and will be added to a result list which 
+at the end will be returned with all unique circles. 
+
+If the cut is too loose, there is a chance that a true ring gets discarded as a duplicate if its center and radius happens to be very 
+close to those of another ring.
+
+\begin{figure}[htb]
+\centering
+  \begin{lstlisting}
+res = []
+sorted_results = sorted( results, key=lambda k: 
+                  k['nEntries'], reverse=True)
+while len(sorted_results):
+  circle = sorted_results.pop()
+  unique = True
+  for dic in sorted_results:
+    if (np.linalg.norm(np.array(circle['center']) - 
+        np.array(dic['center']))) < 
+                    DUPLICATE_MAX_CENTER_DISTANCE and\
+       (abs(circle['radius'] - dic['radius']) < 
+                    DUPLICATE_MAX_RADIUS_DISTANCE):
+      unique = False
+      break
+  if unique:
+    res.append(circle)
+return res
+\end{lstlisting}
+\caption[Pseudo code for removing possible duplicates]{Pseudo code for removing possible duplicates from the circles found by the algorithm. First results are sorted by their number of entries
+in the histogram so the least relevant comes first. If for a given circle another circle exists with the same center and radius (within the cuts)
+then the circle is considered a duplicate and will be removed. \texttt{DUPLICATE\_MAX\_CENTER\_DISTANCE} and \texttt{DUPLICATE\_MAX\_RADIUS\_DISTANCE} are 
+parameters that can be tuned}\label{pc:dup_code}
+\end{figure}
 
 \subsubsection{Cut variation for a fixed threshold} % (fold)
-In tables \ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} different cut parameters were tested
-and compared for the efficiency, ghost rate, duplicate and missed circles.
-
 \label{ssub:cut_variation_for_a_fixed_threshold}
+In tables \ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} different cut parameters were tested
+and compared for the efficiency and ghost rate.
+
 \begin{table}[htbp]
-  \caption{Reducing ghost rate for a fixed radius cut (0.003) with varying center cut. The tighter the center cut is
-  the more duplicate circle remain after the }
+  \caption{Efficiency and ghost rate for a fixed radius cut (0.003) with varying center cut. The tighter the center cut is
+  the more duplicate circles remain after }
   \label{tab:cut_variation_1}
   \centering
 
@@ -1811,13 +1906,11 @@ and compared for the efficiency, ghost rate, duplicate and missed circles.
   \end{tabular}
 \end{table}
 
-What both tables show that there is only a limited sensitivity to a single parameter change. So in the following
-tables there is all the possible combinations for different cuts for both radius and center ranging from 0.003 to
-0.0012 in steps of $0.003$ for different thresholds. 
-
+Tables~\ref{tab:longtable} show all combinations of cuts for both radius and center ranging from 0.003 to
+0.0012 in steps of $0.003$ for different ring finding thresholds. 
 \newpage
 \begin{longtable}{llcrcr}
-\caption{Results for all the cut combinations for radius and center cuts}\\
+\caption{Results for all the cut combinations for radius and center cuts}\label{tab:longtable}\\
 \toprule
 \multicolumn{6}{c}{\textbf{Threshold = 35} (7 points for a circle)}\\
 \midrule
@@ -1958,17 +2051,38 @@ tables there is all the possible combinations for different cuts for both radius
 \bottomrule
 \end{longtable}
 
-These results show that the biggest influence for changing the ghost rate is adapting the
-threshold for the combinations. If the threshold is too low, too many contributions come from
-random point combination that happen to lie on some circle.
+These results show that the most important parameter for changing the ghost rate is the ring finding threshold.
+If this threshold is too low, too many fake rings are found from random point combination that happen to lie close to a circle.
 
-The main reason for missed circles is again the threshold since it limits the number of circles
-being found as circles only if their number of points is greater or equal than the threshold. And
-since the algorithm uses split lists the number of missed circles is even slightly higher due to the
+The main reason for missed rings is again the ring finding threshold since it limits the number of rings
+being found. Since the algorithm uses two split lists, the number of missed circles is even slightly higher due to the
 fact that sometimes the points of a circle can be split just in a way that the two lists don't
 contain enough points individually to create an accepted circle (see subsection \ref{sub:different_thresholds}).
 % subsubsection cut_variation_for_a_fixed_threshold (end)
 % subsection different_cuts_for_circle_selection (end)
+\subsection{Runtime} % (fold)
+\label{sub:runtime}
+
+The runtime of the whole algorithm depends heavily on the number of data points. The runtime ranges from several seconds to 
+several minutes as shown in Figure~\ref{fig:runtime}. The algorithm in its current state has a runtime from several seconds up
+to several minutes with the longest around 11 minutes. The runtime grows with the number of points
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=0.5\textwidth]{sim_pics/runtime_vs_points_run01}%
+  \includegraphics[width=0.5\textwidth]{sim_pics/runtime_vs_points_run02}
+
+  \includegraphics[width=0.5\textwidth]{sim_pics/runtime_vs_points_run03}%
+  \includegraphics[width=0.5\textwidth]{sim_pics/runtime_vs_points_run04}
+  \caption[Runtimes of four different runs]{Runtimes of four different runs with differend ring finding thresholds. The algorithm was run on the farm-ui cluster of the
+  University of Zurich. The worknodes are not identical. This could explain why there is branching in the runtime when some 
+  nodes are slightly quicker than the other. The fit in the plot is $1.8e{-}5\frac{N^3}{6}$ where $N$ is the number of data points
+  to show the dependency of the runtime on the points. The constant factor was determined by trial and error but is for all the plots
+  the same.}
+  \label{fig:runtime}
+\end{figure}
+% subsection runtime (end)
+
 % section combinatorial_approach_results (end)
 
 
@@ -1978,41 +2092,47 @@ contain enough points individually to create an accepted circle (see subsection 
 \chapter{Conclusions} % (fold)
 \label{cha:conclusions}
 
-This thesis was studying different Hough transforms for circle detection. In a first approach a 1D Hough transform was used and then extended to two and three
-dimensions.
-As a fourth and final approach a new method was developped for the circle detection. 
+This thesis studied different Hough transforms for ring detection in the LHC\textit{b} detector. In a first approach a 1D Hough 
+transform was used and then extended to two and three dimensions.
+As a fourth approach a new method based on triplets of hits was developped for the ring detection. 
 
-The 1D Hough transform is a very stable method having no troubles to find different circles in different kinds of set ups. Even a high background
-doesn't impede the accuracy of the method. It is also a very fast since it only has to search one dimension for a circle.
-This approach is similar to the one used at LHC\textit{b} (although a lot simpler presented here in this thesis).
+First of all it should be noted that especially the one, two and three dimensional Hough transforms were only superficially studied. Their study served more of an introduction into the Hough transform by adding extra dimensions for each case. The statements regarding these methods should always be considered with this in mind.
 
-The 2D Hough transform shows a good performance as well but it suffers from lower speed due to the increased complexity namely searching
-2 dimension for the parameters instead of just one. Another problem is also the misidentification of circles based on the order in which
+The 1D Hough transform assumes the number of rings and ring centers are known and searches for maximas in the r distribution for each rings.
+It is a very stable method having no trouble to find different rings in different kinds of set ups. Even high background doesn't seem to impede the efficiency of the method. It is also a faster than all the other approaches since it only has to search one dimensional histogram.
+
+The 2D Hough transform assumes number of rings and radiuses are known and searches for maxima in the ($x,y$) distribution for each ring. It shows a good performance as well but it suffers from lower speed due to the increased complexity namely searching
+2 dimension for the parameters instead of just one. Another problem is also the misidentification of rings based on the order in which
 they are searched for and also the sensitivity of the weight function used to weigh the centers for a given data points and radius.
-As the 1D Hough transform this is a very simplistic implementation and should have a lot of potential to improve, one improvement being to
-limit the range of where a potential center is searched for based on cuts (e.g. a center cannot have a radius $>0.30$ which then would reduce
-the amount of grid points that have to be weighed per data point).
 
-The 3D Hough transform has another dimension added since now is nothing known about the circles and it shows in the results. The main weakness
-of this method is the score threshold which tells the algorithm when to stop looking for a circle (the 1D and 2D transform didn't
-have this problem since due to the information given it was known, how many circles there were). If the threshold is too low, too many 
-background hits can form a circle - if it's too high a valid circle might get lost. The difficulty in defining a score threshold is 
+The 3D Hough transform does not make any assumptions on the number of rings or ring parameters. The main weakness
+of this method is the score threshold which tells the algorithm when to stop looking for a ring (the 1D and 2D transform didn't
+have this problem since due to the information given it was known, how many rings there were). If the threshold is too low, too many 
+fake rings can be formed by random combinations of (background) hits. - if it's too high a valid ring might get lost. The difficulty in defining a score threshold is 
 that it is based on the scoring function \ref{eq:weight_function}. Depending on the $\sigma$ chosen the scoring function can behave
 quite differently. A problem related to that is that the 3D Hough transform strongly depends on the bin size of the parameter space.
 The bins shouldn't be too big or the algorithm becomes inaccurate because the scoring function uses inaccurate values. If the bins are too
 small, the algorithm takes forever due to the $\mathcal{O}(N^3)$ complexity. But the disadvantage can also have advantages because
-now the algorithm doesn't depend anymore on the order of which it looks for circles - it always picks the strongest candidates first
-and every subsequent candidate has a lower score until the score is so low that it's unlikely that it is a circle.
+now the algorithm doesn't depend anymore on the order of which it looks for rings - it always picks the strongest candidates first
+and every subsequent candidate has a lower score until the score is so low that it's unlikely that it is a ring.
 
-Finally the core component of this thesis the combinatorial triplet Hough transform. It is based on the fact that 3 points define a circle.
-Given 3 points in a 2D space it is possible to calculate the center and radius of the circle on which these 3 points lie on. Given a list
-of points a list of all possible triplets can be used to find possible circles. The algorithm works very well and maintains a high efficiency
+Finally the main part of this thesis discusses the combinatorial triplet Hough transform. It is based on the fact that 3 points define a ring.
+Given 3 points in a 2D space it is possible to calculate the center and radius of the ring on which these 3 points lie. Given a list
+of points a creating a list of all possible triplets can be used to find possible rings. The algorithm works very well and maintains a high efficiency
 with all tested parameters but suffers as the 3D Hough transform from a high runtime (up to several minutes). However given the high accuracy
-of the algorithm (binning has almost no effect) makes this approach still very fascinating and offers maybe some potential for the future.
-The parameter with the biggest impact is the threshold which defines how many points need to lie on a circle in order to qualify as a 
-circle candidate. Choosing this threshold too low many fake circles appear and the ghost rate skyrockets. Choosing this threshold too high
+of the algorithm in determining the ring parameters makes this approach still very interesting and may offer potential for future investigations.
+The parameter with the largest impact is the ring finding threshold which defines how many points need to lie on a ring in order to qualify as a 
+circle candidate. Choosing this threshold too low many fake circles appear and the ghost rate skyrockets. Setting this threshold too high
 means an inherent loss of efficiency from which the algorithm can never recover since circles with a point count lower than the threshold
 will never be considered as a candidate.
+
+\section{Outlook} % (fold)
+\label{sec:outlook}
+As a next step the possibility of parallelising the algorithm should be considered. Once the two triplet lists are generated the radius and centers
+for these triplets can be calculated independently.
+Other options for optimisation would be improving the code. Some steps have already been done. For example instead of using the \texttt{np.linalg.norm} function of the numpy module (which has a high overhead see \cite{NumpyNorm}) a simple norm function has been implemented. There was not enough time to test the speed improvement systematically but a profiling of one event showed an improvement of the speed from $188$\,s to $95$\,s. In general, the method where
+radius and center of triplets get calculated would be a good start to optimise the code since that's the place where the algorithm most its time (shown by profiling the python script but not shown in this thesis).
+% section outlook (end)
 % chapter conclusions (end)
 
 \printbibliography
