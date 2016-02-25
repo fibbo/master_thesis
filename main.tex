@@ -249,21 +249,21 @@ dipole magnet and the other one is positioned downstream of the dipole magnet. T
 \section{Cherenkov radiation} % (fold)
 \label{sec:cherenkov_radiation}
 
-The speed of light in vacuum, \( \mathbf{c} \), is a universal physical constant. According to Einstein's special theory of relativity, 
+The speed of light in vacuum, \( \mathbf{c} = 299'792\,\text{km/s} \), is a universal physical constant. According to Einstein's special theory of relativity, 
 \( c \) is the maximum speed at which all matter (or information) in the universe can travel. The speed at which light propagates in a 
-medium, however, can be significantly less can \( c \).
+medium is given by $\frac{c}{n}$, where $n$ is the refractive index of the medium and can be significantly less can \( c \).
 
 Cherenkov radiation results when a charged particle travels through a dielectric medium with a speed greater than the speed of light 
 through said medium. The velocity that must be exceeded is the phase velocity (\( v_{\text{Phase}} \text{ or short } v_{\text{P}} \)) 
-and not the group velocity (\( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \)).
+and not the group velocity (\( v_{\text{Group}} = \frac{\partial \omega}{\partial k} \)),
 
-\[ v_{\text{P}} = \frac{\lambda}{T} \quad \text{or} \quad \frac{\omega}{k}\]
-where $\lambda$ is the wavelength of the light and $T$ the period and $\omega$ the angular frequency and 
-the wavenumber $k$.
+\[ v_{\text{P}} = \frac{c}{n} = \frac{\lambda}{T}  =  \frac{\omega}{k}\]
+
+where $\lambda$ is the wavelength of the light, $T$ the oscillation period, $\omega$ the angular frequency and $k$ the wavenumber.
 
 As a charged particle travels through the medium, it disrupts the local electromagnetic field. If the particle travels slower than
-the speed of light then the disturbance elastically relaxes to the mechinal equilibrium as the particle passes. However, if the particle 
-travels faster than the speed of light, the limited response speed of the medium means that a disturbance is left in the wake of the 
+the speed of light then the disturbance elastically relaxes to the equilibrium as the particle passes. However, if the particle 
+travels at the speed $\beta\cdot c$ faster than the speed of light i.e. $\beta > 1/n$, the limited response speed of the medium means that a disturbance is left in the wake of the 
 particle, and the energy in this disturbance radiates as a coherent shockwave.
 
 \begin{figure}[htbp]
@@ -283,16 +283,14 @@ particle, and the energy in this disturbance radiates as a coherent shockwave.
       }
     \end{tikzpicture}
   \caption{The geometry of the Cherenkov radiation}
-  \label{fig:label}
+  \label{fig:cherenkov_radiation}
 \end{figure}
 
-\begin{align}
-    x_p &= v_{p}\cdot t = \beta c t \nonumber \\
-    x_{\text{em}} &= v_{\text{em}}\cdot t=\frac{c}{n}t \nonumber \\
-    \cos\theta &= \frac{x_{\text{p}}}{x_{\text{em}}} = \frac{\frac{c}{n}t}{\beta c t} = \frac{1}{n\beta} \nonumber
-\end{align}
-The ratio between the speed of the particle and the speed of light is defined as $\beta=\frac{v_p}{c}$, the emitted light waves
-travel with speed $v_{\text{em}} = \frac{c}{n}$ where $n$ is the refraction index. 
+As illustrated in Figure~\ref{fig:cherenkov_radiation}, the shockwave is emited under an angle
+\begin{equation}
+    \cos\theta = \frac{x_{\text{p}}}{x_{\text{em}}} = \frac{\frac{c}{n}t}{\beta c t} = \frac{1}{n\beta}
+\end{equation}
+with respect to the direction of flight of the particle. Figure~\ref{fig:radiators} shows the Cherenkov angle vs momentum for different particles and different radiators in LHC\textit{b}.
 
 \begin{figure}[tb]
   \centering
@@ -304,34 +302,24 @@ travel with speed $v_{\text{em}} = \frac{c}{n}$ where $n$ is the refraction inde
 \section{RICH detector} % (fold)
 \label{sec:rich_detector}
 
-Particle identification is a fundamental requirement for many analyses at the LHC\textit{b} experiment. The LHC\textit{b} experiment is 
-unique at the LHC in the sense that it uses RICH detectors for hadronic particle identification and is therefore much better than e.g. ATLAS 
-or CMS. Using three different radiators the RICH detectors cover a wide range of momentum (1-100 $\text{GeV}/c$).
+Particle identification is a fundamental requirement for many analyses at the LHC\textit{b} experiment. LHC\textit{b} is 
+unique at the LHC in the sense that it uses RICH detectors for hadronic particle identification, unlike other LHC experiments such as ATLAS or CMS. The advantage of using RICH detector is that it yields superior particle identification performance. Using three different radiators, the RICH detectors cover a wide range of momentum (1-100 $\text{GeV}/c$).
 
-Both RICH-1 and RICH-2 are located in low magnetic field regions to keep the tracks straight while they pass through the radiators. They both 
-also have a tilted spherical focusing primary mirror  and a secondary flat mirror to limit the length of the detector along the beam pipe.
-The spherical focusing mirrors use the property that photons generated at a fixed angle with respect to the particle trajectory are then 
-focused onto a ring in the photon detector plane (via the secondary flat mirror). The photon detectors are hybrid photon detectors (HPD)
-which have a resolution of 2.5\,mm $\times$ 2.5\,mm. The HPD are used to measure the spatial position of emitted Cherenkov photons. The HPD
-is a vacuum photon detector in which a photoelectron, released from the conversion in a photocathode of an incident photon, is accelerated
-by and applied voltage onto a silicon detector \cite{AlvesJr2008}. The total area of the two detector planes in the RICH-1 detector is $1302$\,mm
-$\times 555$\,mm each and $710$\,mm $\times 1477$\,mm for RICH-2.
+Both RICH-1 and RICH-2 are located in low magnetic field regions to keep the trajectories of charged particles straight while they pass through the radiators. They both also have tilted spherical focusing primary mirrors and secondary flat mirrors to limit the length of the detector along the beam pipe and minimize the amount of detector material. The spherical focusing mirrors use the property that photons generated at a fixed angle with respect to the particle trajectory are focused onto a ring in the photon detector plane (via the secondary flat mirror) where hybrid photon detectors (HPD) are used to measure the spatial position of emitted Cherenkov photons. These photon detectors have a spatial resolution of 2.5\,mm $\times$ 2.5\,mm. The total area of the two detector planes in the RICH-1 detector is $1302$\,mm $\times 555$\,mm each and $710$\,mm $\times 1477$\,mm for RICH-2.  The HPD is a vacuum photon detector in which a photoelectron, released from the conversion in a photocathode of an incident photon, is accelerated by and applied voltage onto a silicon detector \cite{AlvesJr2008}. 
 
-The RICH-1 in front of the magnet covers a lower momentum range from 1-60 $\text{GeV}/c$. It is composed of 5\,cm thick aerogel tiles 
-arranged around the beam pipe. The aerogel with $n=1.03$ is suited for the lowest momentum tracks. Directly behind the aerogel is 
-circa 1\,m of $\text{C}_4\text{F}_{10}$ ($n=1.0014$) which covers the intermediate region of momentum. For the highest momentum tracks, 
+The RICH-1 in front of the magnet covers the lower momentum range from 1-60 $\text{GeV}/c$. It uses two radiators 5\,cm thick aerogel tiles with $n=1.03$ is suited for the lowest momentum tracks and directly behind about 1\,m of $\text{C}_4\text{F}_{10}$ ($n=1.0014$) which covers the intermediate region of momentum. For the highest momentum tracks, 
 gaseous $\text{C}\text{F}_4$ ($n=1.0005$) is used in the RICH-2 \cite{LHCb2000}.
 
-There is a strong correlation between the polar angle and momentum of the particles. Particles with a larger polar angle tend to have 
-lower momentum. That is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered 
-before they swept out of the acceptance by the magnet.
+There is a strong correlation between the polar angle and the momentum of the charged particles produced in LHC\textit{b}. Particles with a larger polar angle tend to have lower momentum. This is why RICH-1 with the aerogel is located before the dipole magnet so tracks with low momentum will be covered before they are swept out of the acceptance by the magnet. See Figure~\ref{fig:rich1} for a schematic of the RICH-1 detector.
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.5\textwidth]{pics/rich1-2d}
-  \caption{RICH-1 detector \cite{LHCb:2000}.}
+  \caption{RICH-1 detector \cite{LHCb:2000}}
   \label{fig:rich1}
 \end{figure}
+
+
 % section rich_detector (end)
 
 
@@ -342,23 +330,23 @@ before they swept out of the acceptance by the magnet.
 
 The Hough transform \cite{Duda:1972} is a feature extraction technique used in image analysis, computer vision and digital image processing.
 
-The purpose is to find imperfect instances of objects within a certain class of shapes by a voting procedure. This voting procedure is 
-carried out in a parameter space from which object candidates are obtained as local maxima in a so called accummlator space that is 
+Its purpose is to find imperfect instances of objects within a certain class of shapes by a voting procedure. This voting procedure is 
+carried out in a parameter space from which object candidates are obtained as local maxima in a so called accumlator space that is 
 explicitly constructed by the algorithm for computing the Hough transform.
 
-Initially the Hough transform was concerned with finding straight lines \cite{c1962method} but has been extended to identifying positions 
+Initially the Hough transform was concerned with finding straight lines \cite{c1962method} but it has been extended to identifying positions 
 of more complicated shapes, such as circles and ellipses.
 
 \subsection{Linear Hough transform} % (fold)
 \label{sub:linear_hough_transform}
 
-A linear function is often defined as:
+A linear function is often parametrized as:
 
 \[
   f(x) = m\cdot x + b
 \]
-where $m$ is the slope of the line and $b$ the intercept. For the Hough transform however, this representation is not ideal. For a 
-vertical line $m$ would go to infinity which gives us an unbound transform space for $m$. For this reason Duda and Hart suggested the 
+where $m$ is the slope of the line and $b$ the intercept. For the Hough transform, however, this representation is not ideal. For a 
+vertical line, $m$ would go to infinity which gives an unbound parameter space for $m$. For this reason, Duda and Hart suggested the 
 $r\text{-}\theta$ parametrization \parencite{Duda:1972}.
 
 \begin{equation}
@@ -393,17 +381,14 @@ intersects with the other at ($r\text{-}\theta$) and so do all the points lying 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/line_ht_paramspace}
-  \caption[Example of a linear HT space]{Example of a linear HT parameter space. Each line is representing a point of the line. For each 
-  point several lines are drawn for different angles according to equation~\ref{eq:param_eq} so this plot draws the perpendicular 
-  distances from these lines to the origin. When different lines intersect it means that these 3 Points lie on a line with the parameters 
-  given by the plot.}
+  \caption[Example of a linear HT space]{This is the accumulator space of 3 points on the same line. Each curve represents line drawn through one particular point - REPHRASE THIS}
   \label{fig:line_ht}
 \end{figure}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/line_ht_paramspace_nomatch}
-  \caption[Example of a linear HT where points don't lie on a line]{Example of a linear HT where points don't lie on a line. Since any 
+  \caption[Example of a linear HT where points don't lie on a line]{Example of a linear Hough transform where points don't lie on a line. Since any 
   two points can form a line there are still intersections but never more than 2.}
   \label{fig:line_ht_nomatch}
 \end{figure}
@@ -418,9 +403,7 @@ In a two dimensional space ($x,y$), a circle can be described by:
 		(x-c_x)^2 + (y-c_y)^2 = r^2
 \end{equation}
 
-Where $(c_x,c_y)$ is the center of the circle and $r$ the radius. The possible parameters for the parameters space are now $c_x, c_y$ 
-and $r$. This means if we know the center of the circle the parameter space is one-dimensional and if we know the radius of the circle 
-the parameter space is two-dimensional and of course if we know nothing the parameter space is three-dimensional.
+Where $(c_x,c_y)$ are the coordinates of the center of the circle and $r$ its radius. The possible parameters for the parameters space are now $c_x, c_y$ and $r$. This means if the center of the circle is known the parameter space is one-dimensional, if the radius of the circle is known the parameter space is two-dimensional and of course if nothing is known the parameter space is three-dimensional.
 
 
 
@@ -429,33 +412,25 @@ the parameter space is two-dimensional and of course if we know nothing the para
 
 \section{Datasets} % (fold)
 \label{sec:dataset}
-Two Monte-Carlo data sets were used for this thesis. One was a training data set of 250 simulated events and the test data on which the performance 
-of the algorithms was tested, consisting of 10'000 simulated events with a total of 49'979 circles across all events. The properties of 
-these events (radius, number of points per circle, number of circles per event) are taken from both simulation of LHC\textit{b} events and
-real data taken from the experiment.
-
-The number of points per circle is determined by the photoelecton yield N$_\text{pe}$. It is measured for both \emph{normal} events 
-and \emph{ideal} events. The normal event is representative of nominal RICH running conditions during LHC\textit{b} physics detector 
-operations. The ideal event is a special event type with very low background hits \cite{RICHPerf2012}.
+Two Monte-Carlo generated sets of simulated data were used for this thesis. The algorithms were trained on a data set of 250 simulated events and the performance of the algorithms was tested on a data set consisting of 10'000 simulated events with a total of 49'979 rings across all events. The properties of these events (radiuses, number of points per ring, number of rings per event) are taken from both simulation of LHC\textit{b} events and
+real data taken from the experiment. The number of points per ring is determined by the photoelecton yield N$_\text{pe}$ which is shown in Table~\ref{tab:results}. Figure~\ref{fig:ppc1} shows the number of points per circle and Figure~\ref{fig:circlePerEventDist} the number of circles per event for the test data set.
 
 \begin{table}[tb]
 \centering
-\begin{tabular}{|c| c| c | c |c|}
-\hline\hline
- & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from data} & \multicolumn{2}{|c|}{N$_{\text{pe}}$ from simulation} \\ \hline
-Radiator &  tagged D$^0 \rightarrow$ K$^- \pi^+$ &pp$ \rightarrow$ pp $\mu^+ \mu^-$ & Calculated $N_{\text{pe}}$ & 
-true $N_{\text{pe}}$ \\ [0.5ex]
-\hline
-Aerogel & $5.0 \pm 3.0$  & $4.3 \pm 0.9$& $8.0 \pm 0.6$ & $6.8 \pm 0.3$ \\ \hline
-C$_4$F$_{10}$  & $20.4 \pm 0.1$ & $24.5 \pm 0.3$& $28.3 \pm 0.6$ & $29.5 \pm 0.5$ \\ \hline
-CF$_4$ & $ 15.8 \pm 0.1$  & $ 17.6 \pm 0.2$& $22.7 \pm 0.6$ & $23.3 \pm 0.5$ \\ 
-\hline
+\begin{tabular}{c c c}
+\toprule
+\multirow{2}{*}{Radiator} & \multicolumn{2}{c}{Average N$_{\text{pe}}$ from data} \\
+\cmidrule{2-3} &  tagged D$^0 \rightarrow$ K$^- \pi^+$ &pp$ \rightarrow$ pp $\mu^+ \mu^-$ \\
+\midrule
+Aerogel & $5.0 \pm 3.0$  & $4.3 \pm 0.9$\\
+C$_4$F$_{10}$  & $20.4 \pm 0.1$ & $24.5 \pm 0.3$ \\
+CF$_4$ & $ 15.8 \pm 0.1$  & $ 17.6 \pm 0.2$ \\ 
+\bottomrule
 \end{tabular}
 \caption[Comparison of photoelectron yields (N$_{\rm pe}$)]{Comparison of photoelectron yields (N$_{\rm pe}$) determined from
-D$^* \rightarrow$D$^0\pi^+$ decays in simulation and data, and 
-pp $\rightarrow$ pp $\mu^+ \mu^-$ events in data, using the selections and 
+D$^* \rightarrow$D$^0\pi^+$ decays and pp $\rightarrow$ pp $\mu^+ \mu^-$ events in data, using the selections and 
 methods described in the text \cite{RICHPerf2012}}
-\label{table:results}
+\label{tab:results}
 \end{table}
 
 \begin{figure}[tb]
@@ -472,11 +447,7 @@ methods described in the text \cite{RICHPerf2012}}
   \label{fig:circlePerEventDist}
 \end{figure}
 
-Also to get an idea what the average size of a Cherenkov ring is can be seen in
-\cite{Forty1999}. Rings in RICH-1 have radiuses generally smaller than $0.15$\,m
-(given they are from the C$_4$F$_{10}$ radiator; rings from the aerogel have
-slightly bigger radiuses -- around $0.20$\,m). All generated rings in the test data 
-have a radius that is smaller than $0.15$\,m.
+The average radius of Cherenkov rings can be found in \cite{Forty1999}. Rings from the C$_4$F$_{10}$ radiator in RICH-1 have radiuses generally smaller than $0.15$\,m. Rings from the aerogel have slightly bigger radiuses of around $0.20$\,m). All generated rings in the test data set have a radius that is smaller than $0.15$\,m. The distribution of the radiuses in the test data set is shown in Figure~\ref{fig:radius_dist}.
 
 \begin{figure}[tb]
   \centering
@@ -490,9 +461,7 @@ have a radius that is smaller than $0.15$\,m.
 \label{sub:existing_algorithm}
 There is already an algorithm in place in LHC\textit{b} \cite{Forty1999}. The disadvantage of the existing algorithm is due to the 
 fact that it uses tracks to reconstruct the circles. All charged tracks that are reconstructed by the tracking system are reflected at
-the RICH mirrors in order to give a center for a Cherenkov ring. In order to match tracks with rings each ring is matched with the track 
-that has its position closest to the center of the ring. This means that this method uses information from outside the RICH detector 
-to construct the circles.
+the RICH mirrors in order to define a center for a potential Cherenkov ring.
 
 % subsection existing_algorithm (end)
 
