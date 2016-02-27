@@ -388,7 +388,7 @@ intersects with the other at ($r\text{-}\theta$) and so do all the points lying 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/line_ht_paramspace_nomatch}
-  \caption[Example of a linear HT where points don't lie on a line]{Example of a linear Hough transform where points don't lie on a line. Since any 
+  \caption[Example of a linear HT where points do not lie on a line]{Example of a linear Hough transform where points do not lie on a line. Since any 
   two points can form a line there are still intersections but never more than 2.}
   \label{fig:line_ht_nomatch}
 \end{figure}
@@ -452,7 +452,7 @@ The average radius of Cherenkov rings can be found in \cite{Forty1999}. Rings fr
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.6\textwidth]{sim_pics/radiusDist}
-  \caption{The radius distribution of the test data events.}
+  \caption{Distribution of ring radiuses in the test data sample}
   \label{fig:radius_dist}
 \end{figure}
 % section dataset (end)
@@ -470,38 +470,39 @@ the RICH mirrors in order to define a center for a potential Cherenkov ring.
 \section{Conventional Hough transforms} % (fold)
 \label{sec:conventional_hough_transforms}
 
-In the following subsections we discuss the conventional Hough transforms for the case of a one, two and three dimensional parameter space. 
+In the following subsections we discuss  conventional Hough transforms for the cases of a one, two and three dimensional parameter space (known center, known radius, unkonwn radius and center). 
 These methods were mainly considered to get an idea of what was possible with the conventional Hough transform.
-The conventional Hough transforms use the accumulator space which is essentially a histogram. As such it depends on the size of the binning. The smaller the binning the higher the accuracy for the parameter ($r$ and/or ($x,y$) coordinate) and conversely if the binning is larger the parameters will only roughly match the real ring. The execution time depends directly on the binning; the finer the binning the longer the execution time and vice versa.
+The conventional Hough transforms use the accumulator space which is essentially a histogram. As such it depends on the size of the binning. The finer the binning is the higher the accuracy with which parameter ($r$ and/or ($x,y$) coordinate) can be extracted. On the other hand the execution time depends directly on the binning; the finer the binning the longer the execution time.
 
 For closer study the 
-method of choice was the combinatorial triplet Hough transform discussed in depth in section \ref{sec:combinatorial_approach}.
+method of choice was the combinatorial triplet Hough transform discussed in section \ref{sec:combinatorial_approach}.
 % section conventional_hough_transforms (end)
 
 \subsection{1D: Known center - find radius} % (fold)
 \label{sub:1d_known_center_find_radius}
 
-In this case the center(s) of the circle(s) is/are known so only the radius is missing. For the radius an array is defined with a 
-minimum value and increasing stepsize to the maximum possible radius. For the example studied here the minimum was chosen to be $0$, 
+In this case the centers of all circles are known and the algorithm has to find the radiuses. For the radius, a one dimensional array is defined with a 
+minimum value and increasing stepsize to the maximum possible radius. For the example studied here, the minimum was chosen to be $0$, 
 the maximum radius to be $1$ and the stepsize equal to $0.001$. The following scoring function $\eta(r)$ was used to calculate the distance
-of a data point ($x,y$) from the given center ($c_x, c_y$) and radius $r$:
+of a data point ($x,y$) from the given center ($c_x, c_y$) as a function of the radius $r$:
 
 \begin{equation}
 \label{eq:score_function}
-  \eta(r) = (c_x - x)^2 + (c_y - y) - r ^ 2
+  \eta(r) = (c_x - x)^2 + (c_y - y)^2 - r ^ 2.
 \end{equation}
 
-If $\eta(r)=0$ means that the particular point ($x,y$) would lie on the circle of radius $r$ with center ($c_x, c_y$).
-A Gaussian distribution \ref{eq:weight_function} is used to have a well defined value for such point. For a bigger $\sigma$ a point 
-($x,y$) that is not exactly on the circle will still contribute to the total score. The smaller the $\sigma$ the tighter the range is
-in which a point will be considered lying on a circle or not.
+For $\eta(r)=0$, the particular point ($x,y$) would lie on the circle of radius $r$ with center ($c_x, c_y$).
+A Gaussian distribution 
 
 \begin{equation}
 \label{eq:weight_function}
-  w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right)
+  w(\eta) = \frac{1}{\sqrt{2\pi}\sigma}\exp\left( \frac{-\eta^2}{2\sigma^2}\right),
 \end{equation}
 
-The value from equation \ref{eq:weight_function} is added to the bin in the radius histogram which corresponds to the $r$ used to
+is used to have a well defined value for such points. A point ($x,y$) that is not exactly on the circle will still contribute to the total score. The smaller the parameter $\sigma$, the tighter the range is
+in which a point will be considered lying on a circle or not.
+
+The value from equation \ref{eq:weight_function} is added to the bin in the radius histogram which corresponds to the value of $r$ used to
 calculate the weight.
 
 \begin{figure}[ht]
@@ -537,13 +538,12 @@ calculate the weight.
   \end{tikzpicture}
     \caption[Normal Distribution: Used as a weight function]{Using the probability density function of the normal distribution to 
     calculate the score of a point in order to have a well defined maximum if a point lies directly on the circle and $\eta(r) = 0$. 
-    Increasing the $\sigma$ increases the width of the function and by extension increases the score of points who are not lying 
-    directly on the circle}
+    Increasing the $\sigma$ increases the width of the function and by extension increases the score of points that do not lie directly on the circle}
   \label{fig:gauss}
 \end{figure}
-Equation \ref{eq:weight_function} is of course just the circle equation with $c_x, c_y$ being the known coordinates of the center of 
-the circle, $x, y$ are the data points and $r$ is the radius. If a lot of the data points have the same distance $r$ from the circle 
-center there will be a high score for this particular radius. The index for the highest score can then be used to find the 
+Equation \ref{eq:scoring:function} is of course just the circle equation with $c_x, c_y$ being the known coordinates of the center of 
+the circle, $x, y$ are the data points and $r$ is the radius. If many data points have the same distance $r$ from the circle 
+center there will be a high score for this particular radius. The index of the bin with the highest score can then be used to find the 
 corresponding radius. The pseudo code for this Hough transform is shown in Code Snippet \ref{pc:1dHT}. An example of a resulting radius
 histogram is shown in figure \ref{fig:1d_ht_radius_score}
 
@@ -565,14 +565,14 @@ histogram is shown in figure \ref{fig:1d_ht_radius_score}
     circle['radius'] = r[index]
 \end{lstlisting}
 \caption[Pseudo Code 1D HT]{Pseudo code for the 1D Hough transform. r is an array of length 1001 so $\eta$ will also be an 
-array of length 1001. Scores is where the score for each iteration is stored. For each point the score is computed and added 
-to the scores array and at the end the index with the highest score is the index we need to get the radius}\label{pc:1dHT}
+array of length 1001. Scores is the array which the score for each iteration is stored. For each point the score is computed and added 
+to the scores array and at the end the index with the highest score is the index we need to extract the radius}\label{pc:1dHT}
 \end{codesnippet}
 
 \begin{figure}[tb]
   \centering
   \includegraphics[width=0.8\textwidth]{sim_pics/1D_HT/radius_scores_5_circles_30_bg_1}
-  \caption[Graph visualisation of a 1D radius histogram]{A graph visualisation of a 1D radius histogram. The peak between $0.2$ 
+  \caption[Graph visualisation of a 1D radius histogram]{Visualisation of a 1D radius score histogram. The peak between $0.2$ 
   and $0.3$ has by far the highest score and the bin
   position of the peak is the radius candidate for a given circle center ($c_x, c_y$)}
   \label{fig:1d_ht_radius_score}
@@ -587,14 +587,16 @@ The complexity of this algorithm is of $\mathcal{O}(n)$ where $n$ is the number 
 % subsection 1d_known_center_find_radius (end)
 \subsection{2D: Known radius - find center} % (fold)
 \label{sub:2d_known_radius_find_center}
-In this case the radius is known and the $x$ and $y$ coordinates of the center $(c_x, c_y)$ are unknown. Now, the accumulator is 2 
-dimensional. The range of that space is the dimension of the detection plane which for this thesis is $[-0.5,0.5]$. The size of the 
-bins is chosen to be 0.001 since the known radius given from the test data was of the same order. So if the detection plane was in 
-reality 1\,m by 1\,m the binning of the accumulator in each dimension is 1 mm. As in the one dimensional case we use the scoring function 
+In this case the radius is known and the $x$ and $y$ coordinates of the center $(c_x, c_y)$ are unknown. The accumulator is two 
+dimensional. The range of that space is the dimension of the detection plane which for this thesis is set to $[-0.5,0.5]$. The size of the 
+bins is chosen to be 0.001 since the known radiuses given from the test data were given with this precision. If the detection plane was in 
+reality 1\,m by 1\,m (approximately the dimension of the RICH detectors) the binning of the accumulator in each dimension is 1 mm which is
+better than the resolution of the HPDs ($2.5$\,mm $\times$ $2.5$\,mm) . As in the one dimensional case we use the scoring function 
 \ref{eq:score_function} in combination with the weight function \ref{eq:weight_function}.
-Since it is likely that two circles have the same radius a mechanism has to be introduced the remove points from the data set that
-have been used for a ring. If two circles have the same radius the algorithm would only ever find the one with the higher score. To avoid
-this once a circle has been found a check for each data point is made to see whether or not it lies on the circle and if yes is removed.
+Since it is likely that two rings have very similar radiuses within the precision of the binning a mechanism has to be introduced to
+remove points from the data set that have been used for a ring. For two circles with the same radius the algorithm would only ever find 
+the one with the higher score. To avoid this once a circle has been found a check for each data point is made to see whether or not it 
+lies on the circle and if yes it is removed (see Code Snippet~\ref{lst:remove_points}).
 
 \begin{codesnippet}[htb]
 \begin{lstlisting}
@@ -617,35 +619,42 @@ this once a circle has been found a check for each data point is made to see whe
     circle['Center'] = (xbins[i], ybins[j])
     circle['Radius'] = r
 \end{lstlisting}
-  \caption[Pseudo code 2D HT]{Pseudo code for the 2D Hough transform. \texttt{xbins} and \texttt{ybins} are arrays of length 1001. Here we use array 
-  broadcasting in order to avoid for loops and the weights can be evaluated in one line. This means that the x and y variables have 
-  dimension (1001,1001) but they don't take up that much memory. The x variable for example just broadcasts its value from the first 
-  row down to all the other rows and for y it broadcasts the first column to all the other columns. The variable weights is a 1001 by 
-  1001 matrix. Again the entry with the highest score is the candidate for a possible circle center and if found is stored in a final 
-  variable called circle.}
+  \caption[Pseudo code 2D HT]{Pseudo code for the 2D Hough transform. \texttt{xbins} and \texttt{ybins} are one-dimensional arrays of length 1001. Here we use array 
+  broadcasting in order to avoid for loops and the weights can be evaluated in one line.}
 \end{codesnippet}
 
 
+\begin{codesnippet}
+\begin{lstlisting}
+    for x,y in data_points:
+    if ( x - c_x )**2 + ( y - c_y )**2 - r**2 < 0.002:
+      <delete x,y from the list>
+\end{lstlisting}
+\caption{Pseudo code for removing data points that lie on a ring. The value of $0.002$ is twice the bin size to make sure all the points that
+belong to that ring will be removed}\label{lst:remove_points}
+\end{codesnippet}
+
 \subsubsection{Complexity} % (fold)
 \label{ssub:complexity_2d}
-The complexity of this algorithm is $\mathcal{O}(n\times m)$ where $n$ and $m$ are the number of bins per coordinate respectively per 
+The complexity of this algorithm is $\mathcal{O}(n\times m)$ where $n$ and $m$ are the number of bins per coordinate respectively of 
 the histogram. The calculation of the weight has to be done for each data point of the 2D histogram. So in a $1000\times 1000$ histogram 
 with 400 data points we calculate 400'000'000 times the weight of a grid point. Reducing the dimensions of the histogram weakens the 
-accuracy of the whole algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each 
+accuracy of the algorithm but can speed up the calculations considerably. With a $1000\times 1000$ histogram the resolution in each 
 space dimension is $1$\,mm. The RICH Technical Design Report states the resolution of the HPD is $2.5$\,mm $\times$ $2.5$\,mm.
 
-The need (not entirely true -- see below) to calculate the weight for each grid point and data point means that there is a loop over 
-data points and two loops for the $x$ and $y$ coordinate of the grid. To improve upon that there is the possibility of array broadcasting.
+The need (not entirely true -- see below) to calculate the weight for each grid point and data point means that there is a loop over all
+data points and two loops over the $x$ and $y$ coordinates of the grid. To improve upon that there is the possibility of array broadcasting.
 % subsubsection complexity (end)
 
 \newpage
 \subsubsection{Array broadcasting}
-Consider following one dimensional arrays where $x$ is a 1D histogram binning entries from 1 to 4 and same for $y$. 
+Consider following one dimensional arrays where both $x$ and $y$ are a 1D histograms binning entries from 1 to 4: 
 \begin{align*}
   x &= [1, 2, 3, 4]\\
   y &= [1, 2, 3, 4]  
 \end{align*}
-Now all combinations between an element of $x$ and $y$ represent a 2D grid $\left((1,1), (1,2), ...\right)$. So to iterate through all those grid points one would have to create 2 for-loops iterating through $x$ and $y$ as shown in below pseudo code snippet: %\ref{pc:nested_loops}.
+All combinations between an element of $x$ and and element of $y$ represent a 2D grid $\left((1,1), (1,2), ...\right)$. To iterate through 
+all those grid points one would have to create 2 for-loops iterating through $x$ and $y$ as shown in this pseudo code snippet: %\ref{pc:nested_loops}.
 % \begin{figure}[tb]
     \begin{lstlisting}
   def noBroadcast():
@@ -658,8 +667,8 @@ Now all combinations between an element of $x$ and $y$ represent a 2D grid $\lef
 % \caption[2 for-loops example]{To calculate the statement for every value in $a$ and $b$ the program has to do nested for-loops}\label{pc:nested_loops}
 % \end{figure}
 
-This is not only slow but also doesn't look too nice if there are even more loops.
-Broadcasting now turns the one dimensional arrays of length $n$ into two $n\text{ by }n$ matrices
+This is not only slow but also does not look nice if there are even more loops (readability of the code).
+Broadcasting turns the one dimensional arrays of length $n$ into two $n\text{ by }n$ matrices
 \[
   x = \begin{bmatrix}
   1 & 1 & 1 & 1 \\
@@ -678,7 +687,7 @@ and
 \end{bmatrix}
 \]
 \noindent\begin{minipage}{\linewidth}
-And with this the loops can be omitted:
+And with this the loops can be omitted as shown in the following example,
 \begin{lstlisting}
 def withBroadcast():
   a = np.random.randn(100)
@@ -688,7 +697,7 @@ def withBroadcast():
   print (1-x)^2 + (2-y)^2 - 9
 \end{lstlisting}  
 \end{minipage}
-In this case this prints a $4$ by $4$ array with the function evualted for each combination of entries of $x$ and $y$
+which prints a $4$ by $4$ array with the function evaluated for each combination of entries of $x$ and $y$
 \[
   \begin{bmatrix}
     -8& -9& -8& -5\\
@@ -707,16 +716,16 @@ In [3]: %timeit withBroadcast()
 In [4]: %timeit noBroadcast()
 100 loops, best of 3: 7.99 ms per loop
 \end{lstlisting}
-So the version with broadcasting is 100 times faster than the double loop. And the memory consumption is moderate since the 
-broadcasted entries aren't new memory locations but just refer to the initial array.
+The version with broadcasting is 100 times faster than the double loop. And the memory consumption is moderate since the 
+broadcasted entries are not new memory locations but just refer to the initial array.
 \end{minipage}
 
 
 \subsubsection{Optimizations} % (fold)
 \label{ssub:optimizations}
-It was mentioned before that for each data point the weight for the whole grid has to be calculated. This is not true. In the 2D case 
-each grid point is a potential center for a circle only if it is not further a away and a threshold radius $R_T$, so if a grid point is 
-further away than this threshold radius this calculation could be skipped. This could probably be done even smarter with the use of a 
+It was claimed before that for each data point the weight for the whole grid has to be calculated. This is in fact not true. In the 2D case 
+each grid point is a potential center for a circle only if it is not further away from a data point than the maximum ring radius $R_T$, 
+so if a grid point is further away than $R_T$ this calculation could be skipped. This could probably be done even smarter with the use of a 
 sub grid so only points in the surrounding sub grids are considered of being possible centers and not the whole grid.
 
 % subsubsection optimizations (end)
@@ -740,7 +749,7 @@ sub grid so only points in the surrounding sub grids are considered of being pos
 In this case all that is known are the data points and the algorithm has to retrieve both the center and the radius of the circles. 
 The accumulator space is now three dimensional, two for the coordinates of the center and one for the radius. Similar to the 2D case, 
 array broadcasting (see code snippet~\ref{pc:3D_broadcasting}) is used to speed up the calculations of the weights. Furthermore, 
-the algorithm has to decide itself whether or not  all circles have been found since there unlike in the previous two cases, there isn't 
+the algorithm has to decide itself whether or not  all circles have been found since there unlike in the previous two cases, there is not 
 any information availabe about the circles so a condition has to be set to decide when there are no more circles.
 
 For deciding whether or not the algorithm has found all rings, a simple score threshold is used that whenever the highest score
@@ -1158,7 +1167,7 @@ shows the flaws with each added dimension.
 
 For the 1D, 2D and 3D Hough transform very simple data was used. There were 
 no physical constraints when generating the circles and the number of points
-per circle and the distribution of the radiuses doesn't reflect the real data obtained
+per circle and the distribution of the radiuses does not reflect the real data obtained
 by LHC\textit{b}.
 
 For these conventional Hough transforms following data sets were tested
@@ -1205,7 +1214,7 @@ The resulting circle plot is the center (which was known) and the extracted radi
 The numerical values from the high scores and the second highest score are shown in Table~\ref{tab:1d_scores}. 
 The algorithm has no problems to find any of  the circles even with background. But this was expected as the 
 algorithm only needs to search in one dimension and makes the whole process very easy. The fourth event was also tested for the 1D Hough
-transform but not shown in this thesis because they didn't add anything that is not already covered with the first 3 events.
+transform but not shown in this thesis because they did not add anything that is not already covered with the first 3 events.
 
 % subsection overview_of_the_results (end)
 \begin{figure}[htp]
@@ -1305,7 +1314,7 @@ The reason for the wrong detection of the cirle is quite simple. Two of the circ
 The algorithm looks first for the magenta circle (because that happens to be the way the centers are arranged in the list) 
 and since so many points of the yellow circle lie so close together it is easy for the magenta circle (who has a similar radius) 
 to get a high score with these points, a higher score than it would get with its proper points. If the yellow points were more evenly 
-distributed on the circle or if there were more magenta points this probably wouldn't happen but that is something that can't be controlled.
+distributed on the circle or if there were more magenta points this probably would not happen but that is something that cannot be controlled.
 
 Theoretically it is also possible that the yellow circle gets fitted to the
 magenta points but since there are still enough yellow points left after the removal 
@@ -1452,7 +1461,7 @@ A possible way to fix this particular problem is to tune the parameters of the w
 \]
 Having a higher $\sigma$ means that a point that is a bit off of the circle still contributes a considerable value to the total score. 
 The smaller the $\sigma$ is the sharper the peak. However if the peak is too sharp then the algorithm might discard possible results 
-because they are just a bit off the circle and since the peak is so narrow they don't contribute at all to the total score.
+because they are just a bit off the circle and since the peak is so narrow they do not contribute at all to the total score.
 
 In the example before $\sigma$ was equal to $0.001$ while the space dimension was $1$. So if the detector was $1$\,m per dimension a hit $1$\,mm off the perfect location contributes still more half of the score off the perfect location. If we set $\sigma=0.0005$ a point $0.001$ away from the perfect location it only contributes about $14\%$ of the maximum score.
 
@@ -1513,11 +1522,11 @@ In general the 3D Hough transform works quite well. Even with the added complexi
 the four events correctly. One event that failed was the 1 circle and 600 background example where the signal to noise ratio was just 
 too small for the algorithm to isolate the correct solution. The problem was that the threshold was set too low and thus it was unavoidable
 that the algorithm would fail. In Table~\ref{tab:3d_10_high_scores} the scores for the 10 highest scores are shown. As a reminder, the threshold
-was set to $3500$ initially. So the obvious thing seems to set the threshold to $6300$ so the algorithm wouldn't pick up any fake rings.
+was set to $3500$ initially. So the obvious thing seems to set the threshold to $6300$ so the algorithm would not pick up any fake rings.
 However, with a threshold that high legit rings from other events would get lost. For a fixed threshold there will always be a case where rings get
 lost or fake rings get picked up. 
 On the other hand the 3D Hough transform managed to solve the 6 circles with 200 background hits despite having less information. 
-This is probably due to the fact that the 3D Hough transform finds the circles sorted by score and doesn't depend on the order in 
+This is probably due to the fact that the 3D Hough transform finds the circles sorted by score and does not depend on the order in 
 which circles are searched (remember, in the 2D case there is the radius given and depending on which radius is given first we can 
 solve it correctly or not).
 
@@ -1595,7 +1604,7 @@ The efficiency $\epsilon$ is defined as
 \begin{equation}
 \epsilon = 1 - \frac{m}{T}    
 \end{equation}
-where $m$ is the number of circles that weren't matched by the algorithm and $T$ the combined number of circles from
+where $m$ is the number of circles that were not matched by the algorithm and $T$ the combined number of circles from
 all events. The ghost rate $\gamma$ is defined as 
 \begin{equation}
   \gamma = \frac{f}{T} 
@@ -1726,7 +1735,7 @@ After this step the ring finding algorithm is done. The result is shown in Figur
 to remove duplicates.
 The algorithm compares all found circles and if the center coordinates and radiuses of two circles are within a certain range they 
 are considered to be duplicates and the one with a lower score is discarded. The range cuts were parameters that had to be tuned. If the 
-range was too small then some duplicates weren't detected and remained. If the cut was too large, true rings were removed because they
+range was too small then some duplicates were not detected and remained. If the cut was too large, true rings were removed because they
 happend to be close to another ring. In Tables~\ref{tab:cut_variation_1} and \ref{tab:cut_variation_2} the effects of different
 cuts can be seen.
 
@@ -1755,7 +1764,7 @@ analysing the test data set shows that approximately $98\%$ of the rings have mo
 \end{figure}
 
 This gives an upper bound on the efficiency of the algorithm. No matter 
-how accurate the algorithm is, if it doesn't consider circles below the threshold it will never find these. Thus the higher 
+how accurate the algorithm is, if it does not consider circles below the threshold it will never find these. Thus the higher 
 the needed number of points per circle is, the lower the efficiency will be. 
 
 
@@ -2027,7 +2036,7 @@ If this threshold is too low, too many fake rings are found from random point co
 
 The main reason for missed rings is again the ring finding threshold since it limits the number of rings
 being found. Since the algorithm uses two split lists, the number of missed circles is even slightly higher due to the
-fact that sometimes the points of a circle can be split just in a way that the two lists don't
+fact that sometimes the points of a circle can be split just in a way that the two lists do not
 contain enough points individually to create an accepted circle (see subsection \ref{sub:different_thresholds}).
 % subsubsection cut_variation_for_a_fixed_threshold (end)
 % subsection different_cuts_for_circle_selection (end)
@@ -2070,21 +2079,21 @@ As a fourth approach a new method based on triplets of hits was developped for t
 First of all it should be noted that especially the one, two and three dimensional Hough transforms were only superficially studied. Their study served more of an introduction into the Hough transform by adding extra dimensions for each case. The statements regarding these methods should always be considered with this in mind.
 
 The 1D Hough transform assumes the number of rings and ring centers are known and searches for maximas in the r distribution for each rings.
-It is a very stable method having no trouble to find different rings in different kinds of set ups. Even high background doesn't seem to impede the efficiency of the method. It is also a faster than all the other approaches since it only has to search one dimensional histogram.
+It is a very stable method having no trouble to find different rings in different kinds of set ups. Even high background does not seem to impede the efficiency of the method. It is also a faster than all the other approaches since it only has to search one dimensional histogram.
 
 The 2D Hough transform assumes number of rings and radiuses are known and searches for maxima in the ($x,y$) distribution for each ring. It shows a good performance as well but it suffers from lower speed due to the increased complexity namely searching
 2 dimension for the parameters instead of just one. Another problem is also the misidentification of rings based on the order in which
 they are searched for and also the sensitivity of the weight function used to weigh the centers for a given data points and radius.
 
 The 3D Hough transform does not make any assumptions on the number of rings or ring parameters. The main weakness
-of this method is the score threshold which tells the algorithm when to stop looking for a ring (the 1D and 2D transform didn't
+of this method is the score threshold which tells the algorithm when to stop looking for a ring (the 1D and 2D transform did not
 have this problem since due to the information given it was known, how many rings there were). If the threshold is too low, too many 
 fake rings can be formed by random combinations of (background) hits. - if it's too high a valid ring might get lost. The difficulty in defining a score threshold is 
 that it is based on the scoring function \ref{eq:weight_function}. Depending on the $\sigma$ chosen the scoring function can behave
 quite differently. A problem related to that is that the 3D Hough transform strongly depends on the bin size of the parameter space.
-The bins shouldn't be too big or the algorithm becomes inaccurate because the scoring function uses inaccurate values. If the bins are too
+The bins should not be too big or the algorithm becomes inaccurate because the scoring function uses inaccurate values. If the bins are too
 small, the algorithm takes forever due to the $\mathcal{O}(N^3)$ complexity. But the disadvantage can also have advantages because
-now the algorithm doesn't depend anymore on the order of which it looks for rings - it always picks the strongest candidates first
+now the algorithm does not depend anymore on the order of which it looks for rings - it always picks the strongest candidates first
 and every subsequent candidate has a lower score until the score is so low that it's unlikely that it is a ring.
 
 Finally the main part of this thesis discusses the combinatorial triplet Hough transform. It is based on the fact that 3 points define a ring.
