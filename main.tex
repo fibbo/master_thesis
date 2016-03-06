@@ -162,7 +162,7 @@ For the development of these algorithms python was used in combination with diff
 \end{figure}
 
 The Large Hadron Collider (LHC) is the largest and highest-energy particle accelerator in the world colliding protons on protons
-at beam energies of up to $6.5$\,TeV and lead ions at beam energies up to $5.5$\,GeV/nucleon. It was built by the European 
+at beam energies of up to $6.5$\,TeV and lead ions at beam energies up to $5.5$\,TeV/nucleon. It was built by the European 
 Organisation for Nuclear Research (CERN) from 1998 to 2008. It aims to test the predictions of different theories in high-energy particle 
 physics, in particular for the search of the Higgs boson (which has been confirmed last year) and signs for possible new physics beyond 
 the Standard Model of particle physics. The LHC lies in a tunnel $27$\,km in circumference and up to $100$\,m below the surface of the 
@@ -1543,7 +1543,7 @@ In Figures~\ref{fig:2D_HT_results1} and \ref{fig:2d_6c_200_bg2} the circles foun
 The ring was found by the algorithm. The highest and second highest score are well separated. 
 % subsection 1_ring_600_background_hits (end)
 
-\subsection{2 circles, 0 background hits} % (fold)
+\subsection{2 rings, 0 background hits} % (fold)
 \label{sub:2d_hough_transform_2_circles_0_background}
 Both rings are found in this event. Two cirlces pose no problem unless the two rings have the same radius. If that is the case the algorithm will find the same circle twice unless there is a mechanism that avoids this. Assume the two rings have radius $r$ and the algorithm calculates the weight matrix for the possible center coordinates. There will be two peaks, one for each ring. One peak will have a higher score and the algorithm extracts the coordinates of the peak. After that the algorithm searches the center for the second circle but since both circles have the same radius it will have the same scores again and find the first circle once more. Introducing a mechanism that removes points that were assigned to a circle solves this problem.
 
@@ -1616,7 +1616,7 @@ The algorithm had no problems finding all the circles. In Figure~\ref{fig:2d_5_c
 
 % subsection 2d_hough_transform_5_circles_30_background_hits (end)
 
-\subsection{6 circles, 200 background hits} % (fold)
+\subsection{6 rings, 200 background hits} % (fold)
 \label{sub:2d_hough_transform_6_circles_200_background_hits}
 As briefly discussed in the overview the algorithm does make mistakes as this event shows. 6 circles were generated with 200 background hits. The interesting part is not that amount of circles or the amount of background hits are the problem but the properties of the circles (center coordinate and radius). In this example there is a misidentification of a circle with points of another.
 
@@ -1725,10 +1725,10 @@ Plots of the found circle for the four tested events are shown in Figure~\ref{fi
 \end{figure}
 
 
-\subsection{3D: Overview of the results} % (fold)
+\subsection{Overview of the results} % (fold)
 \label{ssub:3d_overview_of_the_results}
 
-The 3D Hough transform algorithm solves three of the four events correctly. The event that failed was that with 1 circle and 600 background hits where the signal to noise ratio was too small for the algorithm to isolate the correct solution. In Table~\ref{tab:3d_10_high_scores} the scores for the 10 highest scores are shown. The threshold was set to $3500$. The obvious fix seems to set the threshold to a higher value (e.g. $6300$) so the algorithm would not pick up any fake rings. However, with a threshold that high legit rings from other events would get lost. For a fixed threshold there will always be a case where rings get lost or fake rings get picked up. Quantitative study would require to process a larger amount of events which is not done here since the focus in this thesis is on the triplet approach. On the other hand the 3D Hough transform managed to solve the 6 circles with 200 background hits despite having less information. This is probably due to the fact that the 3D Hough transform finds the circles sorted by score and does not depend on the order in which circles are searched (remember, in the 2D case the radius is given and depending on which radius is given first we can solve it correctly or not).
+The 3D Hough transform algorithm solves three of the four events correctly. The event that failed was that with 1 circle and 600 background hits where the signal to noise ratio was too small for the algorithm to isolate the correct solution. In Table~\ref{tab:3d_10_high_scores} the results for the 10 highest scores are shown. The threshold was set to $3500$. The obvious fix seems to set the threshold to a higher value (e.g. $6300$) so the algorithm would not pick up any fake rings. However, with a threshold that high legit rings from other events would get lost. For a fixed threshold there will always be a case where rings get lost or fake rings get picked up. Quantitative study would require to process a larger amount of events which is not done here since the focus in this thesis is on the triplet approach. On the other hand the 3D Hough transform managed to solve the 6 circles with 200 background hits despite having less information. This is probably due to the fact that the 3D Hough transform finds the circles sorted by score and does not depend on the order in which circles are searched (remember, in the 2D case the radius is given and depending on which radius is given first we can solve it correctly or not).
 
 \begin{table}[htp]
 \centering
